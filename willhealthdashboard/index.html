@@ -3,20 +3,426 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Will Health Dashboard</title>
+  <title>Will Power Protocols — Supplement, Epigenetic & Race Fuel Dashboard</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background:#0b1220; color:#e8edf7; margin:0; padding:24px; }
-    h1 { margin-top:0; }
-    a { color:#5aa6ff; }
-    .note { background:#131a2b; border:1px solid #243049; padding:16px; border-radius:12px; margin-top:16px; }
+    :root{--navy:#0A1628;--navy2:#10213b;--gold:#C9A84C;--gold2:#F2D47E;--green:#4CA66A;--blue:#5DA8FF;--red:#D56B6B;--purple:#9C7BFF;--cream:#F8F3E7;--ink:#172033;--muted:#6D7688;--card:#ffffff;--line:#E7E1D4;--shadow:0 16px 40px rgba(10,22,40,.12);--radius:24px}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at top left,rgba(201,168,76,.24),transparent 28rem),radial-gradient(circle at 90% 20%,rgba(93,168,255,.14),transparent 25rem),linear-gradient(180deg,#f9f6ef 0%,#f4efe4 100%);color:var(--ink);line-height:1.45}a{color:#0e5fb8;text-decoration:none;font-weight:700}a:hover{text-decoration:underline}.hero{background:linear-gradient(135deg,var(--navy) 0%,#122848 60%,#1c2f4d 100%);color:white;padding:34px 22px 26px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;border:34px solid rgba(201,168,76,.18)}.hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:7px 12px;border:1px solid rgba(242,212,126,.35);border-radius:999px;color:var(--gold2);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.05)}h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.05rem,4vw,4.15rem);line-height:.98;margin:18px 0 12px;letter-spacing:-.04em;max-width:920px}.subtitle{max-width:930px;color:#dfe9f8;font-size:1.05rem;margin:0 0 20px}.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}.hero-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px}.hero-chip b{display:block;color:var(--gold2);font-size:.84rem;margin-bottom:4px}.hero-chip span{font-size:.92rem;color:#edf4ff}.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 70px}.tabs{position:sticky;top:0;z-index:50;display:flex;gap:8px;overflow-x:auto;padding:14px 0;margin:0 0 10px;background:linear-gradient(180deg,rgba(249,246,239,.98),rgba(249,246,239,.86));backdrop-filter:blur(12px)}.tab{appearance:none;border:none;border-radius:999px;padding:10px 14px;background:#fff;color:#1c2b44;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(10,22,40,.08);white-space:nowrap;border:1px solid #eee3cb}.tab.active{background:var(--navy);color:white;border-color:var(--navy)}section.panel{display:none}section.panel.active{display:block;animation:fade .18s ease-out}@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}.section-head{margin:18px 0 14px;padding:18px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 26px rgba(10,22,40,.06)}.section-head h2{margin:0 0 8px;font-size:1.55rem;letter-spacing:-.025em}.section-head p{margin:0;color:#485369}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid.two{grid-template-columns:repeat(2,1fr)}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}.card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--gold)}.card.green:before{background:var(--green)}.card.blue:before{background:var(--blue)}.card.red:before{background:var(--red)}.card.purple:before{background:var(--purple)}.card.dark{background:linear-gradient(135deg,var(--navy),#18335c);color:white;border-color:#284365}.card.dark p,.card.dark li{color:#e9f1fb}.card h3{margin:0 0 8px;font-size:1.12rem;letter-spacing:-.015em}.card p{margin:.45rem 0;color:#485369}.pillrow{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;font-size:.76rem;font-weight:800;background:#f4edda;color:#5a4614;border:1px solid #ead79d}.pill.green{background:#e7f6eb;color:#1c6a3a;border-color:#b9e1c4}.pill.blue{background:#e9f4ff;color:#0c5fa9;border-color:#c9e4ff}.pill.red{background:#fff0ef;color:#a53737;border-color:#f4c7c1}.pill.purple{background:#f1edff;color:#5d3db0;border-color:#d8ceff}.mini-title{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:900;margin-top:12px}ul.clean{margin:10px 0 0;padding-left:18px}ul.clean li{margin:6px 0;color:#485369}.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}table{border-collapse:collapse;width:100%;min-width:720px}th,td{padding:13px 14px;border-bottom:1px solid #eee8dc;vertical-align:top;text-align:left}th{background:#10213b;color:white;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase}td{background:white}tr:last-child td{border-bottom:none}.timeline{display:grid;gap:14px}.day{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:stretch}.day-label{background:var(--navy);color:white;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}.day-label strong{display:block;font-size:1.05rem;color:var(--gold2)}.day-label span{font-size:.9rem;color:#dfe9f8}.day-content{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.link-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btnlink{display:inline-flex;align-items:center;justify-content:center;padding:8px 11px;border-radius:999px;background:#f7f0df;color:#1b3558;border:1px solid #e5d5a2;font-size:.82rem;font-weight:900}.btnlink.amazon{background:#fff6e1;color:#8a5a00}.btnlink.study{background:#eaf4ff;color:#0d5d9c}.callout{border-radius:var(--radius);padding:16px;margin:14px 0;background:#fff8e6;border:1px solid #ead79d;color:#4f3b0c}.callout b{color:#1e2a44}.footer-note{margin-top:22px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);color:#596175;font-size:.9rem}.badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:.72rem;font-weight:900;background:#eef3fa;color:#334760;margin-right:4px;margin-bottom:4px}.printbar{display:flex;gap:10px;justify-content:flex-end;margin:12px 0}.printbtn{border:none;background:var(--gold);color:#1f2b42;font-weight:900;padding:10px 14px;border-radius:999px;cursor:pointer;box-shadow:0 8px 18px rgba(201,168,76,.25)}@media(max-width:900px){.hero-grid,.grid,.grid.two,.split{grid-template-columns:1fr}.day{grid-template-columns:1fr}.tabs{top:0}table{min-width:650px}}@media print{.tabs,.printbar{display:none}section.panel{display:block!important;page-break-after:always}body{background:white}.card,.section-head,.table-wrap,.day-content,.day-label{box-shadow:none}a{color:#000;text-decoration:underline}}
   </style>
 </head>
 <body>
-  <p><a href="../">‹ Back to apps</a></p>
-  <h1>Will Health Dashboard</h1>
-  <p>Supplements &amp; diet tracker</p>
-  <div class="note">
-    Placeholder page. Replace this <code>index.html</code> with your real app.
-  </div>
+  <header class="hero"><div class="hero-inner"><div class="eyebrow">Will Power Protocols • Tray System • Epigenetics • Race Fuel</div><h1>Supplement & Performance Dashboard</h1><p class="subtitle">A realistic, habit-based system: daily prostate-epigenetic core after workout breakfast, alternate evening trays, workout-specific shelf, bedtime glycine, and low-residue race-week fueling.</p><div class="hero-grid"><div class="hero-chip"><b>Daily Core</b><span>Post-workout breakfast / travel minimum</span></div><div class="hero-chip"><b>Evening Rotation</b><span>Alternate Tray A and Tray B at dinner</span></div><div class="hero-chip"><b>Workout Shelf</b><span>Creatine, whey, beta-alanine, beet, electrolytes</span></div><div class="hero-chip"><b>Race Week</b><span>Low-residue carbs + lean protein by day</span></div></div></div></header>
+  <main class="wrap"><div class="printbar"><button class="printbtn" onclick="window.print()">Print / Save PDF</button></div><nav class="tabs"><button class="tab active" data-tab="today" onclick="activateTab('today')">Today</button><button class="tab" data-tab="trays" onclick="activateTab('trays')">3 Trays</button><button class="tab" data-tab="workout" onclick="activateTab('workout')">Workout Shelf</button><button class="tab" data-tab="cards" onclick="activateTab('cards')">Supplement Cards</button>
+      <button class="tab" data-tab="priority" onclick="activateTab('priority')">Priority Rankings</button><button class="tab" data-tab="epi" onclick="activateTab('epi')">Epigenetics</button><button class="tab" data-tab="race" onclick="activateTab('race')">Race Week Fuel</button>
+      <button class="tab" data-tab="travelrace" onclick="activateTab('travelrace')">Race Travel Food</button><button class="tab" data-tab="foods" onclick="activateTab('foods')">Foods</button><button class="tab" data-tab="shopping" onclick="activateTab('shopping')">Shopping List</button>
+      <button class="tab" data-tab="everydaylist" onclick="activateTab('everydaylist')">Everyday Checklist</button><button class="tab" data-tab="links" onclick="activateTab('links')">Evidence & Links</button></nav>
+    <section class="panel active" id="today"><div class="section-head"><h2>Today’s Simple Protocol</h2><p>The rule is consistency over perfection. The dashboard follows the habits you already do well: collagen in coffee, creatine in whey, daily tray after training breakfast, evening trays when remembered, glycine bedside.</p></div><div class="grid"><article class="card blue">
+          <h3>Morning Coffee Habit</h3>
+          <div class="pillrow"><span class="pill blue">Habit already works</span><span class="pill blue">Coffee support</span></div>
+          <p><b>Collagen peptides</b> in coffee + <b>L-theanine 200 mg</b> with coffee.</p>
+          <p class="small"><b>Why:</b> collagen supports tendon/joint/connective tissue. L-theanine helps smooth caffeine, calm focus, and jittery stress response. Keep both with the coffee habit, not in the evening trays.</p>
+          <div class="link-list">
+            <a class="btnlink amazon" href="https://www.amazon.com/s?k=NOW+L-Theanine+200+mg" target="_blank" rel="noopener">NOW L-Theanine 200 mg →</a>
+          </div>
+        </article><article class="card green"><h3>Post-workout breakfast</h3><div class="pillrow"><span class="pill green">Daily Tray</span><span class="pill">Travel minimum</span></div><p>Take the daily prostate-epigenetic core with food after the workout or with breakfast on non-training days.</p><p><b>Whey + creatine:</b> keep powder habit separate. Transparent Labs whey covers leucine; it does not replace bedtime glycine.</p></article><article class="card purple"><h3>Dinner</h3><div class="pillrow"><span class="pill purple">Alternate A/B</span><span class="pill">4–5x/week total is fine</span></div><p>Alternate Tray A and Tray B at dinner. Missing nights is acceptable and may reduce over-supplementing.</p><p>Example: Mon A, Tue B, Thu A, Sat B. Or simply grab whichever tray is next.</p></article><article class="card red"><h3>Workout shelf</h3><div class="pillrow"><span class="pill red">Training-specific</span></div><p>Creatine, beta-alanine, beetroot, whey, electrolytes, Infinit, bromelain, HMB, race carbs.</p><p>Use based on session type, heat, sweat rate, race week, and GI tolerance.</p></article><article class="card"><h3>Bedside</h3><div class="pillrow"><span class="pill">Sleep & recovery</span></div><p><b>Glycine capsules</b> + optional magnesium glycinate. Do not put glycine in the whey bucket.</p><p>Target: 2–3 g glycine before bed if tolerated. Capsules improve consistency.</p></article><article class="card dark"><h3>Core principle</h3><p><b>Longevity nutrition and performance nutrition are not the same thing.</b></p><p>Eat colorful, high-fiber longevity foods most of the time. Temporarily shift to low-residue carbs before races or key sessions.</p></article></div></section>
+    <section class="panel" id="trays"><div class="section-head"><h2>The 3-Tray System</h2><p>Tray 1 is the minimum daily/travel tray. Trays A and B are dinner alternates. The goal is sustainable execution, not a perfect laboratory routine.</p></div><div class="grid"><article class="card green"><h3>Tray 1 — Daily / Travel Minimum</h3><div class="pillrow"><span class="pill green">Post-workout breakfast</span><span class="pill">Daily</span></div><ul class="clean"><li><b>BROQ / Sulforaphane</b> — Nrf2, detox, prostate-longevity anchor.</li><li><b>Vitamin D3 + K2</b> — prostate, bone, immune, cardiovascular layer.</li><li><b>Omega-3 or anchovies</b> — inflammation resolution; anchovies can count as food dose.</li><li><b>CoQ10 / Ubiquinol</b> — mitochondrial and endurance aging support.</li><li><b>Urolithin A</b> — mitophagy and mitochondrial renewal.</li><li><b>Methyl-Guard / methylation support</b> — modest dose unless labs justify full dose.</li><li><b>Citicoline</b> — choline, cognition, PEMT-support lane.</li></ul></article><article class="card purple"><h3>Dinner Tray A — Polyphenol / Prostate</h3><div class="pillrow"><span class="pill purple">Alternate</span><span class="pill">2–4x/week</span></div><ul class="clean"><li><b>Pomegranate extract</b> — prostate and endothelial polyphenol support.</li><li><b>Apigenin</b> — prostate mechanistic support; evening-friendly.</li><li><b>Curcumin / Meriva</b> — inflammation, joint, recovery layer.</li><li><b>Lutein + Zeaxanthin</b> — eye/retina aging support with dinner fat.</li><li><b>Vitamin C capsule</b> — collagen/tissue support; capsule because powder gets forgotten.</li></ul></article><article class="card blue"><h3>Dinner Tray B — Support / Adaptation</h3><div class="pillrow"><span class="pill blue">Alternate</span><span class="pill">2–4x/week</span></div><ul class="clean"><li><b>Beef organs / liver</b> — pulsed nutrient density, not mandatory daily.</li><li><b>Zinc</b> — prostate/mineral support; avoid high-dose daily forever.</li><li><b>Milk thistle</b> — liver-support lane.</li><li><b>Black seed oil</b> — inflammation/metabolic support; pause before procedures if advised.</li><li><b>Ashwagandha</b> — stress/sleep/cortisol if tolerated.</li><li><b>Probiotic</b> — 2–4x/week unless targeting a specific GI goal.</li></ul></article></div><div class="callout"><b>Prostate decision:</b> daily prostate protection is covered by sulforaphane, D3/K2, omega-3/anchovies, CoQ10, and mitochondrial support. Pomegranate, apigenin, zinc, curcumin, and lycopene foods are supporting layers, not all mandatory daily pills.</div></section>
+    <section class="panel" id="workout"><div class="section-head"><h2>Workout-Specific Shelf</h2><p>These do not belong in the main trays. Keep them in the workout cabinet and use based on the session: CrossFit, long rides, race week, heat, sweat, or recovery block.</p></div><div class="table-wrap"><table><thead><tr><th>Item</th><th>Use</th><th>Why for Will</th><th>Timing</th></tr></thead><tbody><tr><td><b>Transparent Labs Whey Isolate</b></td><td>Post-workout protein</td><td>Leucine-rich; supports muscle protein synthesis. Does not replace glycine.</td><td>25–40 g after training or when protein is short.</td></tr><tr><td><b>Creatine monohydrate</b></td><td>Daily powder habit</td><td>Power, muscle, cognition; fits aging athlete and CrossFit/endurance overlap.</td><td>5 g in whey shake.</td></tr><tr><td><b>Beta-alanine SR</b></td><td>Hard efforts/CrossFit</td><td>Muscle carnosine buffering for intense intervals and burning legs.</td><td>Daily loading; split doses; not just acute pre-workout.</td></tr><tr><td><b>Beetroot / nitrates</b></td><td>Long/hard sessions</td><td>Nitric oxide/endurance support.</td><td>90–120 minutes before key workouts or races.</td></tr><tr><td><b>PH 1500 / electrolytes</b></td><td>Heat/sweat/long rides</td><td>Heavy sweater support; sodium prevents under-fueling with fluids alone.</td><td>Before and during long/hot sessions.</td></tr><tr><td><b>Infinit</b></td><td>Long sessions</td><td>Carb/electrolyte fuel for >90–120 min sessions.</td><td>During long rides/runs.</td></tr><tr><td><b>Bromelain</b></td><td>Recovery/inflammation</td><td>Fits joint/inflammation/recovery lane. Optional, not core daily.</td><td>Post-workout or recovery blocks.</td></tr><tr><td><b>HMB</b></td><td>Heavy blocks/calorie deficit</td><td>Anti-catabolic support for masters athlete during hard load.</td><td>Training blocks, soreness blocks, weight-cut phases.</td></tr><tr><td><b>Rice cakes / honey / banana / applesauce</b></td><td>Low-residue carbs</td><td>Easy gut fuel before training/racing.</td><td>Before early sessions or race morning.</td></tr><tr><td><b>L-theanine</b></td><td>Coffee/calm-focus support</td><td>Smooths caffeine response; useful with your morning coffee habit and COMT/ADRB2 stress-caffeine logic.</td><td>200 mg with coffee, daily if drinking coffee or as needed.</td></tr>
+            <tr><td><b>Optional: taurine</b></td><td>Optional experiment</td><td>Electrolyte/cardiac/cramp-support lane; not mandatory.</td><td>Trial in training only.</td></tr><tr><td><b>Optional: collagen + C</b></td><td>Tendon/joint support</td><td>Already good habit in coffee; vitamin C capsule can support collagen formation.</td><td>Coffee collagen AM; C capsule evening.</td></tr><tr><td><b>Optional: Siberian ginseng / Eleuthero</b></td><td>Adaptogen experiment</td><td>Mixed endurance evidence; not core.</td><td>2–4 week trial only; avoid race week unless tested.</td></tr></tbody></table></div></section>
+    <section class="panel" id="cards"><div class="section-head"><h2>Supplement Cards — Benefit, Timing, Links</h2><p>Each card is written in “why for Will” language. Product links are clickable. Amazon links are mostly search links so you can choose the exact seller/flavor/size.</p></div><div class="grid">
+</div>
+      <div class="grid">
+      <article class="card blue" id="ltheanine-static-card">
+        <h3>L-Theanine</h3>
+        <div class="pillrow"><span class="pill blue">Coffee</span><span class="pill blue">Calm focus</span><span class="pill blue">As needed</span></div>
+        <p><b>NOW L-Theanine 200 mg</b></p>
+        <p><span class="badge">Morning Coffee Habit</span> <span class="badge">200 mg</span> <span class="badge">With coffee, daily or as needed</span></p>
+        <p class="mini-title">Benefit</p>
+        <p>Calm focus and smoother caffeine response without turning it into another evening tray pill.</p>
+        <p class="mini-title">Why for Will</p>
+        <p>Original stack linked this to COMT/ADRB2 stress-caffeine logic. Best placement is with morning coffee next to collagen.</p>
+        <div class="link-list"><a class="btnlink amazon" href="https://www.amazon.com/s?k=NOW+L-Theanine+200+mg" target="_blank" rel="noopener">NOW L-Theanine 200 mg →</a></div>
+      </article>
+      </div>
+      <div class="grid" id="supplementCards"></div></section>
+
+    <section class="panel" id="priority">
+      <div class="section-head">
+        <h2>Priority Rankings — Most Important for Will Power</h2>
+        <p>This view ranks foods and supplements by four lenses: genes/nutrigenomics fit, prostate support, longevity/living to 100+, and performance. Shopping lists are practical; this tab tells you what matters most.</p>
+      </div>
+
+      <div class="priority-split">
+        <article class="card dark">
+          <h3>How to read this tab</h3>
+          <p><b>Five stars does not mean “take more.”</b> It means high strategic value for your profile and goals.</p>
+          <p>Daily core items should be easy and repeatable. Performance items can be very important but only around the right workout or race.</p>
+        </article>
+        <article class="card">
+          <h3>Ranking logic</h3>
+          <ul class="clean">
+            <li><b>Genes:</b> methylation, choline, omega-3 conversion, inflammation, detox, mitochondria.</li>
+            <li><b>Prostate:</b> vitamin D, sulforaphane, lycopene, pomegranate, omega-3, zinc balance.</li>
+            <li><b>Longevity:</b> cardiovascular, mitochondria, muscle aging, metabolic health, inflammation resolution.</li>
+            <li><b>Performance:</b> endurance, CrossFit, recovery, low-residue fueling, sweat/electrolytes.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-head">
+        <h2>Top Foods for Will</h2>
+        <p>These are ranked by strategic value, not by how much to eat in one sitting.</p>
+      </div>
+      <div class="rank-list" id="foodRanks"></div>
+
+      <div class="section-head">
+        <h2>Top Supplements for Will</h2>
+        <p>Daily core items rank high for longevity/prostate/genes. Workout shelf items rank high for performance but are situational.</p>
+      </div>
+      <div class="rank-list" id="suppRanks"></div>
+<div class="section-head">
+        <h2>Quick Priority Buckets</h2>
+        <p>Use these when you are deciding what to buy, pack, or emphasize for a specific goal.</p>
+      </div>
+      <div class="micro-grid">
+        <article class="mini-rank">
+          <h3>Top Prostate Foods</h3>
+          <ol>
+            <li>Tomato paste/sauce + olive oil — lycopene</li>
+            <li>Broccoli sprouts/crucifers — sulforaphane/Nrf2</li>
+            <li>Anchovies/salmon — EPA/DHA omega-3s</li>
+            <li>Pomegranate/berries — polyphenols</li>
+            <li>Green tea — catechins/EGCG food layer</li>
+          </ol>
+        </article>
+        <article class="mini-rank">
+          <h3>Top Performance Fuels</h3>
+          <ol>
+            <li>Jasmine rice / white basmati — low-residue carbs</li>
+            <li>Yukon potatoes — potassium + easy carbs</li>
+            <li>Rice cakes + honey — race-morning simplicity</li>
+            <li>Plain bagel + banana — pre-race fuel</li>
+            <li>Chicken / white fish — lean protein</li>
+          </ol>
+        </article>
+        <article class="mini-rank">
+          <h3>Top Longevity Staples</h3>
+          <ol>
+            <li>Anchovies/salmon — EPA/DHA</li>
+            <li>Extra virgin olive oil — Mediterranean fat</li>
+            <li>Crucifers — detox/epigenetic signal</li>
+            <li>Eggs — choline + protein</li>
+            <li>Berries/pomegranate — polyphenols</li>
+          </ol>
+        </article>
+        <article class="mini-rank">
+          <h3>Coffee Habit Add-On</h3>
+          <ol>
+            <li>Collagen — connective tissue/tendon support</li>
+            <li>L-theanine 200 mg — smooths caffeine</li>
+            <li>Coffee — morning performance/focus habit</li>
+            <li>Vitamin C capsule later — supports collagen formation</li>
+            <li>Keep this out of evening trays</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+
+    <section class="panel" id="epi"><div class="section-head"><h2>Epigenetic Layer</h2><p>Genes are the hardware; epigenetics is the software. The protocol emphasizes detox response, methylation, mitochondrial renewal, inflammation resolution, and muscle-aging defense.</p></div><div class="grid two"><article class="card green"><h3>Nrf2 / Detox Response</h3><p><b>Levers:</b> sulforaphane, cruciferous vegetables, exercise hormesis.</p><p><b>Will reason:</b> GSTM1-null rationale from the prior stack makes sulforaphane a high-value daily anchor.</p></article><article class="card blue"><h3>Methylation</h3><p><b>Levers:</b> methyl-folate/B12/P5P/TMG, choline, eggs, glycine, adequate protein.</p><p><b>Will reason:</b> MTHFR + PEMT/BHMT pressure makes methylation support useful, but dose should remain practical and lab-aware.</p></article><article class="card purple"><h3>Mitochondrial Renewal</h3><p><b>Levers:</b> urolithin A, CoQ10, creatine, Zone 2, intervals, sleep.</p><p><b>Will reason:</b> endurance performance and longevity both depend on mitochondrial capacity and recovery.</p></article><article class="card red"><h3>Inflammation Resolution</h3><p><b>Levers:</b> omega-3/anchovies, curcumin, pomegranate, sleep, not overtraining.</p><p><b>Will reason:</b> high training load requires recovery signaling, not just more anti-inflammatory pills.</p></article><article class="card"><h3>Muscle-Aging Defense</h3><p><b>Levers:</b> whey leucine, creatine, strength training, collagen/tendon support.</p><p><b>Will reason:</b> at 60, muscle maintenance and tendon resilience are central to healthspan and performance.</p></article><article class="card dark"><h3>Glycemic / Gut Control</h3><p><b>Levers:</b> longevity carbs most days; low-residue carbs before key training and races.</p><p><b>Will reason:</b> the gut needs different fuel on race week than on anti-aging days.</p></article></div></section>
+    <section class="panel" id="race"><div class="section-head"><h2>Race Week Fuel: Low-Residue + Lean Protein</h2><p>Low-residue is a temporary performance tool, not your everyday longevity diet. Protein stays in the plan, but the type and timing get simpler as race day approaches.</p></div><div class="timeline"><div class="day"><div class="day-label"><strong>3+ days out</strong><span>Clean normal eating</span></div><div class="day-content"><div class="split"><div><h3>Best proteins</h3><p>Chicken, turkey, eggs, salmon, cod, tuna, Greek yogurt if tolerated, whey isolate, lean steak if it digests well.</p></div><div><h3>Rule</h3><p>Mostly normal longevity foods. Avoid fast food, fried food, spicy food, alcohol, huge restaurant meals, and new foods.</p></div></div></div></div><div class="day"><div class="day-label"><strong>2 days out</strong><span>Start lowering residue</span></div><div class="day-content"><div class="split"><div><h3>Best proteins</h3><p>Chicken, turkey, eggs, white fish, moderate salmon, Greek yogurt if tolerated, whey isolate.</p></div><div><h3>Best carbs</h3><p>Jasmine rice, white basmati rice, Yukon potatoes, white pasta, sourdough, bagel, rice cakes, banana, applesauce.</p></div></div><p><b>Avoid:</b> Brussels sprouts, broccoli, beans, lentils, chia/flax, big nut portions, high-fiber wraps, spicy sauces, fried foods.</p></div></div><div class="day"><div class="day-label"><strong>Day before</strong><span>Most low-residue</span></div><div class="day-content"><div class="split"><div><h3>Best proteins</h3><p>Chicken, turkey, white fish, eggs earlier in day, small Greek yogurt only if very familiar.</p></div><div><h3>Best dinner</h3><p>Chicken + jasmine rice cooked in chicken broth + olive oil + salt. Or white fish + Yukon mashed potatoes with broth + olive oil + salt.</p></div></div><p><b>Rule:</b> boring is good. Digestibility beats perfect nutrition.</p></div></div><div class="day"><div class="day-label"><strong>Race morning</strong><span>Simple and tested</span></div><div class="day-content"><div class="split"><div><h3>Best options</h3><p>Plain bagel + honey + banana. Or rice cakes + honey + banana. Or cream of rice + maple syrup/honey.</p></div><div><h3>Protein</h3><p>Optional 10–20 g whey isolate only if tested. Avoid a large protein/fat load right before running.</p></div></div><p><b>Avoid:</b> Greek yogurt unless repeatedly tested, eggs right before running, nut butter, fiber cereal, oatmeal if bulky, chia/flax, anything new.</p></div></div></div><div class="callout"><b>Greek yogurt decision:</b> yes 3+ days out and maybe 2 days out if tolerated. Small amount day before only if familiar. Usually not a race-morning default.</div></section>
+
+    <section class="panel" id="travelrace">
+      <div class="section-head">
+        <h2>Race Travel Food — Store / Hotel / Road Trip Plan</h2>
+        <p>Practical foods to buy when traveling for a race. Goal: familiar, low-residue, low-risk foods for the night before and morning of, with enough protein but not a gut bomb.</p>
+      </div>
+
+      <div class="grid two">
+        <article class="card blue">
+          <h3>Store Run — Core Race Travel Basket</h3>
+          <div class="pillrow"><span class="pill blue">Low-residue</span><span class="pill blue">Hotel-friendly</span></div>
+          <ul class="clean">
+            <li><b>Plain bagels</b> — race morning or day-before carbs.</li>
+            <li><b>Bananas</b> — ripe, easy carb.</li>
+            <li><b>Rice cakes</b> — portable low-residue carb.</li>
+            <li><b>Honey packets or squeeze bottle</b> — quick carb for bagels/rice cakes.</li>
+            <li><b>Ground white jasmine rice cereal / Cream of Rice</b> — best if hotel has microwave/kettle.</li>
+            <li><b>Applesauce pouches</b> — easy carb backup.</li>
+            <li><b>Pretzels</b> — carbs + sodium.</li>
+            <li><b>Electrolytes / PH 1500 / sodium plan</b> — especially heat/humidity.</li>
+          </ul>
+        </article>
+
+        <article class="card green">
+          <h3>Protein Options While Traveling</h3>
+          <div class="pillrow"><span class="pill green">Lean protein</span><span class="pill green">Keep simple</span></div>
+          <ul class="clean">
+            <li><b>Turkey slices</b> — fine if clean/simple; avoid spicy or heavily processed versions.</li>
+            <li><b>Rotisserie chicken breast</b> — useful if not greasy/spicy; remove skin if needed.</li>
+            <li><b>Pre-cooked plain chicken</b> — best if available.</li>
+            <li><b>Hard-boiled eggs</b> — better 2 days out or day-before breakfast/lunch, not race morning unless tested.</li>
+            <li><b>Greek yogurt</b> — good 2–3 days out; day before only if familiar; usually not race morning.</li>
+            <li><b>Whey isolate packets/shaker</b> — safest protein backup because you control it.</li>
+            <li><b>Tuna/salmon packets</b> — shelf-stable backup, but use earlier in day due to smell/sodium/GI preference.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-head">
+        <h2>Night-Before Race Travel Dinner</h2>
+        <p>Keep it boring. The night before is not the time for healthy variety. It is the time for gut predictability.</p>
+      </div>
+
+      <div class="grid three">
+        <article class="card">
+          <h3>Option A — Turkey Sandwich</h3>
+          <p><b>Turkey + bread/bagel + mustard</b></p>
+          <ul class="clean">
+            <li>Use plain turkey, not spicy/smoked/heavily seasoned.</li>
+            <li>Dave’s bread is healthy but may be higher fiber; use only if you know it sits well.</li>
+            <li>For safest low-residue: plain bagel, sourdough, or white bread.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Option B — Rice Bowl</h3>
+          <p><b>Microwave jasmine rice + chicken/turkey + salt</b></p>
+          <ul class="clean">
+            <li>Best if store has microwave rice cups or hotel has microwave.</li>
+            <li>Add olive oil only lightly if you tolerate it.</li>
+            <li>Use broth/salt for sodium if hot race.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Option C — Potato Meal</h3>
+          <p><b>Microwave potato / mashed potatoes + chicken/turkey</b></p>
+          <ul class="clean">
+            <li>Yukon or plain potato is excellent if available.</li>
+            <li>Avoid loaded potatoes, bacon, heavy butter, sour cream, spicy toppings.</li>
+            <li>Salt is fine, especially before hot events.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-head">
+        <h2>Race Morning Travel Breakfast</h2>
+        <p>Simple carbs, small optional protein, nothing new.</p>
+      </div>
+
+      <div class="grid three">
+        <article class="card blue"><h3>Safest Default</h3><p><b>Plain bagel + honey + banana</b></p><p class="small">Add coffee if normal. Add sodium/electrolyte plan if heat/humidity or long event.</p></article>
+        <article class="card blue"><h3>Lighter Option</h3><p><b>Rice cakes + honey + banana + applesauce pouch</b></p><p class="small">Great if nervous stomach or early hotel departure.</p></article>
+        <article class="card blue"><h3>Warm Option</h3><p><b>Ground white jasmine rice cereal / Cream of Rice + honey/maple + salt</b></p><p class="small">Best if you have microwave/kettle and have tested it.</p></article>
+      </div>
+
+      <div class="grid two">
+        <article class="card red">
+          <h3>Travel Foods to Be Careful With</h3>
+          <ul class="clean">
+            <li><b>Dave’s bread</b> — healthy, but higher fiber/seeded versions may be risky close to race.</li>
+            <li><b>Greek yogurt</b> — good food, but not always best race morning.</li>
+            <li><b>Protein bars</b> — often contain fibers/sugar alcohols; risky before racing.</li>
+            <li><b>Salads/vegetable bowls</b> — longevity foods, not night-before race foods.</li>
+            <li><b>Restaurant turkey/chicken sandwiches</b> — watch sauces, onions, spice, fats.</li>
+            <li><b>Fast food, fried food, pizza, heavy cheese</b> — avoid.</li>
+          </ul>
+        </article>
+        <article class="card purple">
+          <h3>Pack From Home</h3>
+          <ul class="clean">
+            <li>Whey isolate single-serve bag or shaker.</li>
+            <li>Creatine if taking daily.</li>
+            <li>PH 1500 / electrolytes / sodium plan.</li>
+            <li>Honey packets.</li>
+            <li>Rice cakes or plain bagels if you trust your brand.</li>
+            <li>Ground jasmine rice cereal in a zip bag or container.</li>
+            <li>Glycine/magnesium for bedtime if staying overnight.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="callout">
+        <b>Dashboard rule:</b> Dave’s bread, Greek yogurt, salads, crucifers, and higher-fiber foods are healthy, but not always best close to race start. Use them farther out. For night-before/morning-of, prioritize low-residue carbs, lean familiar protein, sodium strategy, and zero surprises.
+      </div>
+    </section>
+
+
+    <section class="panel" id="foods"><div class="section-head"><h2>Performance Foods vs Longevity Foods</h2><p>Overlap is allowed. The key is knowing when you are fueling a workout versus signaling longevity.</p></div><div class="grid two"><article class="card blue"><h3>Performance / Low-Residue Foods</h3><ul class="clean"><li>Jasmine rice, white basmati rice</li><li>Yukon gold potatoes / mashed potatoes</li><li>Rice cakes, organic plain bagels</li><li>Honey, maple syrup, banana, applesauce</li><li>Pretzels, cream of rice, white sourdough</li><li>Chicken, turkey, white fish, whey isolate</li><li>Organic chicken broth, olive oil, salt</li></ul></article><article class="card green"><h3>Longevity / Anti-Aging Foods</h3><ul class="clean"><li>Anchovies first; sardines optional; salmon</li><li>Broccoli sprouts, broccoli, arugula, cabbage, Brussels sprouts</li><li>Berries, pomegranate, cocoa, green tea</li><li>Tomato sauce/paste with olive oil for lycopene</li><li>Extra virgin olive oil, avocado, walnuts/macadamias</li><li>Eggs/choline foods, fermented foods if tolerated</li><li>Herbs/spices: garlic, ginger, turmeric, rosemary</li></ul></article></div><div class="callout"><b>Anchovies decision:</b> favor anchovies over sardines. On anchovy-heavy days, fish oil may be reduced or skipped depending on total omega-3 intake.</div></section>
+    <section class="panel" id="shopping"><div class="section-head"><h2>Will Power Shopping List</h2><p>Grouped by purpose so shopping matches the dashboard: performance foods, longevity foods, performance supplements, longevity supplements, and bedtime recovery.</p></div><div class="grid two"><article class="card blue"><h3>Performance Foods</h3><ul class="clean"><li>Jasmine rice</li><li>White basmati rice</li><li>Yukon gold potatoes</li><li>Rice cakes</li><li>Organic plain bagels</li><li>Honey / maple syrup</li><li>Bananas</li><li>Applesauce pouches</li><li>Pretzels</li><li>Cream of rice</li><li>Chicken breast/thigh</li><li>White fish</li><li>Organic chicken broth</li></ul></article><article class="card green"><h3>Longevity Foods</h3><ul class="clean"><li>Anchovies</li><li>Salmon</li><li>Broccoli sprouts / crucifers</li><li>Berries</li><li>Pomegranate / pomegranate juice</li><li>Tomato paste/sauce</li><li>Extra virgin olive oil</li><li>Eggs</li><li>Greek yogurt or kefir if tolerated</li><li>Green tea</li><li>Herbs/spices</li></ul></article><article class="card red"><h3>Performance Supplements</h3><ul class="clean"><li>Transparent Labs whey isolate</li><li>Creatine monohydrate</li><li>Beta-alanine SR</li><li>Beetroot/nitrates</li><li>PH 1500 / electrolytes</li><li>Infinit</li><li>Bromelain</li><li>HMB</li></ul></article><article class="card"><h3>Longevity / Bedtime Supplements</h3><ul class="clean"><li>BROQ sulforaphane</li><li>Vitamin D3 + K2</li><li>Omega-3 if not using anchovies</li><li>CoQ10 / ubiquinol</li><li>Urolithin A</li><li>Methylation support</li><li>Citicoline</li><li>Pomegranate</li><li>Apigenin</li><li>Thorne Vitamin C with Flavonoids</li><li>L-theanine 200 mg for coffee</li><li>Thorne Glycine capsules</li><li>Magnesium glycinate</li></ul></article></div></section>
+
+    <section class="panel" id="everydaylist">
+      <div class="section-head">
+        <h2>Everyday Shopping Checklist</h2>
+        <p>A merged, categorized store list for you and Tricia. Use the checkboxes while shopping. This is intentionally broader than the performance/race list.</p>
+      </div>
+      <div class="checklist-toolbar">
+        <button class="checkbtn" onclick="document.querySelectorAll('#everydaylist input[type=checkbox]').forEach(c=>c.checked=false)">Clear checks</button>
+        <button class="checkbtn" onclick="document.querySelectorAll('#everydaylist input[type=checkbox]').forEach(c=>c.checked=true)">Check all</button>
+        <button class="checkbtn" onclick="window.print()">Print list</button>
+      </div>
+      <div class="store-grid">
+        <article class="check-section"><h3>Produce — Fruit</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_produce_fruit_bananas" checked><label for="ck_produce_fruit_bananas">Bananas</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_apples"><label for="ck_produce_fruit_apples">Apples</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_oranges"><label for="ck_produce_fruit_oranges">Oranges</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_plums"><label for="ck_produce_fruit_plums">Plums</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_blueberries_berries"><label for="ck_produce_fruit_blueberries_berries">Blueberries / berries</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_grapes"><label for="ck_produce_fruit_grapes">Grapes</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_pears"><label for="ck_produce_fruit_pears">Pears</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_lemons"><label for="ck_produce_fruit_lemons">Lemons</label></div><div class="check-item"><input type="checkbox" id="ck_produce_fruit_avocados" checked><label for="ck_produce_fruit_avocados">Avocados</label></div></div></article><article class="check-section"><h3>Produce — Vegetables & Greens</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_spinach"><label for="ck_produce_vegetables_greens_spinach">Spinach</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_leafy_greens_bok_choy_kale"><label for="ck_produce_vegetables_greens_leafy_greens_bok_choy_kale">Leafy greens / bok choy / kale</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_sprouts_microgreens"><label for="ck_produce_vegetables_greens_sprouts_microgreens">Sprouts / microgreens</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_peppers" checked><label for="ck_produce_vegetables_greens_peppers">Peppers</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_mushrooms" checked><label for="ck_produce_vegetables_greens_mushrooms">Mushrooms</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_tomatoes"><label for="ck_produce_vegetables_greens_tomatoes">Tomatoes</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_lettuce"><label for="ck_produce_vegetables_greens_lettuce">Lettuce</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_broccoli"><label for="ck_produce_vegetables_greens_broccoli">Broccoli</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_cauliflower"><label for="ck_produce_vegetables_greens_cauliflower">Cauliflower</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_peas"><label for="ck_produce_vegetables_greens_peas">Peas</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_cucumber"><label for="ck_produce_vegetables_greens_cucumber">Cucumber</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_zucchini"><label for="ck_produce_vegetables_greens_zucchini">Zucchini</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_garlic"><label for="ck_produce_vegetables_greens_garlic">Garlic</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_onion"><label for="ck_produce_vegetables_greens_onion">Onion</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_sweet_potatoes" checked><label for="ck_produce_vegetables_greens_sweet_potatoes">Sweet potatoes</label></div><div class="check-item"><input type="checkbox" id="ck_produce_vegetables_greens_potatoes"><label for="ck_produce_vegetables_greens_potatoes">Potatoes</label></div></div></article><article class="check-section"><h3>Proteins / Seafood / Dairy</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_eggs"><label for="ck_proteins_seafood_dairy_eggs">Eggs</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_salmon" checked><label for="ck_proteins_seafood_dairy_salmon">Salmon</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_chicken" checked><label for="ck_proteins_seafood_dairy_chicken">Chicken</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_turkey_slices"><label for="ck_proteins_seafood_dairy_turkey_slices">Turkey slices</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_fatty_fish_sea_bass_tuna"><label for="ck_proteins_seafood_dairy_fatty_fish_sea_bass_tuna">Fatty fish: sea bass / tuna</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_anchovies"><label for="ck_proteins_seafood_dairy_anchovies">Anchovies</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_canned_fish_tuna_sardines_mackerel"><label for="ck_proteins_seafood_dairy_canned_fish_tuna_sardines_mackerel">Canned fish: tuna / sardines / mackerel</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_greek_yogurt"><label for="ck_proteins_seafood_dairy_greek_yogurt">Greek yogurt</label></div><div class="check-item"><input type="checkbox" id="ck_proteins_seafood_dairy_kefir"><label for="ck_proteins_seafood_dairy_kefir">Kefir</label></div></div></article><article class="check-section"><h3>Grains / Carbs / Bakery</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_dave_s_bread"><label for="ck_grains_carbs_bakery_dave_s_bread">Dave’s bread</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_bagels_for_tricia"><label for="ck_grains_carbs_bakery_bagels_for_tricia">Bagels for Tricia</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_plain_race_bagels"><label for="ck_grains_carbs_bakery_plain_race_bagels">Plain race bagels</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_pizza_dough"><label for="ck_grains_carbs_bakery_pizza_dough">Pizza dough</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_yellow_rice"><label for="ck_grains_carbs_bakery_yellow_rice">Yellow rice</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_basmati_rice"><label for="ck_grains_carbs_bakery_basmati_rice">Basmati rice</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_jasmine_rice_ready_rice_cups"><label for="ck_grains_carbs_bakery_jasmine_rice_ready_rice_cups">Jasmine rice / ready rice cups</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_ground_white_jasmine_rice_cereal"><label for="ck_grains_carbs_bakery_ground_white_jasmine_rice_cereal">Ground white jasmine rice cereal</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_quinoa"><label for="ck_grains_carbs_bakery_quinoa">Quinoa</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_oatmeal_oats"><label for="ck_grains_carbs_bakery_oatmeal_oats">Oatmeal / oats</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_rice_cakes"><label for="ck_grains_carbs_bakery_rice_cakes">Rice cakes</label></div><div class="check-item"><input type="checkbox" id="ck_grains_carbs_bakery_cream_of_rice_plain_grits"><label for="ck_grains_carbs_bakery_cream_of_rice_plain_grits">Cream of rice / plain grits</label></div></div></article><article class="check-section"><h3>Beans / Legumes</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_beans_legumes_lentils"><label for="ck_beans_legumes_lentils">Lentils</label></div><div class="check-item"><input type="checkbox" id="ck_beans_legumes_white_beans"><label for="ck_beans_legumes_white_beans">White beans</label></div><div class="check-item"><input type="checkbox" id="ck_beans_legumes_pinto_beans"><label for="ck_beans_legumes_pinto_beans">Pinto beans</label></div><div class="check-item"><input type="checkbox" id="ck_beans_legumes_chickpeas"><label for="ck_beans_legumes_chickpeas">Chickpeas</label></div></div></article><article class="check-section"><h3>Nuts / Seeds / Superfoods</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_pumpkin_seeds"><label for="ck_nuts_seeds_superfoods_pumpkin_seeds">Pumpkin seeds</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_walnuts"><label for="ck_nuts_seeds_superfoods_walnuts">Walnuts</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_almonds"><label for="ck_nuts_seeds_superfoods_almonds">Almonds</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_hemp_seed"><label for="ck_nuts_seeds_superfoods_hemp_seed">Hemp seed</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_black_seed"><label for="ck_nuts_seeds_superfoods_black_seed">Black seed</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_flax_seed"><label for="ck_nuts_seeds_superfoods_flax_seed">Flax seed</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_chia_seed"><label for="ck_nuts_seeds_superfoods_chia_seed">Chia seed</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_cacao"><label for="ck_nuts_seeds_superfoods_cacao">Cacao</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_spirulina"><label for="ck_nuts_seeds_superfoods_spirulina">Spirulina</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_goji_berries"><label for="ck_nuts_seeds_superfoods_goji_berries">Goji berries</label></div><div class="check-item"><input type="checkbox" id="ck_nuts_seeds_superfoods_nutritional_yeast"><label for="ck_nuts_seeds_superfoods_nutritional_yeast">Nutritional yeast</label></div></div></article><article class="check-section"><h3>Pantry / Condiments / Oils</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_sun_dried_tomatoes" checked><label for="ck_pantry_condiments_oils_sun_dried_tomatoes">Sun-dried tomatoes</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_honey"><label for="ck_pantry_condiments_oils_honey">Honey</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_maple_syrup"><label for="ck_pantry_condiments_oils_maple_syrup">Maple syrup</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_cold_pressed_extra_virgin_olive_oil"><label for="ck_pantry_condiments_oils_cold_pressed_extra_virgin_olive_oil">Cold-pressed extra virgin olive oil</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_balsamic_vinegar"><label for="ck_pantry_condiments_oils_balsamic_vinegar">Balsamic vinegar</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_hot_sauce"><label for="ck_pantry_condiments_oils_hot_sauce">Hot sauce</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_a1_steak_sauce"><label for="ck_pantry_condiments_oils_a1_steak_sauce">A1 steak sauce</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_mustard"><label for="ck_pantry_condiments_oils_mustard">Mustard</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_tricia_dressing"><label for="ck_pantry_condiments_oils_tricia_dressing">Tricia dressing</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_tricia_s_butter"><label for="ck_pantry_condiments_oils_tricia_s_butter">Tricia’s butter</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_almond_milk_unsweetened"><label for="ck_pantry_condiments_oils_almond_milk_unsweetened">Almond milk unsweetened</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_chocolate_chips"><label for="ck_pantry_condiments_oils_chocolate_chips">Chocolate chips</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_granola_purely_elizabeth"><label for="ck_pantry_condiments_oils_granola_purely_elizabeth">Granola — Purely Elizabeth</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_sauerkraut"><label for="ck_pantry_condiments_oils_sauerkraut">Sauerkraut</label></div><div class="check-item"><input type="checkbox" id="ck_pantry_condiments_oils_zuppa_stuff_clam_sauce"><label for="ck_pantry_condiments_oils_zuppa_stuff_clam_sauce">Zuppa stuff / clam sauce</label></div></div></article><article class="check-section"><h3>Herbs / Spices / Drinks</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_coffee"><label for="ck_herbs_spices_drinks_coffee">Coffee</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_green_tea"><label for="ck_herbs_spices_drinks_green_tea">Green tea</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_beet_juice"><label for="ck_herbs_spices_drinks_beet_juice">Beet juice</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_turmeric"><label for="ck_herbs_spices_drinks_turmeric">Turmeric</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_thyme"><label for="ck_herbs_spices_drinks_thyme">Thyme</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_parsley"><label for="ck_herbs_spices_drinks_parsley">Parsley</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_black_pepper"><label for="ck_herbs_spices_drinks_black_pepper">Black pepper</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_paprika"><label for="ck_herbs_spices_drinks_paprika">Paprika</label></div><div class="check-item"><input type="checkbox" id="ck_herbs_spices_drinks_oregano"><label for="ck_herbs_spices_drinks_oregano">Oregano</label></div></div></article><article class="check-section"><h3>Race / Performance Grab Items</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_applesauce_pouches"><label for="ck_race_performance_grab_items_applesauce_pouches">Applesauce pouches</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_pretzels"><label for="ck_race_performance_grab_items_pretzels">Pretzels</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_honey_packets"><label for="ck_race_performance_grab_items_honey_packets">Honey packets</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_ph_1500_electrolytes"><label for="ck_race_performance_grab_items_ph_1500_electrolytes">PH 1500 / electrolytes</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_whey_isolate_packets"><label for="ck_race_performance_grab_items_whey_isolate_packets">Whey isolate packets</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_bananas" checked><label for="ck_race_performance_grab_items_bananas">Bananas</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_plain_bagels"><label for="ck_race_performance_grab_items_plain_bagels">Plain bagels</label></div><div class="check-item"><input type="checkbox" id="ck_race_performance_grab_items_rice_cakes"><label for="ck_race_performance_grab_items_rice_cakes">Rice cakes</label></div></div></article><article class="check-section"><h3>Top Diet Reminders</h3><div class="check-list"><div class="check-item"><input type="checkbox" id="ck_top_diet_reminders_anchovies_salmon_epa_dha"><label for="ck_top_diet_reminders_anchovies_salmon_epa_dha">Anchovies / salmon — EPA/DHA</label></div><div class="check-item"><input type="checkbox" id="ck_top_diet_reminders_crucifers_sprouts_sulforaphane"><label for="ck_top_diet_reminders_crucifers_sprouts_sulforaphane">Crucifers / sprouts — sulforaphane</label></div><div class="check-item"><input type="checkbox" id="ck_top_diet_reminders_tomato_paste_sauce_olive_oil_lycopene"><label for="ck_top_diet_reminders_tomato_paste_sauce_olive_oil_lycopene">Tomato paste/sauce + olive oil — lycopene</label></div><div class="check-item"><input type="checkbox" id="ck_top_diet_reminders_eggs_choline_protein"><label for="ck_top_diet_reminders_eggs_choline_protein">Eggs — choline/protein</label></div><div class="check-item"><input type="checkbox" id="ck_top_diet_reminders_berries_pomegranate_polyphenols"><label for="ck_top_diet_reminders_berries_pomegranate_polyphenols">Berries/pomegranate — polyphenols</label></div><div class="check-item"><input type="checkbox" id="ck_top_diet_reminders_jasmine_rice_potatoes_rice_cakes_performance_carbs"><label for="ck_top_diet_reminders_jasmine_rice_potatoes_rice_cakes_performance_carbs">Jasmine rice/potatoes/rice cakes — performance carbs</label></div></div></article>
+      </div>
+    </section>
+
+
+    <section class="panel" id="links"><div class="section-head"><h2>Evidence & Product Links</h2><p>Clickable references used for the dashboard. This is not medical advice; use labs and clinician guidance for vitamin D, zinc, methylation dosing, prostate markers, and medication interactions.</p></div><div class="grid two"><article class="card"><h3>Official product / shopping links</h3><div class="link-list"><a class="btnlink" href="https://www.transparentlabs.com/products/whey-protein-isolate" target="_blank" rel="noopener">Transparent Labs Whey</a><a class="btnlink" href="https://www.thorne.com/products/dp/glycine" target="_blank" rel="noopener">Thorne Glycine</a><a class="btnlink amazon" href="https://www.amazon.com/Thorne-Glycine-Relaxation-Detoxification-Function/dp/B000VYRROC" target="_blank" rel="noopener">Thorne Glycine Amazon</a><a class="btnlink" href="https://www.thorne.com/products/dp/vitamin-c-with-flavonoids" target="_blank" rel="noopener">Thorne Vitamin C</a><a class="btnlink amazon" href="https://www.amazon.com/THORNE-Vitamin-Bioflavonoids-Production-Gluten-Free/dp/B09FYFM7N3" target="_blank" rel="noopener">Thorne Vitamin C Amazon</a><a class="btnlink" href="https://www.nowfoods.com/products/supplements/glycine-pure-powder" target="_blank" rel="noopener">NOW Glycine Powder</a></div></article><article class="card"><h3>Research / education links</h3><div class="link-list"><a class="btnlink study" href="https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/low-fiber-diet/art-20048511" target="_blank" rel="noopener">Mayo Low-Fiber Diet</a><a class="btnlink study" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6676568/" target="_blank" rel="noopener">Sulforaphane & Epigenetics</a><a class="btnlink study" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10791945/" target="_blank" rel="noopener">Urolithin A Review</a><a class="btnlink study" href="https://pubmed.ncbi.nlm.nih.gov/22689129/" target="_blank" rel="noopener">Pomegranate / PSA Doubling Time</a><a class="btnlink study" href="https://pubmed.ncbi.nlm.nih.gov/26110804/" target="_blank" rel="noopener">Beta-Alanine ISSN</a><a class="btnlink study" href="https://pubmed.ncbi.nlm.nih.gov/23374455/" target="_blank" rel="noopener">HMB ISSN</a><a class="btnlink study" href="https://pubmed.ncbi.nlm.nih.gov/29101931/" target="_blank" rel="noopener">Beetroot / Nitrates</a></div></article></div><div class="footer-note"><b>Safety note:</b> prostate concerns, PSA trends, vitamin D dosing, zinc, methylation support, black seed oil, adaptogens, and supplement interactions should be reviewed with a clinician, especially around procedures, imaging, medications, or abnormal labs.</div>
+      <div class="footer-note" id="consistency-audit">
+        <b>Dashboard consistency audit:</b> L-theanine appears in Morning Coffee Habit, Workout Shelf timing, Supplement Cards, Shopping List, and Priority Rankings. It is ranked as a coffee/calm-focus support item, not a prostate or daily longevity core item.
+      </div>
+
+    </section>
+  </main>
+  <script>
+    const supplements=[{"name": "L-Theanine", "tag": "Morning Coffee Habit", "brand": "NOW L-Theanine 200 mg", "amount": "200 mg", "cadence": "With coffee, daily or as needed", "why": "Calm focus and smoother caffeine response without turning it into another evening tray pill.", "will": "Original stack linked this to COMT/ADRB2 stress-caffeine logic. Best placement is with morning coffee next to collagen.", "link": "https://www.amazon.com/s?k=NOW+L-Theanine+200+mg", "cls": "blue", "labels": ["Coffee", "Calm focus", "As needed"]},{"name":"BROQ Sulforaphane","tag":"Daily Core","brand":"BROQ Sulforaphane","amount":"60 mg","cadence":"Daily with post-workout breakfast","why":"Nrf2, detox, epigenetic and prostate-longevity anchor. Strong daily placement.","will":"GSTM1-null rationale from prior stack: sulforaphane is a high-value signal for detox and healthy inflammation.","link":"https://www.amazon.com/s?k=BROQ+sulforaphane","cls":"green","labels":["Epigenetic","Prostate","Daily"]},{"name":"Vitamin D3 + K2","tag":"Daily Core","brand":"Thorne Vitamin D/K2 Liquid","amount":"Dose by labs; prior stack used 5,000 IU D3 / 200 mcg K2","cadence":"Daily with food","why":"Prostate, immune, bone and cardiovascular support.","will":"CYP2R1 low-D tendency from prior stack; K2 supports calcium handling.","link":"https://www.amazon.com/s?k=thorne+vitamin+D+K2","cls":"green","labels":["Prostate","Bone","Daily"]},{"name":"Omega-3 or Anchovies","tag":"Daily Food/Supplement","brand":"Anchovies first; Sports Research Omega-3 if needed","amount":"Food-first or label dose","cadence":"Daily target, but anchovy days can count","why":"Inflammation resolution, cardiovascular support, endurance recovery.","will":"You favor anchovies over sardines. On anchovy-heavy days, fish oil may be reduced.","link":"https://www.amazon.com/s?k=sports+research+triple+strength+omega+3","cls":"green","labels":["Food first","Inflammation","Prostate"]},{"name":"CoQ10 / Ubiquinol","tag":"Daily Core","brand":"Jarrow QH-Absorb 100 mg","amount":"100 mg","cadence":"Daily with food","why":"Mitochondrial energy and cardiovascular support.","will":"Prior stack tied this to COQ2 and endurance aging support.","link":"https://www.amazon.com/s?k=jarrow+QH-absorb+100mg","cls":"green","labels":["Mitochondria","Endurance","Daily"]},{"name":"Urolithin A","tag":"Daily Core","brand":"Mitopure or equivalent","amount":"Label dose","cadence":"Daily","why":"Mitochondrial renewal and mitophagy support.","will":"A longevity-performance overlap item for aging endurance athlete.","link":"https://www.amazon.com/s?k=mitopure+urolithin+a","cls":"green","labels":["Mitophagy","Longevity","Daily"]},{"name":"Methyl-Guard / Methylation Support","tag":"Daily Core","brand":"Thorne Methyl-Guard Plus","amount":"Modest dose unless labs justify full dose","cadence":"Daily or near-daily","why":"Supports methylation pathways with methylated B vitamins and TMG.","will":"Prior stack linked this to MTHFR, PEMT and BHMT pressure.","link":"https://www.amazon.com/s?k=thorne+methyl-guard+plus","cls":"green","labels":["Methylation","Epigenetic","Lab-aware"]},{"name":"Citicoline","tag":"Daily Core","brand":"Life Extension Citicoline / Cognizin","amount":"250 mg","cadence":"Daily or near-daily","why":"Choline and cognition support.","will":"PEMT support lane with cleaner profile than alpha-GPC in prior stack.","link":"https://www.amazon.com/s?k=life+extension+citicoline+cognizin","cls":"green","labels":["Choline","Cognition","Daily"]},{"name":"Pomegranate Extract","tag":"Dinner Tray A","brand":"POMx or pomegranate extract","amount":"Label dose","cadence":"2–4x/week","why":"Prostate and endothelial polyphenol support.","will":"A prostate-support layer without forcing another daily pill.","link":"https://www.amazon.com/s?k=pomegranate+extract+POMx","cls":"purple","labels":["Prostate","Polyphenol","Alternate"]},{"name":"Apigenin","tag":"Dinner Tray A","brand":"Double Wood Apigenin 50 mg","amount":"50 mg","cadence":"2–4x/week","why":"Prostate mechanistic support and evening-friendly calming potential.","will":"Prior stack tied this to ESR2/prostate rationale.","link":"https://www.amazon.com/s?k=double+wood+apigenin+50mg","cls":"purple","labels":["Prostate","Evening","Alternate"]},{"name":"Curcumin / Meriva","tag":"Dinner Tray A","brand":"Thorne Meriva or similar","amount":"Label dose","cadence":"2–4x/week","why":"Inflammation, joint, recovery and polyphenol support.","will":"Useful for training recovery but not mandatory daily.","link":"https://www.amazon.com/s?k=thorne+meriva+curcumin","cls":"purple","labels":["Recovery","Joint","Alternate"]},{"name":"Vitamin C Capsule","tag":"Dinner Tray A or B","brand":"Thorne Vitamin C with Flavonoids","amount":"500 mg vitamin C + citrus flavonoids","cadence":"Evening tray, 4–5x/week is fine","why":"Collagen formation, tissue support, antioxidant capacity.","will":"Capsule replaces forgotten buffered C powder and pairs with your morning collagen habit.","link":"https://www.amazon.com/THORNE-Vitamin-Bioflavonoids-Production-Gluten-Free/dp/B09FYFM7N3","cls":"purple","labels":["Capsule","Collagen","Evening"]},{"name":"Zinc","tag":"Dinner Tray B","brand":"Quality zinc 15 mg","amount":"15 mg","cadence":"1–3x/week unless labs suggest more","why":"Prostate and mineral support.","will":"Useful, but avoid high-dose daily long term without copper/labs.","link":"https://www.amazon.com/s?k=zinc+15mg+supplement","cls":"blue","labels":["Prostate","Mineral","Pulsed"]},{"name":"Beef Organs / Liver","tag":"Dinner Tray B","brand":"NOW liver or Ancestral-style organs","amount":"Label dose","cadence":"1–3x/week","why":"Nutrient density, retinol, B vitamins, minerals.","will":"Pulsed cadence equals food-like organ intake rather than daily overload.","link":"https://www.amazon.com/s?k=grass+fed+beef+liver+capsules","cls":"blue","labels":["Pulsed","Food-like","Minerals"]},{"name":"Ashwagandha","tag":"Dinner Tray B","brand":"KSM-66 or Sensoril quality product","amount":"Label dose","cadence":"As tolerated, evening","why":"Stress, sleep and cortisol support.","will":"Useful if it improves sleep/recovery; skip if it makes you flat before training.","link":"https://www.amazon.com/s?k=ashwagandha+ksm-66","cls":"blue","labels":["Adaptogen","Evening","Optional"]},{"name":"Thorne Glycine","tag":"Bedside","brand":"Thorne Glycine Capsules","amount":"Target 2–3 g before bed if tolerated","cadence":"Nightly or as needed","why":"Relaxation, sleep quality, glutathione support, methylation buffer.","will":"Capsules improve consistency. Whey covers leucine, not glycine.","link":"https://www.amazon.com/Thorne-Glycine-Relaxation-Detoxification-Function/dp/B000VYRROC","cls":"","labels":["Bedtime","Grade A","Capsule"]},{"name":"Transparent Labs Whey Isolate","tag":"Workout Shelf","brand":"Transparent Labs Grass-Fed Whey Isolate","amount":"25–40 g protein serving","cadence":"Post-workout or protein gap","why":"Leucine-rich protein for muscle protein synthesis and recovery.","will":"Covers leucine needs; does not replace glycine.","link":"https://www.transparentlabs.com/products/whey-protein-isolate","cls":"red","labels":["Leucine","Recovery","Powder"]},{"name":"Creatine Monohydrate","tag":"Workout Shelf","brand":"Thorne Creatine or Klean Athlete","amount":"5 g","cadence":"Daily in whey shake","why":"Power, lean mass, cognition, training capacity.","will":"You already remember creatine in the whey shake. Keep that habit.","link":"https://www.amazon.com/s?k=thorne+creatine","cls":"red","labels":["Performance","Daily","Powder"]},{"name":"Beta-Alanine SR","tag":"Workout Shelf","brand":"Thorne Beta Alanine-SR","amount":"3–5 g/day split","cadence":"Training blocks","why":"Raises muscle carnosine to buffer hard efforts.","will":"Best for CrossFit, hills, intervals and hard bike/run efforts.","link":"https://www.amazon.com/s?k=thorne+beta+alanine","cls":"red","labels":["CrossFit","Intervals","Loading"]},{"name":"Beetroot / Nitrates","tag":"Workout Shelf","brand":"HumanN SuperBeets Sport or similar","amount":"Label dose","cadence":"Key workouts/races","why":"Nitric oxide support and endurance performance.","will":"Use 90–120 minutes before long or hard efforts.","link":"https://www.amazon.com/s?k=humann+superbeets+sport","cls":"red","labels":["Endurance","Pre-workout","Nitrates"]},{"name":"Bromelain","tag":"Workout Shelf","brand":"NOW Bromelain or similar","amount":"Label dose","cadence":"Recovery blocks","why":"Recovery and inflammation support.","will":"Prior stack tied it to IL6 inflammatory response and cyclist recovery logic.","link":"https://www.amazon.com/s?k=NOW+bromelain","cls":"red","labels":["Recovery","Inflammation","Optional"]},{"name":"Siberian Ginseng / Eleuthero","tag":"Optional Adaptogen","brand":"Quality eleuthero product","amount":"Label dose","cadence":"2–4 week experiment only","why":"May help perceived energy/adaptation, but endurance evidence is mixed.","will":"Not core. Avoid adding during race week unless already tested.","link":"https://www.amazon.com/s?k=siberian+ginseng+eleuthero","cls":"","labels":["Optional","Adaptogen","Test only"]}];
+    function cardHTML(s){return `<article class="card ${s.cls}"><h3>${s.name}</h3><div class="pillrow">${s.labels.map(l=>`<span class="pill ${s.cls}">${l}</span>`).join("")}</div><p><b>${s.brand}</b></p><p><span class="badge">${s.tag}</span> <span class="badge">${s.amount}</span> <span class="badge">${s.cadence}</span></p><p class="mini-title">Benefit</p><p>${s.why}</p><p class="mini-title">Why for Will</p><p>${s.will}</p><div class="link-list"><a class="btnlink amazon" href="${s.link}" target="_blank" rel="noopener">Clickable link →</a></div></article>`}document.getElementById("supplementCards").innerHTML=supplements.map(cardHTML).join("");
+    const foodRanks = [
+      {rank:1, name:"Anchovies / Salmon", what:"EPA/DHA omega-3s for inflammation resolution, heart and brain aging, recovery, and prostate-supportive diet pattern.", will:"Anchovies are your preferred small-fish option. Use food-first omega-3s and reduce fish oil on anchovy-heavy days.", genes:4, prostate:4, longevity:5, performance:4},
+      {rank:2, name:"Broccoli Sprouts / Crucifers", what:"Sulforaphane and isothiocyanates for Nrf2, detox signaling, and epigenetic resilience.", will:"High value because of your detox/inflammation/prostate-longevity goals. Avoid big crucifer portions right before races.", genes:5, prostate:5, longevity:5, performance:2},
+      {rank:3, name:"Tomato Paste / Sauce + Olive Oil", what:"Lycopene-rich prostate food; olive oil improves carotenoid absorption.", will:"A food-first prostate strategy that fits your normal tomato sauce habit.", genes:3, prostate:5, longevity:4, performance:1},
+      {rank:4, name:"Eggs", what:"Choline, leucine-containing protein, B vitamins, fat-soluble nutrients.", will:"Supports PEMT/choline and methylation-adjacent needs. Best away from race morning unless well tested.", genes:5, prostate:3, longevity:4, performance:3},
+      {rank:5, name:"Extra Virgin Olive Oil", what:"Mediterranean-diet anchor fat for cardiovascular health, inflammation control, and polyphenol intake.", will:"Best default cooking/finishing fat. Also helps absorb lycopene and fat-soluble nutrients.", genes:3, prostate:3, longevity:5, performance:2},
+      {rank:6, name:"Pomegranate / Berries", what:"Polyphenols for vascular health, oxidative stress, prostate-supportive patterns, and longevity signaling.", will:"Great longevity food; pomegranate also aligns with your prostate layer.", genes:3, prostate:4, longevity:5, performance:2},
+      {rank:7, name:"Chicken / Turkey / White Fish", what:"Lean, predictable protein for race week and recovery.", will:"Critical during low-residue periods when beans, big salads, and high-fiber foods are reduced.", genes:2, prostate:2, longevity:3, performance:5},
+      {rank:8, name:"Greek Yogurt / Kefir if Tolerated", what:"Protein, calcium, probiotics, and gut-supportive nutrition.", will:"Good 3+ days out and maybe 2 days out; not your default race-morning food.", genes:2, prostate:2, longevity:4, performance:3},
+      {rank:9, name:"Yukon Potatoes / Jasmine Rice / Rice Cakes", what:"Low-residue carbohydrates for glycogen and gut-safe performance fueling.", will:"Not classic longevity superfoods, but extremely important before early rides, hard sessions, and races.", genes:1, prostate:1, longevity:2, performance:5},
+      {rank:10, name:"Herbs & Spices", what:"Garlic, ginger, turmeric, rosemary and similar polyphenol-rich flavor tools.", will:"Useful daily longevity layer. Reduce spicy/heavy versions before races.", genes:3, prostate:3, longevity:4, performance:1}
+    ];
+
+    const suppRanks = [
+      {rank:1, name:"BROQ / Sulforaphane", what:"Nrf2 activation, detox signaling, epigenetic support, prostate-longevity anchor.", will:"Highest strategic supplement in the daily tray for genes + prostate + longevity.", genes:5, prostate:5, longevity:5, performance:2},
+      {rank:2, name:"Vitamin D3 + K2", what:"Vitamin D status, prostate/immune/bone/cardiovascular support; K2 supports calcium handling.", will:"Daily core, but dose should be lab-guided.", genes:4, prostate:5, longevity:5, performance:2},
+      {rank:3, name:"Omega-3 or Anchovy Strategy", what:"EPA/DHA for inflammation resolution, heart/brain health, recovery, and longevity.", will:"Food-first with anchovies when possible; supplement fills gaps.", genes:4, prostate:4, longevity:5, performance:4},
+      {rank:4, name:"Creatine Monohydrate", what:"ATP recycling, strength, power, lean mass, cognition, and healthy aging support.", will:"One of the best performance-longevity overlap supplements. Keep in whey shake.", genes:4, prostate:1, longevity:4, performance:5},
+      {rank:5, name:"Transparent Labs Whey Isolate", what:"Leucine-rich protein for muscle protein synthesis and recovery.", will:"Covers leucine needs after training. Does not replace bedtime glycine.", genes:2, prostate:1, longevity:4, performance:5},
+      {rank:6, name:"CoQ10 / Ubiquinol", what:"Mitochondrial and cardiovascular support.", will:"Good daily fit for an aging endurance athlete and prior COQ2 rationale.", genes:4, prostate:2, longevity:5, performance:4},
+      {rank:7, name:"Urolithin A", what:"Mitochondrial renewal and mitophagy support.", will:"Longevity-performance overlap item; especially relevant to aging muscle and endurance.", genes:3, prostate:2, longevity:5, performance:3},
+      {rank:8, name:"Methylation Support", what:"Methylated B vitamins/TMG support methylation and homocysteine pathways.", will:"Fits MTHFR/PEMT/BHMT logic, but should be modest and lab-aware.", genes:5, prostate:2, longevity:4, performance:2},
+      {rank:9, name:"Glycine Capsules", what:"Sleep, relaxation, glutathione, methylation buffering, connective tissue support.", will:"Bedside capsule habit. Separate from whey because whey is leucine-rich but not glycine-focused.", genes:4, prostate:1, longevity:4, performance:3},
+      {rank:10, name:"Pomegranate / Apigenin", what:"Prostate-focused polyphenol and mechanistic support layer.", will:"Alternate evening tray, not mandatory daily. Strong prostate add-on.", genes:3, prostate:5, longevity:3, performance:1},
+      {rank:11, name:"Beta-Alanine / Beetroot", what:"Beta-alanine supports buffering; beetroot supports nitric oxide/endurance.", will:"Very useful for performance, but situational/workout shelf, not daily longevity core.", genes:2, prostate:1, longevity:2, performance:5},
+      {rank:12, name:"L-Theanine / Coffee Support", what:"Calm-focus amino acid that smooths caffeine and stress response.", will:"Useful with morning coffee, especially if coffee feels too sharp or jittery. Helpful habit item, not a core longevity/prostate pill.", genes:3, prostate:1, longevity:2, performance:3},
+      {rank:13, name:"Bromelain / HMB", what:"Recovery/inflammation and anti-catabolic tools.", will:"Useful in heavy blocks, soreness, or calorie deficit. Not daily essentials.", genes:2, prostate:1, longevity:2, performance:4}
+    ];
+
+    function stars(n){
+      return "★★★★★".slice(0,n) + "☆☆☆☆☆".slice(0,5-n);
+    }
+
+    function rankHTML(item){
+      return `<article class="rank-card">
+        <div class="rank-num">${item.rank}</div>
+        <div>
+          <h3>${item.name}</h3>
+          <p><b>What it is for:</b> ${item.what}</p>
+          <p><b>Will note:</b> ${item.will}</p>
+          <div class="scores">
+            <div class="score"><b>Genes</b><span class="stars">${stars(item.genes)}</span></div>
+            <div class="score"><b>Prostate</b><span class="stars">${stars(item.prostate)}</span></div>
+            <div class="score"><b>Longevity</b><span class="stars">${stars(item.longevity)}</span></div>
+            <div class="score"><b>Performance</b><span class="stars">${stars(item.performance)}</span></div>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    const foodRankEl = document.getElementById("foodRanks");
+    if (foodRankEl) foodRankEl.innerHTML = foodRanks.map(rankHTML).join("");
+
+    const suppRankEl = document.getElementById("suppRanks");
+    if (suppRankEl) suppRankEl.innerHTML = suppRanks.map(rankHTML).join("");
+
+document.querySelectorAll(".tab").forEach(btn=>{btn.addEventListener("click",()=>{
+    const foodRanks = [
+      {rank:1, name:"Anchovies / Salmon", what:"EPA/DHA omega-3s for inflammation resolution, heart and brain aging, recovery, and prostate-supportive diet pattern.", will:"Anchovies are your preferred small-fish option. Use food-first omega-3s and reduce fish oil on anchovy-heavy days.", genes:4, prostate:4, longevity:5, performance:4},
+      {rank:2, name:"Broccoli Sprouts / Crucifers", what:"Sulforaphane and isothiocyanates for Nrf2, detox signaling, and epigenetic resilience.", will:"High value because of your detox/inflammation/prostate-longevity goals. Avoid big crucifer portions right before races.", genes:5, prostate:5, longevity:5, performance:2},
+      {rank:3, name:"Tomato Paste / Sauce + Olive Oil", what:"Lycopene-rich prostate food; olive oil improves carotenoid absorption.", will:"A food-first prostate strategy that fits your normal tomato sauce habit.", genes:3, prostate:5, longevity:4, performance:1},
+      {rank:4, name:"Eggs", what:"Choline, leucine-containing protein, B vitamins, fat-soluble nutrients.", will:"Supports PEMT/choline and methylation-adjacent needs. Best away from race morning unless well tested.", genes:5, prostate:3, longevity:4, performance:3},
+      {rank:5, name:"Extra Virgin Olive Oil", what:"Mediterranean-diet anchor fat for cardiovascular health, inflammation control, and polyphenol intake.", will:"Best default cooking/finishing fat. Also helps absorb lycopene and fat-soluble nutrients.", genes:3, prostate:3, longevity:5, performance:2},
+      {rank:6, name:"Pomegranate / Berries", what:"Polyphenols for vascular health, oxidative stress, prostate-supportive patterns, and longevity signaling.", will:"Great longevity food; pomegranate also aligns with your prostate layer.", genes:3, prostate:4, longevity:5, performance:2},
+      {rank:7, name:"Chicken / Turkey / White Fish", what:"Lean, predictable protein for race week and recovery.", will:"Critical during low-residue periods when beans, big salads, and high-fiber foods are reduced.", genes:2, prostate:2, longevity:3, performance:5},
+      {rank:8, name:"Greek Yogurt / Kefir if Tolerated", what:"Protein, calcium, probiotics, and gut-supportive nutrition.", will:"Good 3+ days out and maybe 2 days out; not your default race-morning food.", genes:2, prostate:2, longevity:4, performance:3},
+      {rank:9, name:"Yukon Potatoes / Jasmine Rice / Rice Cakes", what:"Low-residue carbohydrates for glycogen and gut-safe performance fueling.", will:"Not classic longevity superfoods, but extremely important before early rides, hard sessions, and races.", genes:1, prostate:1, longevity:2, performance:5},
+      {rank:10, name:"Herbs & Spices", what:"Garlic, ginger, turmeric, rosemary and similar polyphenol-rich flavor tools.", will:"Useful daily longevity layer. Reduce spicy/heavy versions before races.", genes:3, prostate:3, longevity:4, performance:1}
+    ];
+
+    const suppRanks = [
+      {rank:1, name:"BROQ / Sulforaphane", what:"Nrf2 activation, detox signaling, epigenetic support, prostate-longevity anchor.", will:"Highest strategic supplement in the daily tray for genes + prostate + longevity.", genes:5, prostate:5, longevity:5, performance:2},
+      {rank:2, name:"Vitamin D3 + K2", what:"Vitamin D status, prostate/immune/bone/cardiovascular support; K2 supports calcium handling.", will:"Daily core, but dose should be lab-guided.", genes:4, prostate:5, longevity:5, performance:2},
+      {rank:3, name:"Omega-3 or Anchovy Strategy", what:"EPA/DHA for inflammation resolution, heart/brain health, recovery, and longevity.", will:"Food-first with anchovies when possible; supplement fills gaps.", genes:4, prostate:4, longevity:5, performance:4},
+      {rank:4, name:"Creatine Monohydrate", what:"ATP recycling, strength, power, lean mass, cognition, and healthy aging support.", will:"One of the best performance-longevity overlap supplements. Keep in whey shake.", genes:4, prostate:1, longevity:4, performance:5},
+      {rank:5, name:"Transparent Labs Whey Isolate", what:"Leucine-rich protein for muscle protein synthesis and recovery.", will:"Covers leucine needs after training. Does not replace bedtime glycine.", genes:2, prostate:1, longevity:4, performance:5},
+      {rank:6, name:"CoQ10 / Ubiquinol", what:"Mitochondrial and cardiovascular support.", will:"Good daily fit for an aging endurance athlete and prior COQ2 rationale.", genes:4, prostate:2, longevity:5, performance:4},
+      {rank:7, name:"Urolithin A", what:"Mitochondrial renewal and mitophagy support.", will:"Longevity-performance overlap item; especially relevant to aging muscle and endurance.", genes:3, prostate:2, longevity:5, performance:3},
+      {rank:8, name:"Methylation Support", what:"Methylated B vitamins/TMG support methylation and homocysteine pathways.", will:"Fits MTHFR/PEMT/BHMT logic, but should be modest and lab-aware.", genes:5, prostate:2, longevity:4, performance:2},
+      {rank:9, name:"Glycine Capsules", what:"Sleep, relaxation, glutathione, methylation buffering, connective tissue support.", will:"Bedside capsule habit. Separate from whey because whey is leucine-rich but not glycine-focused.", genes:4, prostate:1, longevity:4, performance:3},
+      {rank:10, name:"Pomegranate / Apigenin", what:"Prostate-focused polyphenol and mechanistic support layer.", will:"Alternate evening tray, not mandatory daily. Strong prostate add-on.", genes:3, prostate:5, longevity:3, performance:1},
+      {rank:11, name:"Beta-Alanine / Beetroot", what:"Beta-alanine supports buffering; beetroot supports nitric oxide/endurance.", will:"Very useful for performance, but situational/workout shelf, not daily longevity core.", genes:2, prostate:1, longevity:2, performance:5},
+      {rank:12, name:"L-Theanine / Coffee Support", what:"Calm-focus amino acid that smooths caffeine and stress response.", will:"Useful with morning coffee, especially if coffee feels too sharp or jittery. Helpful habit item, not a core longevity/prostate pill.", genes:3, prostate:1, longevity:2, performance:3},
+      {rank:13, name:"Bromelain / HMB", what:"Recovery/inflammation and anti-catabolic tools.", will:"Useful in heavy blocks, soreness, or calorie deficit. Not daily essentials.", genes:2, prostate:1, longevity:2, performance:4}
+    ];
+
+    function stars(n){
+      return "★★★★★".slice(0,n) + "☆☆☆☆☆".slice(0,5-n);
+    }
+
+    function rankHTML(item){
+      return `<article class="rank-card">
+        <div class="rank-num">${item.rank}</div>
+        <div>
+          <h3>${item.name}</h3>
+          <p><b>What it is for:</b> ${item.what}</p>
+          <p><b>Will note:</b> ${item.will}</p>
+          <div class="scores">
+            <div class="score"><b>Genes</b><span class="stars">${stars(item.genes)}</span></div>
+            <div class="score"><b>Prostate</b><span class="stars">${stars(item.prostate)}</span></div>
+            <div class="score"><b>Longevity</b><span class="stars">${stars(item.longevity)}</span></div>
+            <div class="score"><b>Performance</b><span class="stars">${stars(item.performance)}</span></div>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    const foodRankEl = document.getElementById("foodRanks");
+    if (foodRankEl) foodRankEl.innerHTML = foodRanks.map(rankHTML).join("");
+
+    const suppRankEl = document.getElementById("suppRanks");
+    if (suppRankEl) suppRankEl.innerHTML = suppRanks.map(rankHTML).join("");
+
+document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));btn.classList.add("active");document.getElementById(btn.dataset.tab).classList.add("active");window.scrollTo({top:document.querySelector(".wrap").offsetTop-4,behavior:"smooth"})})});
+  
+    function activateTab(tabId) {
+      const tabs = document.querySelectorAll(".tab");
+      const panels = document.querySelectorAll("section.panel");
+      tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tabId));
+      panels.forEach(p => p.classList.toggle("active", p.id === tabId));
+      try { localStorage.setItem("willPowerDashboardActiveTab", tabId); } catch(e) {}
+      const wrap = document.querySelector(".wrap");
+      if (wrap) window.scrollTo({ top: wrap.offsetTop - 4, behavior: "smooth" });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const tabs = Array.from(document.querySelectorAll(".tab"));
+      const panels = Array.from(document.querySelectorAll("section.panel"));
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          activateTab(btn.dataset.tab);
+        });
+      });
+
+      let saved = null;
+      try { saved = localStorage.getItem("willPowerDashboardActiveTab"); } catch(e) {}
+      const firstTab = tabs.find(t => t.classList.contains("active")) || tabs[0];
+      const initial = saved && document.getElementById(saved) ? saved : (firstTab ? firstTab.dataset.tab : null);
+
+      if (initial) {
+        tabs.forEach(t => t.classList.remove("active"));
+        panels.forEach(p => p.classList.remove("active"));
+        const tab = tabs.find(t => t.dataset.tab === initial);
+        const panel = document.getElementById(initial);
+        if (tab) tab.classList.add("active");
+        if (panel) panel.classList.add("active");
+      }
+    });
+
+  </script>
 </body>
 </html>
