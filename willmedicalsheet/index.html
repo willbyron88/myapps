@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Will Power — Medical Supplement & Diet Summary</title>
+<style>
+  :root{
+    --navy:#0A1628;
+    --navy2:#12284A;
+    --gold:#C9A84C;
+    --cream:#F7F2E8;
+    --card:#FFFFFF;
+    --ink:#172033;
+    --muted:#5E697A;
+    --line:#E4D9C7;
+    --blue:#E9F3FF;
+    --green:#EAF7EF;
+    --amber:#FFF4D8;
+    --red:#FFF0EF;
+    --purple:#F2EEFF;
+    --shadow:0 12px 28px rgba(10,22,40,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:linear-gradient(180deg,#faf7ef,#f1ebdf);
+    color:var(--ink);
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    line-height:1.35;
+  }
+  .sheet{
+    max-width:1120px;
+    margin:18px auto;
+    padding:0 14px 42px;
+  }
+  .page{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    margin:18px 0;
+    overflow:hidden;
+  }
+  .header{
+    background:linear-gradient(135deg,var(--navy),var(--navy2));
+    color:white;
+    padding:22px 24px;
+    display:grid;
+    grid-template-columns:1.45fr .95fr;
+    gap:18px;
+    align-items:end;
+  }
+  .title h1{
+    margin:0 0 6px;
+    font-family:Georgia,serif;
+    font-size:2.05rem;
+    line-height:1;
+    letter-spacing:-.03em;
+  }
+  .title p{margin:0;color:#DDE8F6;font-size:.96rem}
+  .meta{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.17);
+    border-radius:16px;
+    padding:12px;
+    font-size:.86rem;
+  }
+  .meta b{color:#F4D884}
+  .content{padding:18px 20px 22px}
+  .grid{display:grid;gap:14px}
+  .grid.two{grid-template-columns:1fr 1fr}
+  .grid.three{grid-template-columns:repeat(3,1fr)}
+  .grid.four{grid-template-columns:repeat(4,1fr)}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:14px;
+    box-shadow:0 6px 16px rgba(10,22,40,.05);
+  }
+  .card h2,.card h3{
+    margin:0 0 8px;
+    letter-spacing:-.015em;
+  }
+  .card h2{font-size:1.15rem}
+  .card h3{font-size:1rem}
+  .card p{margin:6px 0;color:#3E4B61}
+  .tag{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#F3E8C5;
+    color:#604B13;
+    font-size:.72rem;
+    font-weight:800;
+    margin:2px 3px 2px 0;
+  }
+  .tag.blue{background:var(--blue);color:#14558E}
+  .tag.green{background:var(--green);color:#1C6A3C}
+  .tag.red{background:var(--red);color:#9B3434}
+  .tag.purple{background:var(--purple);color:#5B42A5}
+  .tag.amber{background:var(--amber);color:#805A00}
+  .note{
+    border-radius:16px;
+    padding:12px;
+    border:1px solid #EEDCA5;
+    background:#FFF7E2;
+    color:#4D3B0D;
+    margin:12px 0;
+  }
+  .note b{color:#1D2B44}
+  table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:white;
+    font-size:.88rem;
+  }
+  th{
+    background:var(--navy);
+    color:white;
+    text-align:left;
+    padding:9px 10px;
+    font-size:.75rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  td{
+    vertical-align:top;
+    padding:9px 10px;
+    border-top:1px solid #EEE6D7;
+    color:#354156;
+  }
+  tr:first-child td{border-top:none}
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0 10px;
+  }
+  .section-title span{
+    width:10px;height:28px;border-radius:99px;background:var(--gold);display:inline-block;
+  }
+  .section-title h2{margin:0;font-size:1.26rem;letter-spacing:-.02em}
+  ul{margin:8px 0 0;padding-left:19px}
+  li{margin:5px 0;color:#3E4B61}
+  .compact{font-size:.84rem}
+  .footer{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:12px 20px;
+    color:#667287;
+    font-size:.78rem;
+  }
+  .printbar{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin:10px 0;
+  }
+  button{
+    border:none;
+    background:var(--gold);
+    color:#172033;
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(201,168,76,.25);
+  }
+  @media(max-width:900px){
+    .header,.grid.two,.grid.three,.grid.four{grid-template-columns:1fr}
+    .sheet{margin:0 auto}
+    .page{border-radius:0}
+  }
+  @media print{
+    body{background:white}
+    .sheet{max-width:none;margin:0;padding:0}
+    .printbar{display:none}
+    .page{
+      box-shadow:none;
+      border:none;
+      border-radius:0;
+      margin:0;
+      page-break-after:always;
+      min-height:100vh;
+    }
+    .page:last-child{page-break-after:auto}
+    .header{padding:18px 20px}
+    .content{padding:14px 18px}
+    table{font-size:.78rem}
+    td,th{padding:6px 7px}
+    .card{box-shadow:none}
+    .note{margin:8px 0}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="printbar"><button onclick="window.print()">Print / Save as PDF</button></div>
+
+  <section class="page">
+    <div class="header">
+      <div class="title">
+        <h1>Medical Supplement & Diet Summary</h1>
+        <p>For physician, urologist, dentist, hospital intake, or medication/procedure review.</p>
+      </div>
+      <div class="meta">
+        <div><b>Patient:</b> Will Byron / “Will Power”</div>
+        <div><b>Allergies:</b> No known allergies</div>
+        <div><b>Alcohol:</b> Does not drink alcohol</div>
+        <div><b>Diet:</b> Primarily organic, whole-food focused</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="grid four">
+        <div class="card"><h3>Purpose of sheet</h3><p>Current supplement and diet summary for clinical review, not a request to approve every item.</p></div>
+        <div class="card"><h3>Supplement quality preference</h3><p>Prefers third-party tested brands and NSF Certified for Sport / Informed Sport / USP where available.</p></div>
+        <div class="card"><h3>Common brands used</h3><p>Thorne, Life Extension, NOW, Pure Encapsulations, Transparent Labs, Sports Research.</p></div>
+        <div class="card"><h3>Athlete context</h3><p>Masters endurance/CrossFit athlete; uses some items only around training, racing, heat, or recovery blocks.</p></div>
+      </div>
+
+      <div class="section-title"><span></span><h2>Daily / Common Supplements</h2></div>
+      <table>
+        <thead><tr><th>Supplement</th><th>Typical amount / frequency</th><th>Main reason</th><th>Clinical note</th></tr></thead>
+        <tbody>
+          <tr><td><b>Vitamin D3 + K2</b></td><td>Daily with food; dose lab-guided</td><td>Bone, immune, cardiovascular, prostate support</td><td>Monitor 25-OH vitamin D, calcium if high-dose.</td></tr>
+          <tr><td><b>BROQ / sulforaphane</b></td><td>Daily or near-daily</td><td>Nrf2, detox/epigenetic, prostate-longevity support</td><td>Food-like cruciferous pathway support.</td></tr>
+          <tr><td><b>Omega-3 or anchovies</b></td><td>Food-first; supplement if needed</td><td>EPA/DHA, inflammation resolution, cardiovascular/recovery</td><td>Ask before procedures if bleeding-risk concern.</td></tr>
+          <tr><td><b>CoQ10 / ubiquinol</b></td><td>~100 mg daily with food</td><td>Mitochondrial and cardiovascular support</td><td>Relevant if statins ever prescribed.</td></tr>
+          <tr><td><b>Urolithin A</b></td><td>Daily or near-daily</td><td>Mitochondrial renewal / mitophagy</td><td>Longevity/performance overlap.</td></tr>
+          <tr><td><b>Methylation support</b></td><td>Modest dose; not megadosed</td><td>MTHFR/PEMT/BHMT-informed methylation support</td><td>Monitor B12, folate, homocysteine if clinically relevant.</td></tr>
+          <tr><td><b>Citicoline</b></td><td>~250 mg daily or near-daily</td><td>Choline/cognition support</td><td>Chosen as choline support; not medication.</td></tr>
+          <tr><td><b>Whey protein isolate</b></td><td>25–40 g post-workout or protein gap</td><td>Leucine-rich protein for muscle maintenance/recovery</td><td>Transparent Labs grass-fed whey; not a glycine substitute.</td></tr>
+          <tr><td><b>Creatine monohydrate</b></td><td>~5 g/day, often in whey shake</td><td>Strength, power, muscle aging, cognition/performance</td><td>Hydration/lab context: may raise creatinine interpretation without kidney disease.</td></tr>
+          <tr><td><b>Collagen peptides</b></td><td>Morning coffee</td><td>Tendon/joint/connective tissue support</td><td>Often paired conceptually with vitamin C support.</td></tr>
+          <tr><td><b>L-theanine</b></td><td>200 mg with morning coffee as needed/daily</td><td>Calm focus; smooths caffeine response</td><td>Coffee companion; not an evening sedative protocol.</td></tr>
+          <tr><td><b>Glycine</b></td><td>2–3 g before bed if tolerated</td><td>Sleep, relaxation, glutathione/methylation buffering</td><td>Kept separate from whey; bedtime use.</td></tr>
+          <tr><td><b>Magnesium glycinate</b></td><td>Evening/bedtime</td><td>Sleep, muscle relaxation, general health</td><td>Review dose with kidney disease or meds.</td></tr>
+          <tr><td><b>Vitamin C capsule</b></td><td>Often evening; ~500 mg</td><td>Collagen formation, tissue support, antioxidant support</td><td>Capsule preferred because powder was often forgotten.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-title"><span></span><h2>Intermittent / Alternating / Situational Supplements</h2></div>
+      <table>
+        <thead><tr><th>Item</th><th>Frequency / situation</th><th>Reason</th><th>Procedure / medication note</th></tr></thead>
+        <tbody>
+          <tr><td><b>Pomegranate extract</b></td><td>2–4x/week</td><td>Prostate and vascular polyphenol support</td><td>Disclose with all supplements.</td></tr>
+          <tr><td><b>Apigenin</b></td><td>2–4x/week, evening</td><td>Prostate-focused polyphenol / calming support</td><td>Disclose if sedatives/med interactions are relevant.</td></tr>
+          <tr><td><b>Curcumin / Meriva</b></td><td>2–4x/week</td><td>Inflammation/joint/recovery support</td><td>Ask before dental/surgical procedures or anticoagulant use.</td></tr>
+          <tr><td><b>Zinc</b></td><td>1–3x/week unless labs suggest more</td><td>Mineral/prostate support</td><td>Avoid chronic high-dose without copper/labs.</td></tr>
+          <tr><td><b>Beef organs / liver</b></td><td>1–3x/week</td><td>Nutrient density; food-like organ intake</td><td>Watch vitamin A/iron context if clinically relevant.</td></tr>
+          <tr><td><b>Milk thistle</b></td><td>Intermittent</td><td>Liver-support supplement</td><td>Disclose with medication review.</td></tr>
+          <tr><td><b>Black seed oil</b></td><td>Intermittent</td><td>Inflammation/metabolic support</td><td>Ask before procedures/bleeding-risk medications.</td></tr>
+          <tr><td><b>Ashwagandha</b></td><td>Evening/as needed</td><td>Stress/sleep/cortisol support</td><td>Disclose thyroid, sedative, autoimmune, or liver concerns.</td></tr>
+          <tr><td><b>Probiotic</b></td><td>2–4x/week or as needed</td><td>Gut support</td><td>Relevant if immunocompromised or before hospitalization.</td></tr>
+          <tr><td><b>Bromelain</b></td><td>Recovery blocks</td><td>Inflammation/recovery support</td><td>Ask before dental/surgical procedures due to bleeding concern.</td></tr>
+          <tr><td><b>HMB</b></td><td>Heavy training, soreness, calorie deficit</td><td>Anti-catabolic/muscle support</td><td>Situational performance supplement.</td></tr>
+          <tr><td><b>Beta-alanine</b></td><td>Training blocks</td><td>High-intensity buffering / CrossFit / intervals</td><td>Can cause tingling; not an allergy.</td></tr>
+          <tr><td><b>Beetroot / nitrates</b></td><td>Before key endurance sessions/races</td><td>Nitric oxide/endurance support</td><td>Can affect BP/GI; use only tested products.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note"><b>Procedure / dental / hospital intake note:</b> Patient should disclose all supplements. Clinician may advise temporarily stopping fish oil/omega-3 supplements, curcumin, black seed oil, bromelain, adaptogens, or other nonessential supplements before dental procedures, surgery, imaging, or when starting anticoagulants/antiplatelets/major new medications.</div>
+    </div>
+    <div class="footer">Version: self-contained HTML medical summary. Print to PDF or save in Google Drive. Update when doses, labs, medications, diagnoses, or procedures change.</div>
+  </section>
+
+  <section class="page">
+    <div class="header">
+      <div class="title">
+        <h1>Clinical Context & Diet Pattern</h1>
+        <p>Goal-oriented notes: prostate, nutrigenomics, longevity, performance, sodium/sweat strategy, and primary foods.</p>
+      </div>
+      <div class="meta">
+        <div><b>Diet pattern:</b> Primarily organic, whole-food, Mediterranean/performance hybrid</div>
+        <div><b>Race-week adjustment:</b> lower-fiber / low-residue foods before races</div>
+        <div><b>Alcohol:</b> none</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="grid two">
+        <div class="card">
+          <h2>Prostate-Specific Rationale</h2>
+          <p><span class="tag green">Daily core</span> Vitamin D/K2, sulforaphane, omega-3/anchovy strategy, CoQ10, urolithin A.</p>
+          <p><span class="tag purple">Intermittent layer</span> Pomegranate, apigenin, zinc, curcumin.</p>
+          <p><span class="tag amber">Food-first</span> Tomato sauce/paste with olive oil for lycopene; crucifers; pomegranate/berries; small fish.</p>
+          <p class="compact">Reason: prostate-health support through vitamin D status, inflammation resolution, lycopene/polyphenols, and epigenetic/Nrf2 signaling.</p>
+        </div>
+        <div class="card">
+          <h2>Nutrigenomics-Informed Rationale</h2>
+          <p><span class="tag blue">Methylation</span> Methylation support, eggs/choline foods, glycine, B-vitamin awareness.</p>
+          <p><span class="tag green">Detox/epigenetic</span> Sulforaphane and cruciferous vegetables.</p>
+          <p><span class="tag">Mitochondria</span> CoQ10, urolithin A, creatine, Zone 2/endurance training.</p>
+          <p><span class="tag blue">Coffee response</span> L-theanine with coffee for smoother calm focus.</p>
+          <p class="compact">Reason: supplement choices are intended to support methylation, choline handling, inflammation, detox response, mitochondria, and recovery.</p>
+        </div>
+        <div class="card">
+          <h2>Performance-Specific Rationale</h2>
+          <p><span class="tag red">Post-workout</span> Whey isolate + creatine.</p>
+          <p><span class="tag red">Hard sessions</span> Beta-alanine, beetroot/nitrates, electrolytes, race carbs.</p>
+          <p><span class="tag amber">Race week</span> Low-residue carbs: jasmine rice, Yukon potatoes, rice cakes, bagels, honey, banana, applesauce, cream of rice/plain grits.</p>
+          <p><span class="tag">Protein</span> Chicken, turkey, white fish, eggs, Greek yogurt if tolerated.</p>
+          <p class="compact">Reason: supports muscle maintenance, glycogen, gut tolerance, sweat/electrolyte replacement, and recovery.</p>
+        </div>
+        <div class="card">
+          <h2>Longevity / General Health Rationale</h2>
+          <p><span class="tag green">Core foods</span> Anchovies/salmon, extra virgin olive oil, crucifers, berries/pomegranate, eggs, tomato products.</p>
+          <p><span class="tag blue">Core supplements</span> D3/K2, sulforaphane, omega-3/anchovies, CoQ10, urolithin A, glycine, magnesium.</p>
+          <p><span class="tag">Lifestyle</span> Endurance training + strength/CrossFit + sleep focus.</p>
+          <p class="compact">Reason: goals include healthspan, cardiovascular health, muscle maintenance, mitochondrial function, recovery, and living well into older age.</p>
+        </div>
+      </div>
+
+      <div class="section-title"><span></span><h2>Sodium / Sweat Strategy for Hot Endurance Events</h2></div>
+      <div class="grid two">
+        <div class="card">
+          <h3>Known sweat-test findings</h3>
+          <ul>
+            <li>LEVELEN sweat profile: <b>Level 5 severe sodium concentration</b>.</li>
+            <li>Approximate sodium loss: <b>2,403 mg/hr on bike</b>.</li>
+            <li>Approximate sodium loss: <b>2,253 mg/hr on run</b>.</li>
+            <li>Moderate sweat rate: approximately <b>1.45 L/hr bike</b> and <b>1.07 L/hr run</b> under test conditions.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Practical use</h3>
+          <ul>
+            <li>Uses sodium/electrolyte strategy before/during hot endurance events due to high sodium loss.</li>
+            <li>Preloading is gradual, spread with meals or carb-containing fluids; not all at once.</li>
+            <li>Carbohydrates/glucose are important for absorbing and retaining electrolytes during exercise.</li>
+            <li>Avoids overdrinking plain water; targets fluids gradually with sodium and carbs.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-title"><span></span><h2>Primary Foods / Diet Pattern</h2></div>
+      <table>
+        <thead><tr><th>Category</th><th>Typical foods</th><th>Purpose</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><b>Small fish / omega-3 foods</b></td><td>Anchovies preferred; salmon; sardines optional</td><td>EPA/DHA, inflammation resolution, heart/brain, recovery</td><td>Anchovies may replace some fish-oil supplement days.</td></tr>
+          <tr><td><b>Prostate foods</b></td><td>Tomato sauce/paste + olive oil, pomegranate, crucifers</td><td>Lycopene, polyphenols, Nrf2/sulforaphane</td><td>Food-first support alongside medical monitoring.</td></tr>
+          <tr><td><b>Protein staples</b></td><td>Chicken, turkey, white fish, eggs, Greek yogurt/kefir if tolerated, whey</td><td>Muscle maintenance, recovery, race-week lean protein</td><td>Race morning protein kept small and tested.</td></tr>
+          <tr><td><b>Longevity plant foods</b></td><td>Crucifers, berries, herbs/spices, greens, olive oil, avocado, nuts</td><td>Polyphenols, micronutrients, metabolic/cardiovascular support</td><td>Reduced temporarily before races if GI risk.</td></tr>
+          <tr><td><b>Low-residue performance carbs</b></td><td>Jasmine rice, white basmati, Yukon potatoes, rice cakes, bagels, honey, banana, applesauce, cream of rice/plain grits</td><td>Glycogen and gut-safe fueling</td><td>Used before races/key workouts; not intended as everyday longevity-only diet.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-title"><span></span><h2>Clinician Monitoring / Questions</h2></div>
+      <div class="grid three">
+        <div class="card"><h3>Labs to consider</h3><p>25-OH vitamin D, B12, folate, homocysteine, ferritin/iron if organ supplements continue, lipids, A1c/glucose, renal markers in context of creatine.</p></div>
+        <div class="card"><h3>Medication review</h3><p>Review supplements if starting anticoagulants, antiplatelets, BP meds, thyroid meds, sedatives, prostate meds, antibiotics, or prior to procedures.</p></div>
+        <div class="card"><h3>Prostate monitoring</h3><p>Continue physician/urologist-guided PSA and prostate surveillance. Supplements are supportive, not a substitute for medical care.</p></div>
+      </div>
+
+      <div class="note"><b>Clinical framing:</b> Supplements are used for longevity, general health, nutrigenomics-informed support, prostate-supportive nutrition, and athletic performance. Patient prefers evidence-informed, third-party-tested products and primarily organic food choices.</div>
+    </div>
+    <div class="footer">Sweat/electrolyte figures are from the patient’s LEVELEN sweat test report. Keep this document current with medication and supplement changes.</div>
+  </section>
+</div>
+</body>
+</html>
