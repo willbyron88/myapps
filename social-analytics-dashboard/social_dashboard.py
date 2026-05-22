@@ -1,50 +1,31 @@
 import os
 from pathlib import Path
 from datetime import date
+import json
 
 import pandas as pd
 import requests
 from dotenv import load_dotenv
-
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-
-
+load_dotenv()
+from wpp_x_importer import build_x_performance_html
+from wpp_facebook import fetch_facebook_rows, build_facebook_performance_html
+from wpp_instagram import fetch_instagram_rows
+from wpp_youtube import fetch_youtube_rows
+from wpp_kdp import build_kdp_revenue_html, get_kdp_revenue_data
 # ============================================================
 # Configuration
 # ============================================================
 
-load_dotenv()
 
-# ---------- Instagram ----------
-IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
-IG_USER_ID = os.getenv("IG_USER_ID")
-IG_BASE_URL = "https://graph.instagram.com/v21.0"
 
-# ---------- YouTube ----------
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-YOUTUBE_CHANNEL_ID = os.getenv("YOUTUBE_CHANNEL_ID")
 
-SCOPES = [
-    "https://www.googleapis.com/auth/yt-analytics.readonly",
-    "https://www.googleapis.com/auth/youtube.readonly",
-]
 
-TOKEN_FILE = "youtube_token.json"
-CLIENT_SECRET_FILE = "client_secret.json"
-
-# ---------- Facebook ----------
-FB_PAGE_ID = os.getenv("FB_PAGE_ID")
-FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")
-FB_BASE_URL = "https://graph.facebook.com/v19.0"
-MAX_FACEBOOK_POSTS = 50
 
 OUTPUT_DIR = Path("docs")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 START_DATE = "2026-01-01"
+MAX_FACEBOOK_POSTS = 50
 MAX_INSTAGRAM_POSTS = 50
 MAX_YOUTUBE_VIDEOS = 50
 MIN_ENGAGEMENT_VIEWS = 5
@@ -134,10 +115,18 @@ def normalize_url(url):
     if x_match:
         return f"https://x.com/{x_match.group(1)}/status/{x_match.group(2)}"
 
-    # Facebook: normalize permalink formats
-    fb_match = re.search(r'facebook\.com/(?:permalink/php\?story_fbid=|[^/]+/posts?/|[^/]+/videos?/)(\d+)', url, re.IGNORECASE)
-    if fb_match:
-        return f"https://www.facebook.com/permalink/{fb_match.group(1)}"
+    # Facebook: normalize Reel, video, and post permalink formats
+    fb_reel_match = re.search(r'facebook\.com/reel/(\d+)', url, re.IGNORECASE)
+    if fb_reel_match:
+        return f"https://www.facebook.com/reel/{fb_reel_match.group(1)}"
+
+    fb_video_match = re.search(r'facebook\.com/(?:[^/]+/)?videos?/(\d+)', url, re.IGNORECASE)
+    if fb_video_match:
+        return f"https://www.facebook.com/reel/{fb_video_match.group(1)}"
+
+    fb_post_match = re.search(r'facebook\.com/(?:permalink\.php\?story_fbid=|permalink/php\?story_fbid=|[^/]+/posts?/)(\d+)', url, re.IGNORECASE)
+    if fb_post_match:
+        return f"https://www.facebook.com/permalink/{fb_post_match.group(1)}"
 
     return url.lower()
 
@@ -261,7 +250,13 @@ def load_wpp_content():
 def merge_content_map(df, content_map):
     """
     Left-join main analytics df with content_map on normalized URL.
-    Unmatched rows get '—' for enrichment columns.
+
+    Important fix:
+    Some platform rows, especially Facebook, already arrive with placeholder
+    book_or_offer/content_pillar values of "—". Pandas therefore creates
+    *_x and *_y columns during merge. We must coalesce the merged *_y values
+    back into the display columns, otherwise the dashboard shows blank/— even
+    when the content map matched the URL.
     """
     enrich_cols = ["book_or_offer", "content_pillar", "campaign", "cta", "short_num"]
 
@@ -280,11 +275,44 @@ def merge_content_map(df, content_map):
 
     df = df.merge(content_map[src_cols], on="url_normalized", how="left")
 
+    def _clean_series(series):
+        return (
+            series.astype("object")
+            .where(series.notna(), None)
+            .replace("", None)
+            .replace("nan", None)
+        )
+
     for col in enrich_cols:
-        if col in df.columns:
-            df[col] = df[col].fillna("—")
+        merged_col = f"{col}_y"
+        original_col = f"{col}_x"
+
+        if merged_col in df.columns:
+            merged = _clean_series(df[merged_col])
+            if original_col in df.columns:
+                original = _clean_series(df[original_col])
+                df[col] = merged.where(merged.notna(), original)
+            elif col in df.columns:
+                original = _clean_series(df[col])
+                df[col] = merged.where(merged.notna(), original)
+            else:
+                df[col] = merged
+        elif original_col in df.columns:
+            df[col] = _clean_series(df[original_col])
+        elif col in df.columns:
+            df[col] = _clean_series(df[col])
         else:
-            df[col] = "—"
+            df[col] = None
+
+        df[col] = df[col].fillna("—")
+
+    # Remove merge helper columns so downstream HTML/CSV are cleaner.
+    drop_cols = [
+        c for c in df.columns
+        if any(c == f"{col}_x" or c == f"{col}_y" for col in enrich_cols)
+    ]
+    if drop_cols:
+        df = df.drop(columns=drop_cols)
 
     matched = df["book_or_offer"].ne("—").sum()
     print(f"Content map: {matched} of {len(df)} posts matched.")
@@ -377,7 +405,7 @@ def generate_monday_plan(df, queue_df):
     already_done = df.get("already_crossposted", pd.Series(False, index=df.index))
     repurpose_df = df[
         df["content_signal"].str.contains("Repurpose", na=False) &
-        ~already_done.infer_objects(copy=False).fillna(False).astype(bool)
+        ~already_done.astype("boolean").fillna(False).astype(bool)
     ].head(5)
 
     for _, row in repurpose_df.iterrows():
@@ -772,599 +800,8 @@ def build_scoreboard_html(df):
     </div>"""
 
 
-def build_x_performance_html(content_map):
-    import sqlite3
 
-    db_path = None
-    for candidate in [
-        Path(WPP_DB_FILE),
-        Path(__file__).parent / WPP_DB_FILE,
-        Path.cwd() / WPP_DB_FILE,
-    ]:
-        if candidate.exists():
-            db_path = candidate
-            break
 
-    if db_path is None:
-        return ""
-
-    try:
-        conn = sqlite3.connect(db_path)
-        x_data = pd.read_sql_query("""
-            SELECT
-                xa.snapshot_date,
-                xa.x_url,
-                b.title  AS book_or_offer,
-                xa.content_pillar,
-                xa.impressions  AS x_views,
-                xa.likes        AS x_likes,
-                xa.reposts      AS x_reposts,
-                xa.profile_visits,
-                xa.link_clicks
-            FROM x_analytics xa
-            LEFT JOIN books b ON xa.book_key = b.book_key
-            ORDER BY xa.impressions DESC
-        """, conn)
-
-        x_content = pd.read_sql_query("""
-            SELECT c.x_url, b.title AS book_or_offer,
-                   c.content_pillar, c.short_num, c.post_date
-            FROM content c
-            JOIN books b ON c.book_key = b.book_key
-            WHERE c.x_url IS NOT NULL AND c.x_url != ''
-        """, conn)
-
-        conn.close()
-        x_data = x_data.fillna("")
-        x_content = x_content.fillna("")
-
-    except Exception as e:
-        print(f"X analytics query error: {e}")
-        return ""
-
-    if x_data.empty and x_content.empty:
-        return """
-    <h2 style="color:#1DA1F2">X (@wpprotocols) Performance</h2>
-    <div class="scoreboard-card" style="border-color:#1DA1F2">
-        <p style="color:#AAB4C0;font-size:13px">No X analytics yet.
-        Use the SQL cheat sheet to INSERT weekly metrics from X Premium export.</p>
-    </div>"""
-
-    if x_data.empty:
-        untracked = len(x_content)
-        return f"""
-    <h2 style="color:#1DA1F2">X (@wpprotocols) Performance
-        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
-        {untracked} X posts live — add analytics via INSERT INTO x_analytics in DB Browser</span>
-    </h2>
-    <div class="scoreboard-card" style="border-color:#1DA1F2">
-        <p style="color:#AAB4C0;font-size:13px">
-        X posts are live but analytics not yet entered.
-        Use the SQL cheat sheet to INSERT weekly metrics from X Premium export.
-        </p>
-    </div>"""
-
-    total_views   = int(x_data["x_views"].astype(int).sum())
-    total_likes   = int(x_data["x_likes"].astype(int).sum())
-    total_reposts = int(x_data["x_reposts"].astype(int).sum())
-
-    rows_html = ""
-    for _, r in x_data.iterrows():
-        views   = int(r.get("x_views", 0))
-        likes   = int(r.get("x_likes", 0))
-        reposts = int(r.get("x_reposts", 0))
-        eng = round((likes + reposts) / views * 100, 1) if views > 0 else 0.0
-        x_url = str(r.get("x_url", ""))
-
-        rows_html += f"""
-        <tr>
-            <td>{r.get("book_or_offer","")}</td>
-            <td>{r.get("content_pillar","")}</td>
-            <td style="text-align:center">{views:,}</td>
-            <td style="text-align:center">{likes}</td>
-            <td style="text-align:center">{reposts}</td>
-            <td style="text-align:center">{eng}%</td>
-            <td style="text-align:center;font-size:11px">{r.get("snapshot_date","")}</td>
-            <td><a href="{x_url}" target="_blank" style="color:#1DA1F2">Open ↗</a></td>
-        </tr>"""
-
-    return f"""
-    <h2 style="color:#1DA1F2">X (@wpprotocols) Performance
-        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
-        Update via INSERT INTO x_analytics in DB Browser weekly</span>
-    </h2>
-    <div class="table-wrap" style="border:1px solid #1DA1F2;border-radius:14px;margin-bottom:30px">
-        <table style="min-width:800px">
-            <thead>
-                <tr>
-                    <th>Book</th>
-                    <th>Pillar</th>
-                    <th style="text-align:center">Impressions</th>
-                    <th style="text-align:center">Likes</th>
-                    <th style="text-align:center">Reposts</th>
-                    <th style="text-align:center">Eng %</th>
-                    <th style="text-align:center">Snapshot</th>
-                    <th>Link</th>
-                </tr>
-            </thead>
-            <tbody>{rows_html}</tbody>
-            <tfoot>
-                <tr style="background:#101F36">
-                    <td colspan="2"><strong style="color:#1DA1F2">TOTALS</strong></td>
-                    <td style="text-align:center"><strong>{total_views:,}</strong></td>
-                    <td style="text-align:center"><strong>{total_likes}</strong></td>
-                    <td style="text-align:center"><strong>{total_reposts}</strong></td>
-                    <td colspan="3"></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>"""
-
-
-# ============================================================
-# Facebook
-# ============================================================
-
-def fetch_facebook_rows(limit=50):
-    if not FB_PAGE_ID or not FB_PAGE_ACCESS_TOKEN:
-        print("Skipping Facebook: missing FB_PAGE_ID or FB_PAGE_ACCESS_TOKEN.")
-        return []
-
-    try:
-        url = f"{FB_BASE_URL}/{FB_PAGE_ID}/posts"
-        params = {
-            "fields": "id,message,created_time,permalink_url",
-            "limit": limit,
-            "access_token": FB_PAGE_ACCESS_TOKEN,
-        }
-        response = requests.get(url, params=params, timeout=30)
-        response.raise_for_status()
-        posts = response.json().get("data", [])
-        print(f"Facebook: {len(posts)} posts found.")
-    except Exception as e:
-        print(f"Facebook posts fetch error: {e}")
-        return []
-
-    rows = []
-    for post in posts:
-        post_id = post.get("id")
-        permalink = post.get("permalink_url", "")
-        message = truncate_text(post.get("message", ""), 145)
-        created = post.get("created_time", "")
-
-        views = 0
-        unique_views = 0
-        reach = 0
-        reactions = 0
-        clicks = 0
-
-        try:
-            ins_url = f"{FB_BASE_URL}/{post_id}/insights"
-            ins_params = {
-                "metric": (
-                    "post_video_views,"
-                    "post_video_views_unique,"
-                    "post_impressions_unique,"
-                    "post_reactions_by_type_total,"
-                    "post_clicks"
-                ),
-                "access_token": FB_PAGE_ACCESS_TOKEN,
-            }
-            ins_response = requests.get(ins_url, params=ins_params, timeout=30)
-            if ins_response.status_code == 200:
-                for item in ins_response.json().get("data", []):
-                    name = item.get("name")
-                    values = item.get("values", [{}])
-                    val = values[-1].get("value", 0) if values else 0
-                    if name == "post_video_views":
-                        views = safe_int(val)
-                    elif name == "post_video_views_unique":
-                        unique_views = safe_int(val)
-                    elif name == "post_impressions_unique":
-                        reach = safe_int(val)
-                    elif name == "post_reactions_by_type_total":
-                        reactions = sum(safe_int(v) for v in val.values()) if isinstance(val, dict) else 0
-                    elif name == "post_clicks":
-                        clicks = safe_int(val)
-        except Exception as e:
-            print(f"Facebook insights error for {post_id}: {e}")
-
-        rows.append({
-            "platform": "Facebook",
-            "published_at": created,
-            "media_type": "VIDEO",
-            "title_or_caption": message,
-            "url": permalink,
-            "views": views,
-            "likes": reactions,
-            "comments": 0,
-            "shares": 0,
-            "saves": 0,
-            "estimated_minutes_watched": 0,
-            "average_view_duration_seconds": 0,
-            "subscribers_gained": 0,
-            "engagement_rate_percent": engagement_rate(views, reactions, 0, 0, 0),
-        })
-
-    print(f"Facebook: {len(rows)} rows built.")
-    return rows
-
-
-def build_facebook_performance_html(df):
-    """Build Facebook performance section from fetched data."""
-    fb_rows = df[df["platform"] == "Facebook"] if not df.empty else pd.DataFrame()
-
-    if fb_rows.empty:
-        return """
-    <h2 style="color:#1877F2">Facebook Performance</h2>
-    <div class="scoreboard-card" style="border-color:#1877F2">
-        <p style="color:#AAB4C0;font-size:13px">No Facebook posts found.
-        Make sure FB_PAGE_ID and FB_PAGE_ACCESS_TOKEN are set in .env,
-        and that you have posts on the Will Power Protocols page.</p>
-    </div>"""
-
-    total_views = safe_int(fb_rows["views"].sum())
-    total_reach = safe_int(fb_rows.get("reach", pd.Series([0])).sum()) if "reach" in fb_rows.columns else 0
-    total_reactions = safe_int(fb_rows["likes"].sum())
-    total_clicks = safe_int(fb_rows.get("clicks", pd.Series([0])).sum()) if "clicks" in fb_rows.columns else 0
-
-    rows_html = ""
-    for _, r in fb_rows.sort_values("views", ascending=False).iterrows():
-        book = safe_text(r.get("book_or_offer", "—"))
-        pillar = safe_text(r.get("content_pillar", "—"))
-        views = safe_int(r.get("views"))
-        reactions = safe_int(r.get("likes"))
-        eng = safe_float(r.get("engagement_rate_percent"))
-        pub = safe_text(r.get("published_at", ""))[:10]
-        url = safe_text(r.get("url", ""))
-        caption = safe_text(r.get("title_or_caption", ""))[:60]
-
-        rows_html += f"""
-        <tr>
-            <td>{book}</td>
-            <td>{pillar}</td>
-            <td style="font-size:11px">{caption}</td>
-            <td style="text-align:center">{views:,}</td>
-            <td style="text-align:center">{reactions}</td>
-            <td style="text-align:center">{eng}%</td>
-            <td style="text-align:center;font-size:11px">{pub}</td>
-            <td><a href="{url}" target="_blank" style="color:#1877F2">Open ↗</a></td>
-        </tr>"""
-
-    return f"""
-    <h2 style="color:#1877F2">Facebook Performance
-        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
-        Auto-pulled via Pages API · {len(fb_rows)} posts</span>
-    </h2>
-    <div class="table-wrap" style="border:1px solid #1877F2;border-radius:14px;margin-bottom:30px">
-        <table style="min-width:800px">
-            <thead>
-                <tr>
-                    <th>Book</th>
-                    <th>Pillar</th>
-                    <th>Caption</th>
-                    <th style="text-align:center">Video Views</th>
-                    <th style="text-align:center">Reactions</th>
-                    <th style="text-align:center">Eng %</th>
-                    <th style="text-align:center">Posted</th>
-                    <th>Link</th>
-                </tr>
-            </thead>
-            <tbody>{rows_html}</tbody>
-            <tfoot>
-                <tr style="background:#101F36">
-                    <td colspan="3"><strong style="color:#1877F2">TOTALS</strong></td>
-                    <td style="text-align:center"><strong>{total_views:,}</strong></td>
-                    <td style="text-align:center"><strong>{total_reactions}</strong></td>
-                    <td colspan="3"></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>"""
-
-
-# ============================================================
-# Instagram
-# ============================================================
-
-def ig_get_json(url, params):
-    response = requests.get(url, params=params, timeout=30)
-    if response.status_code != 200:
-        print("\nInstagram API error:")
-        print("URL:", url)
-        print("Status:", response.status_code)
-        print(response.text)
-    response.raise_for_status()
-    return response.json()
-
-
-def get_instagram_recent_media(limit=50):
-    if not IG_ACCESS_TOKEN or not IG_USER_ID:
-        print("Skipping Instagram: missing IG_ACCESS_TOKEN or IG_USER_ID.")
-        return []
-
-    url = f"{IG_BASE_URL}/{IG_USER_ID}/media"
-    params = {
-        "fields": (
-            "id,caption,media_type,media_product_type,"
-            "timestamp,permalink,like_count,comments_count"
-        ),
-        "limit": limit,
-        "access_token": IG_ACCESS_TOKEN,
-    }
-    data = ig_get_json(url, params)
-    return data.get("data", [])
-
-
-def get_instagram_insights(media_id):
-    url = f"{IG_BASE_URL}/{media_id}/insights"
-    params = {
-        "metric": "views,reach,likes,comments,shares,saved,total_interactions",
-        "access_token": IG_ACCESS_TOKEN,
-    }
-    data = ig_get_json(url, params)
-    results = {}
-
-    for item in data.get("data", []):
-        metric_name = item.get("name")
-        values = item.get("values", [])
-        if not metric_name or not values:
-            continue
-        raw_value = values[-1].get("value", 0)
-        if isinstance(raw_value, dict):
-            results[metric_name] = sum(safe_int(v) for v in raw_value.values())
-        else:
-            results[metric_name] = safe_int(raw_value)
-
-    return results
-
-
-def fetch_instagram_rows(limit=50):
-    rows = []
-    media_items = get_instagram_recent_media(limit=limit)
-
-    for item in media_items:
-        media_id = item.get("id")
-        caption = truncate_text(item.get("caption", ""))
-
-        try:
-            insights = get_instagram_insights(media_id)
-        except Exception as e:
-            print(f"Could not fetch Instagram insights for media {media_id}: {e}")
-            insights = {}
-
-        views = safe_int(insights.get("views")) or safe_int(insights.get("reach"))
-        likes = safe_int(insights.get("likes")) or safe_int(item.get("like_count"))
-        comments = (
-            safe_int(insights.get("comments")) or safe_int(item.get("comments_count"))
-        )
-        shares = safe_int(insights.get("shares"))
-        saves = safe_int(insights.get("saved"))
-
-        rows.append({
-            "platform": "Instagram",
-            "published_at": item.get("timestamp"),
-            "media_type": item.get("media_product_type") or item.get("media_type"),
-            "title_or_caption": caption,
-            "url": item.get("permalink"),
-            "views": views,
-            "likes": likes,
-            "comments": comments,
-            "shares": shares,
-            "saves": saves,
-            "estimated_minutes_watched": 0,
-            "average_view_duration_seconds": 0,
-            "subscribers_gained": 0,
-            "engagement_rate_percent": engagement_rate(
-                views, likes, comments, shares, saves
-            ),
-        })
-
-    return rows
-
-
-# ============================================================
-# YouTube Auth
-# ============================================================
-
-def get_youtube_credentials():
-    credentials = None
-
-    if os.path.exists(TOKEN_FILE):
-        credentials = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
-
-    if not credentials or not credentials.valid:
-        if credentials and credentials.expired and credentials.refresh_token:
-            credentials.refresh(Request())
-        else:
-            if not os.path.exists(CLIENT_SECRET_FILE):
-                raise FileNotFoundError(
-                    f"Missing {CLIENT_SECRET_FILE}. "
-                    "Download your OAuth desktop client JSON from Google Cloud "
-                    "and rename it to client_secret.json."
-                )
-            flow = InstalledAppFlow.from_client_secrets_file(
-                CLIENT_SECRET_FILE, SCOPES
-            )
-            credentials = flow.run_local_server(port=0)
-
-        with open(TOKEN_FILE, "w", encoding="utf-8") as token:
-            token.write(credentials.to_json())
-
-    return credentials
-
-
-# ============================================================
-# YouTube Data API
-# ============================================================
-
-def get_youtube_uploads_playlist_id(youtube_data):
-    response = youtube_data.channels().list(
-        part="contentDetails",
-        id=YOUTUBE_CHANNEL_ID,
-    ).execute()
-    items = response.get("items", [])
-    if not items:
-        raise ValueError(
-            "No YouTube channel found. Check YOUTUBE_CHANNEL_ID in .env."
-        )
-    return items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
-
-
-def get_youtube_recent_video_ids(youtube_data, max_results=50):
-    playlist_id = get_youtube_uploads_playlist_id(youtube_data)
-    video_ids = []
-    next_page_token = None
-
-    while len(video_ids) < max_results:
-        response = youtube_data.playlistItems().list(
-            part="snippet",
-            playlistId=playlist_id,
-            maxResults=min(50, max_results - len(video_ids)),
-            pageToken=next_page_token,
-        ).execute()
-
-        for item in response.get("items", []):
-            video_id = item["snippet"]["resourceId"]["videoId"]
-            video_ids.append(video_id)
-
-        next_page_token = response.get("nextPageToken")
-        if not next_page_token:
-            break
-
-    return video_ids
-
-
-def get_youtube_video_metadata(youtube_data, video_ids):
-    metadata = {}
-    for i in range(0, len(video_ids), 50):
-        batch = video_ids[i: i + 50]
-        response = youtube_data.videos().list(
-            part="snippet,statistics",
-            id=",".join(batch),
-        ).execute()
-
-        for item in response.get("items", []):
-            video_id = item.get("id")
-            snippet = item.get("snippet", {})
-            stats = item.get("statistics", {})
-            metadata[video_id] = {
-                "platform": "YouTube",
-                "published_at": snippet.get("publishedAt"),
-                "media_type": "VIDEO",
-                "title_or_caption": snippet.get("title", ""),
-                "url": f"https://www.youtube.com/watch?v={video_id}",
-                "views": safe_int(stats.get("viewCount")),
-                "likes": safe_int(stats.get("likeCount")),
-                "comments": safe_int(stats.get("commentCount")),
-                "shares": 0,
-                "saves": 0,
-                "estimated_minutes_watched": 0,
-                "average_view_duration_seconds": 0,
-                "subscribers_gained": 0,
-                "engagement_rate_percent": 0.0,
-            }
-    return metadata
-
-
-# ============================================================
-# YouTube Analytics API
-# ============================================================
-
-def get_youtube_analytics_by_video(
-    youtube_analytics,
-    start_date=START_DATE,
-    end_date=None,
-):
-    if end_date is None:
-        end_date = date.today().isoformat()
-
-    response = youtube_analytics.reports().query(
-        ids="channel==MINE",
-        startDate=start_date,
-        endDate=end_date,
-        metrics=(
-            "views,"
-            "estimatedMinutesWatched,"
-            "averageViewDuration,"
-            "likes,"
-            "comments,"
-            "shares,"
-            "subscribersGained"
-        ),
-        dimensions="video",
-        sort="-views",
-        maxResults=200,
-    ).execute()
-
-    headers = [h["name"] for h in response.get("columnHeaders", [])]
-    rows = response.get("rows", [])
-    analytics = {}
-
-    for row in rows:
-        record = dict(zip(headers, row))
-        video_id = record.get("video")
-        if not video_id:
-            continue
-        analytics[video_id] = {
-            "views": safe_int(record.get("views")),
-            "estimated_minutes_watched": safe_int(
-                record.get("estimatedMinutesWatched")
-            ),
-            "average_view_duration_seconds": safe_int(
-                record.get("averageViewDuration")
-            ),
-            "likes": safe_int(record.get("likes")),
-            "comments": safe_int(record.get("comments")),
-            "shares": safe_int(record.get("shares")),
-            "subscribers_gained": safe_int(record.get("subscribersGained")),
-        }
-
-    return analytics
-
-
-def fetch_youtube_rows(max_results=50):
-    if not YOUTUBE_API_KEY or not YOUTUBE_CHANNEL_ID:
-        print("Skipping YouTube: missing YOUTUBE_API_KEY or YOUTUBE_CHANNEL_ID.")
-        return []
-
-    credentials = get_youtube_credentials()
-    youtube_data = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
-    youtube_analytics = build("youtubeAnalytics", "v2", credentials=credentials)
-
-    video_ids = get_youtube_recent_video_ids(youtube_data, max_results=max_results)
-    metadata = get_youtube_video_metadata(youtube_data, video_ids)
-    analytics = get_youtube_analytics_by_video(youtube_analytics, start_date=START_DATE)
-
-    rows = []
-    for video_id in video_ids:
-        base = metadata.get(video_id, {})
-        private_stats = analytics.get(video_id, {})
-
-        views = private_stats.get("views", base.get("views", 0))
-        likes = private_stats.get("likes", base.get("likes", 0))
-        comments = private_stats.get("comments", base.get("comments", 0))
-        shares = private_stats.get("shares", 0)
-
-        row = {
-            **base,
-            "views": views,
-            "likes": likes,
-            "comments": comments,
-            "shares": shares,
-            "saves": 0,
-            "estimated_minutes_watched": private_stats.get(
-                "estimated_minutes_watched", 0
-            ),
-            "average_view_duration_seconds": private_stats.get(
-                "average_view_duration_seconds", 0
-            ),
-            "subscribers_gained": private_stats.get("subscribers_gained", 0),
-            "engagement_rate_percent": engagement_rate(views, likes, comments, shares, 0),
-        }
-        rows.append(row)
-
-    return rows
 
 
 # ============================================================
@@ -1457,6 +894,22 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
     youtube_views = safe_int(youtube_rows["views"].sum()) if not youtube_rows.empty else 0
     instagram_views = safe_int(instagram_rows["views"].sum()) if not instagram_rows.empty else 0
     facebook_views = safe_int(facebook_rows["views"].sum()) if not facebook_rows.empty else 0
+    facebook_reel_plays = (
+        safe_int(facebook_rows.get("facebook_reel_plays", pd.Series([0])).sum())
+        if not facebook_rows.empty else 0
+    )
+    facebook_3s_views = (
+        safe_int(facebook_rows.get("facebook_3s_views", pd.Series([0])).sum())
+        if not facebook_rows.empty else 0
+    )
+    facebook_15s_views = (
+        safe_int(facebook_rows.get("facebook_15s_views", pd.Series([0])).sum())
+        if not facebook_rows.empty else 0
+    )
+    facebook_reach = (
+        safe_int(facebook_rows.get("reach", pd.Series([0])).sum())
+        if not facebook_rows.empty else 0
+    )
 
     winners_count = df["content_signal"].str.contains("Winner", na=False).sum()
     sticky_count = df["content_signal"].str.contains("Sticky", na=False).sum()
@@ -1722,8 +1175,20 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
                 <div class="value">{youtube_views:,}</div>
             </div>
             <div class="card">
-                <div class="label">Facebook Views</div>
+                <div class="label">Facebook Reel Plays</div>
                 <div class="value">{facebook_views:,}</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook Reach</div>
+                <div class="value">{facebook_reach:,}</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook 15s Quality Views</div>
+                <div class="value">{facebook_15s_views:,}</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook 3s API Views</div>
+                <div class="value">{facebook_3s_views:,}</div>
             </div>
             <div class="card">
                 <div class="label">YouTube Watch Minutes</div>
@@ -1804,7 +1269,7 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
 
         <div class="note">
             Watch minutes, average view duration, and subscribers gained are YouTube-only metrics.<br>
-            Facebook metrics: video views (3-second), reactions, reach, clicks.<br>
+            Facebook metrics: Reel Plays are the main Facebook views. Reach is unique reached. 15s Quality Views are a deeper-watch signal. 3s API Views are kept as diagnostics because Meta may return 0 for Reels even when Reel Plays are available.<br>
             Never commit .env, client_secret.json, or youtube_token.json to GitHub.
         </div>
     </div>
@@ -1815,150 +1280,6 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
     print(f"Saved {html_file}")
 
 
-
-# ============================================================
-# KDP Revenue
-# ============================================================
-
-def get_kdp_revenue_data():
-    """Read kdp_snapshots from wpp.db and return summary data."""
-    import sqlite3
-
-    db_path = None
-    for candidate in [
-        Path(WPP_DB_FILE),
-        Path(__file__).parent / WPP_DB_FILE,
-        Path.cwd() / WPP_DB_FILE,
-    ]:
-        if candidate.exists():
-            db_path = candidate
-            break
-
-    if db_path is None:
-        return None, None, None
-
-    try:
-        conn = sqlite3.connect(db_path)
-
-        # All-time totals by book
-        by_book = pd.read_sql_query("""
-            SELECT b.title, b.book_key,
-                   SUM(k.kindle_units)    AS kindle_units,
-                   SUM(k.paperback_units) AS paperback_units,
-                   SUM(k.ku_pages)        AS ku_pages,
-                   ROUND(SUM(k.royalties_usd), 2) AS total_revenue
-            FROM kdp_snapshots k
-            JOIN books b ON k.book_key = b.book_key
-            GROUP BY b.book_key
-            ORDER BY total_revenue DESC
-        """, conn)
-
-        # Monthly trend
-        by_month = pd.read_sql_query("""
-            SELECT snapshot_month,
-                   ROUND(SUM(royalties_usd), 2) AS monthly_revenue,
-                   SUM(kindle_units)  AS kindle_units,
-                   SUM(ku_pages)      AS ku_pages
-            FROM kdp_snapshots
-            GROUP BY snapshot_month
-            ORDER BY snapshot_month DESC
-            LIMIT 12
-        """, conn)
-
-        # Grand total
-        total = pd.read_sql_query("""
-            SELECT ROUND(SUM(royalties_usd), 2) AS total
-            FROM kdp_snapshots
-        """, conn)
-
-        conn.close()
-        grand_total = float(total.iloc[0]['total']) if not total.empty else 0.0
-        return by_book, by_month, grand_total
-
-    except Exception as e:
-        print(f"KDP revenue query error: {e}")
-        return None, None, None
-
-
-def build_kdp_revenue_html():
-    """Build KDP book sales section for dashboard."""
-    by_book, by_month, grand_total = get_kdp_revenue_data()
-
-    if by_book is None or by_book.empty:
-        return ""
-
-    # Book revenue rows
-    book_rows = ""
-    for _, r in by_book.iterrows():
-        revenue = float(r.get("total_revenue", 0))
-        kindle = int(r.get("kindle_units", 0))
-        pb = int(r.get("paperback_units", 0))
-        ku = int(r.get("ku_pages", 0))
-        book_rows += f"""
-        <tr>
-            <td>{r["title"]}</td>
-            <td style="text-align:center">{kindle}</td>
-            <td style="text-align:center">{pb}</td>
-            <td style="text-align:center">{ku:,}</td>
-            <td style="text-align:center"><strong style="color:#C9A84C">${revenue:.2f}</strong></td>
-        </tr>"""
-
-    # Monthly trend rows (last 6 months)
-    month_rows = ""
-    for _, r in by_month.head(6).iterrows():
-        rev = float(r.get("monthly_revenue", 0))
-        kindle = int(r.get("kindle_units", 0))
-        ku = int(r.get("ku_pages", 0))
-        month_rows += f"""
-        <tr>
-            <td>{r["snapshot_month"]}</td>
-            <td style="text-align:center">{kindle}</td>
-            <td style="text-align:center">{ku:,}</td>
-            <td style="text-align:center"><strong style="color:#C9A84C">${rev:.2f}</strong></td>
-        </tr>"""
-
-    return f"""
-    <h2 style="color:#C9A84C">KDP Book Sales
-        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
-        All-time · Updated via KDP Analytics Importer monthly</span>
-    </h2>
-    <div class="scoreboard-grid">
-        <div class="scoreboard-card">
-            <h2>Revenue by Book — All Time</h2>
-            <table class="scoreboard-table">
-                <thead>
-                    <tr>
-                        <th>Book</th>
-                        <th style="text-align:center">Kindle</th>
-                        <th style="text-align:center">PB</th>
-                        <th style="text-align:center">KU Pages</th>
-                        <th style="text-align:center">Revenue</th>
-                    </tr>
-                </thead>
-                <tbody>{book_rows}</tbody>
-                <tfoot>
-                    <tr style="background:#0A1628">
-                        <td colspan="4"><strong style="color:#C9A84C">TOTAL ALL TIME</strong></td>
-                        <td style="text-align:center"><strong style="color:#C9A84C">${grand_total:.2f}</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <div class="scoreboard-card">
-            <h2>Monthly Revenue Trend</h2>
-            <table class="scoreboard-table">
-                <thead>
-                    <tr>
-                        <th>Month</th>
-                        <th style="text-align:center">Kindle</th>
-                        <th style="text-align:center">KU Pages</th>
-                        <th style="text-align:center">Revenue</th>
-                    </tr>
-                </thead>
-                <tbody>{month_rows}</tbody>
-            </table>
-        </div>
-    </div>"""
 
 
 # ============================================================
@@ -1972,14 +1293,21 @@ def main():
     # Fetch all platforms
     rows = []
     print("Fetching Instagram...")
-    rows.extend(fetch_instagram_rows(limit=MAX_INSTAGRAM_POSTS))
+    ig_rows = fetch_instagram_rows(limit=MAX_INSTAGRAM_POSTS)
+    print(f"Instagram: {len(ig_rows)} rows built.")
+    rows.extend(ig_rows)
 
     print("Fetching YouTube...")
-    rows.extend(fetch_youtube_rows(max_results=MAX_YOUTUBE_VIDEOS))
+    yt_rows = fetch_youtube_rows(max_results=MAX_YOUTUBE_VIDEOS)
+    print(f"YouTube: {len(yt_rows)} rows built.")
+    rows.extend(yt_rows)
 
     print("Fetching Facebook...")
     fb_rows = fetch_facebook_rows(limit=MAX_FACEBOOK_POSTS)
     rows.extend(fb_rows)
+
+
+
 
     if not rows:
         raise RuntimeError("No rows returned from any platform.")
