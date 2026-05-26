@@ -45,8 +45,8 @@ load_dotenv()
 # Config — loaded from .env
 # ─────────────────────────────────────────────────────────────────
 
-FB_PAGE_ID          = os.getenv("FB_PAGE_ID")
-FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")
+FB_PAGE_ID          = os.getenv("FB_PAGE_ID_WPP")
+FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN_WPP")
 FB_BASE_URL         = "https://graph.facebook.com/v25.0"
 MAX_FACEBOOK_POSTS  = 50
 

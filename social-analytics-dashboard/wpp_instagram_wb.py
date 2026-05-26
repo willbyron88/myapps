@@ -1,14 +1,14 @@
 """
-wpp_instagram.py
+wpp_instagram_wb.py
 ─────────────────────────────────────────────────────────────────
-WPP Instagram Analytics Module — standalone module.
+WPP Instagram Analytics Module — Will Byron (@will.byron88) account.
 
 USAGE in social_dashboard.py:
-    from wpp_instagram import fetch_instagram_rows
+    from wpp_instagram_wb import fetch_instagram_wb_rows
 
 DEPENDENCIES:
     pip install requests pandas python-dotenv
-    .env must contain: IG_ACCESS_TOKEN, IG_USER_ID
+    .env must contain: IG_ACCESS_TOKEN_WB, IG_USER_ID_WB
 """
 
 import os
@@ -23,8 +23,8 @@ load_dotenv()
 # Config
 # ─────────────────────────────────────────────────────────────────
 
-IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN_WPP")
-IG_USER_ID      = os.getenv("IG_USER_ID")
+IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN_WB")
+IG_USER_ID      = os.getenv("IG_USER_ID_WB")
 IG_BASE_URL     = "https://graph.instagram.com/v21.0"
 
 
@@ -61,7 +61,7 @@ def _engagement_rate(views, likes, comments, shares=0, saves=0) -> float:
 def ig_get_json(url: str, params: dict) -> dict:
     response = requests.get(url, params=params, timeout=30)
     if response.status_code != 200:
-        print(f"\nInstagram API error — URL: {url} — Status: {response.status_code}")
+        print(f"\nInstagram-WB API error — URL: {url} — Status: {response.status_code}")
         print(response.text)
     response.raise_for_status()
     return response.json()
@@ -69,7 +69,7 @@ def ig_get_json(url: str, params: dict) -> dict:
 
 def get_instagram_recent_media(limit: int = 50) -> list[dict]:
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
-        print("Skipping Instagram: missing IG_ACCESS_TOKEN or IG_USER_ID in .env.")
+        print("Skipping Instagram-WB: missing IG_ACCESS_TOKEN_WB or IG_USER_ID_WB in .env.")
         return []
 
     url = f"{IG_BASE_URL}/{IG_USER_ID}/media"
@@ -112,8 +112,8 @@ def get_instagram_insights(media_id: str) -> dict:
 # Main fetcher — called by social_dashboard.py
 # ─────────────────────────────────────────────────────────────────
 
-def fetch_instagram_rows(limit: int = 50) -> list[dict]:
-    """Fetch all Instagram media rows for the analytics dataframe."""
+def fetch_instagram_wb_rows(limit: int = 50) -> list[dict]:
+    """Fetch all Instagram-WB media rows for the analytics dataframe."""
     rows = []
     media_items = get_instagram_recent_media(limit=limit)
 
@@ -124,7 +124,7 @@ def fetch_instagram_rows(limit: int = 50) -> list[dict]:
         try:
             insights = get_instagram_insights(media_id)
         except Exception as e:
-            print(f"Could not fetch Instagram insights for media {media_id}: {e}")
+            print(f"Could not fetch Instagram-WB insights for media {media_id}: {e}")
             insights = {}
 
         views    = _safe_int(insights.get("views"))    or _safe_int(insights.get("reach"))
@@ -134,7 +134,7 @@ def fetch_instagram_rows(limit: int = 50) -> list[dict]:
         saves    = _safe_int(insights.get("saved"))
 
         rows.append({
-            "platform":                      "Instagram",
+            "platform":                      "Instagram-WB",
             "published_at":                  item.get("timestamp"),
             "media_type":                    item.get("media_product_type") or item.get("media_type"),
             "title_or_caption":              caption,

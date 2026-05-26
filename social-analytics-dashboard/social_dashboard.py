@@ -10,8 +10,10 @@ load_dotenv()
 from wpp_x_importer import build_x_performance_html
 from wpp_facebook import fetch_facebook_rows, build_facebook_performance_html
 from wpp_instagram import fetch_instagram_rows
+from wpp_instagram_wb import fetch_instagram_wb_rows
 from wpp_youtube import fetch_youtube_rows
 from wpp_kdp import build_kdp_revenue_html, get_kdp_revenue_data
+from wpp_fb_image_analytics import fetch_fb_image_rows, build_fb_image_performance_html
 # ============================================================
 # Configuration
 # ============================================================
@@ -227,7 +229,7 @@ def load_wpp_content():
                 })
 
     content_map = pd.DataFrame(enrich_rows) if enrich_rows else pd.DataFrame()
-    print(f"  → Enrichment URLs: {len(content_map)}")
+    print(f"  -> Enrichment URLs: {len(content_map)}")
 
     # Queue: unposted Shorts only
     all_unposted = df[df["posted"].astype(str).str.upper().eq("N")].copy()
@@ -240,9 +242,9 @@ def load_wpp_content():
 
     wpp_count = queue_df[queue_df["account"].ne("@will.byron88")].shape[0]
     wb_count  = queue_df[queue_df["account"].eq("@will.byron88")].shape[0]
-    print(f"  → Short queue: {len(queue_df)} ({wpp_count} WPP · {wb_count} Will Byron)")
+    print(f"  -> Short queue: {len(queue_df)} ({wpp_count} WPP, {wb_count} Will Byron)")
     if len(ep_queue):
-        print(f"  → Episode queue: {len(ep_queue)} unposted video/podcast episodes")
+        print(f"  -> Episode queue: {len(ep_queue)} unposted video/podcast episodes")
 
     return content_map, queue_df
 
@@ -874,7 +876,8 @@ def make_table_header(enriched=False):
 
 
 def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
-               facebook_performance_html="", kdp_revenue_html="", filtered_repurpose_count=None):
+               facebook_performance_html="", fb_image_performance_html="",
+               kdp_revenue_html="", filtered_repurpose_count=None):
     html_file = OUTPUT_DIR / "index.html"
     enriched = "book_or_offer" in df.columns and df["book_or_offer"].ne("—").any()
 
@@ -1231,6 +1234,8 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
 
         {facebook_performance_html}
 
+        {fb_image_performance_html}
+
         {kdp_revenue_html}
 
         <h2>Content Intelligence</h2>
@@ -1297,6 +1302,11 @@ def main():
     print(f"Instagram: {len(ig_rows)} rows built.")
     rows.extend(ig_rows)
 
+    print("Fetching Instagram-WB...")
+    ig_wb_rows = fetch_instagram_wb_rows(limit=MAX_INSTAGRAM_POSTS)
+    print(f"Instagram-WB: {len(ig_wb_rows)} rows built.")
+    rows.extend(ig_wb_rows)
+
     print("Fetching YouTube...")
     yt_rows = fetch_youtube_rows(max_results=MAX_YOUTUBE_VIDEOS)
     print(f"YouTube: {len(yt_rows)} rows built.")
@@ -1305,6 +1315,10 @@ def main():
     print("Fetching Facebook...")
     fb_rows = fetch_facebook_rows(limit=MAX_FACEBOOK_POSTS)
     rows.extend(fb_rows)
+
+    print("Fetching FB Image Posts (PM + TPL)...")
+    fb_image_rows = fetch_fb_image_rows(limit=MAX_FACEBOOK_POSTS)
+    rows.extend(fb_image_rows)
 
 
 
@@ -1337,6 +1351,7 @@ def main():
     scoreboard_html = build_scoreboard_html(df)
     x_performance_html = build_x_performance_html(content_map)
     facebook_performance_html = build_facebook_performance_html(df)
+    fb_image_performance_html = build_fb_image_performance_html(fb_image_rows)
 
     # Build KDP Revenue
     kdp_revenue_html = build_kdp_revenue_html()
@@ -1348,6 +1363,7 @@ def main():
         scoreboard_html,
         x_performance_html,
         facebook_performance_html,
+        fb_image_performance_html,
         kdp_revenue_html,
         filtered_repurpose_count=len(plan["repurpose"]),
     )
