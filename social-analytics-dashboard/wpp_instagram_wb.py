@@ -61,8 +61,13 @@ def _engagement_rate(views, likes, comments, shares=0, saves=0) -> float:
 def ig_get_json(url: str, params: dict) -> dict:
     response = requests.get(url, params=params, timeout=30)
     if response.status_code != 200:
-        print(f"\nInstagram-WB API error — URL: {url} — Status: {response.status_code}")
-        print(response.text)
+        try:
+            subcode = response.json().get("error", {}).get("error_subcode")
+        except Exception:
+            subcode = None
+        if subcode != 2108006:
+            print(f"\nInstagram-WB API error -- URL: {url} -- Status: {response.status_code}")
+            print(response.text)
     response.raise_for_status()
     return response.json()
 
@@ -115,6 +120,7 @@ def get_instagram_insights(media_id: str) -> dict:
 def fetch_instagram_wb_rows(limit: int = 50) -> list[dict]:
     """Fetch all Instagram-WB media rows for the analytics dataframe."""
     rows = []
+    skipped_preconversion = 0
     media_items = get_instagram_recent_media(limit=limit)
 
     for item in media_items:
@@ -123,6 +129,16 @@ def fetch_instagram_wb_rows(limit: int = 50) -> list[dict]:
 
         try:
             insights = get_instagram_insights(media_id)
+        except requests.HTTPError as e:
+            if e.response is not None and e.response.status_code == 400:
+                try:
+                    if e.response.json().get("error", {}).get("error_subcode") == 2108006:
+                        skipped_preconversion += 1
+                        continue
+                except Exception:
+                    pass
+            print(f"Could not fetch Instagram-WB insights for media {media_id}: {e}")
+            insights = {}
         except Exception as e:
             print(f"Could not fetch Instagram-WB insights for media {media_id}: {e}")
             insights = {}
@@ -150,4 +166,6 @@ def fetch_instagram_wb_rows(limit: int = 50) -> list[dict]:
             "engagement_rate_percent":       _engagement_rate(views, likes, comments, shares, saves),
         })
 
+    if skipped_preconversion:
+        print(f"Instagram-WB: skipped {skipped_preconversion} pre-conversion posts (2108006).")
     return rows

@@ -804,6 +804,238 @@ def build_scoreboard_html(df):
 
 
 
+# ============================================================
+# CEO Tab Builder
+# ============================================================
+
+def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
+    """CEO overview tab — five-stat hero, platform health, top posts, what's working."""
+    total_views = safe_int(df["views"].sum())
+    total_posts = len(df)
+    avg_eng     = round(df["engagement_rate_percent"].mean(), 2) if total_posts else 0
+    queue_count = plan["unposted_count"] if plan else 0
+    yt_minutes  = safe_int(
+        df[df["platform"] == "YouTube"]["estimated_minutes_watched"].sum()
+    )
+
+    # ── Hero stats ────────────────────────────────────────────────
+    hero_html = f"""
+    <div class="ceo-hero">
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">KDP Revenue</div>
+            <div class="ceo-stat-value">${kdp_total_revenue:.2f}</div>
+            <div class="ceo-stat-sub">all time</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Total Views</div>
+            <div class="ceo-stat-value">{total_views:,}</div>
+            <div class="ceo-stat-sub">across all platforms</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">YouTube Watch Time</div>
+            <div class="ceo-stat-value">{yt_minutes:,}</div>
+            <div class="ceo-stat-sub">minutes watched</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Content Queue</div>
+            <div class="ceo-stat-value">{queue_count}</div>
+            <div class="ceo-stat-sub">shorts ready to post</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Avg Engagement</div>
+            <div class="ceo-stat-value">{avg_eng}%</div>
+            <div class="ceo-stat-sub">across all posts</div>
+        </div>
+    </div>"""
+
+    # ── What's Working ────────────────────────────────────────────
+    bullets = []
+
+    if plan and plan.get("has_content_map"):
+        known = df[df["book_or_offer"].ne("—")]
+        if not known.empty:
+            book_agg = (
+                known.groupby("book_or_offer")
+                .agg(
+                    views=("views", "sum"),
+                    eng=("engagement_rate_percent", "mean"),
+                    winners=("content_signal",
+                             lambda x: x.str.contains("Winner", na=False).sum()),
+                )
+                .reset_index()
+            )
+            top_vol = book_agg.sort_values("views", ascending=False).iloc[0]
+            top_eng = book_agg.sort_values("eng",   ascending=False).iloc[0]
+            bullets.append(
+                f'<strong style="color:#C9A84C">{top_vol["book_or_offer"]}</strong>'
+                f' leads by volume — {safe_int(top_vol["views"]):,} views,'
+                f' {safe_int(top_vol["winners"])} winner posts'
+            )
+            if top_eng["book_or_offer"] != top_vol["book_or_offer"]:
+                bullets.append(
+                    f'<strong style="color:#C9A84C">{top_eng["book_or_offer"]}</strong>'
+                    f' leads by engagement — {round(top_eng["eng"], 1)}% average'
+                )
+
+    if plan and plan.get("pillar_winner") and plan["pillar_winner"] != "—":
+        known_p = df[df["content_pillar"].ne("—")]
+        if not known_p.empty:
+            p_agg = (
+                known_p.groupby("content_pillar")
+                .agg(
+                    posts=("views", "count"),
+                    views=("views", "sum"),
+                    eng=("engagement_rate_percent", "mean"),
+                )
+                .reset_index()
+            )
+            top_vol_p = p_agg.sort_values("views", ascending=False).iloc[0]
+            bullets.append(
+                f'Top pillar by views: <strong style="color:#C9A84C">'
+                f'{top_vol_p["content_pillar"]}</strong>'
+                f' ({safe_int(top_vol_p["views"]):,} views)'
+            )
+            gems = p_agg[
+                (p_agg["posts"] <= 5) & (p_agg["eng"] >= 8.0)
+            ].sort_values("eng", ascending=False)
+            if not gems.empty:
+                g = gems.iloc[0]
+                bullets.append(
+                    f'<strong style="color:#C9A84C">{g["content_pillar"]}</strong>'
+                    f' has {round(g["eng"], 1)}% engagement on {safe_int(g["posts"])} posts'
+                    f' — high signal, low volume, worth scaling'
+                )
+
+    if plan and plan.get("repurpose"):
+        rep_links = " &nbsp;&middot;&nbsp; ".join(
+            f'<a href="{r["url"]}" target="_blank" style="color:#C9A84C">'
+            f'{r["platform"]}: {r["title"][:50]}...</a>'
+            for r in plan["repurpose"]
+        )
+        n = len(plan["repurpose"])
+        bullets.append(
+            f'{n} repurpose signal{"s" if n > 1 else ""} ready to cross-post: {rep_links}'
+        )
+
+    bullet_li = "".join(
+        f'<li style="margin-bottom:10px">{b}</li>' for b in bullets
+    ) if bullets else (
+        '<li>No matched content yet — add URLs to wpp.db to unlock insights.</li>'
+    )
+
+    what_working = f"""
+    <div class="scoreboard-card" style="margin-bottom:24px">
+        <h2 style="margin-top:0;font-size:16px">What's Working</h2>
+        <ul style="margin:0;padding-left:20px;line-height:1.6;font-size:13px;color:#D7DEE8">
+            {bullet_li}
+        </ul>
+    </div>"""
+
+    # ── Platform Health ───────────────────────────────────────────
+    PLATFORM_DISPLAY = [
+        ("Facebook",                     "Facebook Reels (WPP)"),
+        ("Instagram",                    "Instagram @willpowerprotocols"),
+        ("Instagram-WB",                 "Instagram @will.byron88"),
+        ("YouTube",                      "YouTube"),
+        ("FB-Image-PrehistoricMemories", "Prehistoric Memories"),
+        ("FB-Image-TheProtocolLab",      "The Protocol Lab"),
+    ]
+    plat_rows = ""
+    for plat_key, plat_label in PLATFORM_DISPLAY:
+        p = df[df["platform"] == plat_key]
+        if p.empty:
+            plat_rows += f"""
+            <tr>
+                <td>{plat_label}</td>
+                <td style="text-align:center">—</td>
+                <td style="text-align:center">—</td>
+                <td style="text-align:center">—</td>
+                <td><span style="color:#FF6B6B;font-size:12px">No data</span></td>
+            </tr>"""
+        else:
+            views   = safe_int(p["views"].sum())
+            posts   = len(p)
+            avg_e   = round(p["engagement_rate_percent"].mean(), 2)
+            eng_str = f"{avg_e}%" if avg_e > 0 else "—"
+            extra   = ""
+            if plat_key == "YouTube":
+                mins  = safe_int(p["estimated_minutes_watched"].sum())
+                extra = (
+                    f'<div style="font-size:11px;color:#AAB4C0;margin-top:2px">'
+                    f'{mins:,} watch min</div>'
+                )
+            plat_rows += f"""
+            <tr>
+                <td><strong>{plat_label}</strong>{extra}</td>
+                <td style="text-align:center">{posts}</td>
+                <td style="text-align:center">{views:,}</td>
+                <td style="text-align:center">{eng_str}</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr>"""
+
+    platform_health = f"""
+    <div class="scoreboard-card" style="margin-bottom:30px">
+        <h2 style="margin-top:0;font-size:16px">Platform Health</h2>
+        <table class="scoreboard-table">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th style="text-align:center">Posts</th>
+                    <th style="text-align:center">Views / Plays</th>
+                    <th style="text-align:center">Avg Eng</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>{plat_rows}</tbody>
+        </table>
+    </div>"""
+
+    # ── Top 5 Posts ────────────────────────────────────────────────
+    top5 = df.sort_values("views", ascending=False).head(5)
+    top5_cards = ""
+    for _, row in top5.iterrows():
+        plat   = safe_text(row.get("platform"))
+        title  = truncate_text(safe_text(row.get("title_or_caption")), 90)
+        views  = safe_int(row.get("views"))
+        eng    = row.get("engagement_rate_percent", 0)
+        signal = safe_text(row.get("content_signal"))
+        url    = safe_text(row.get("url"))
+        pub    = safe_text(row.get("published_at"))
+        book   = safe_text(row.get("book_or_offer", "—"))
+        sig_badge = (
+            f'&nbsp;&middot;&nbsp; <strong style="color:#C9A84C">{signal}</strong>'
+            if signal and signal != "Watch" else ""
+        )
+        book_line = (
+            f'<div style="font-size:11px;color:#C9A84C;margin-top:3px">{book}</div>'
+            if book and book != "—" else ""
+        )
+        top5_cards += f"""
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span class="platform-badge">{plat}</span>
+                <span style="color:#AAB4C0;font-size:11px">{pub}</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:6px">{title}</div>
+            {book_line}
+            <div style="font-size:12px;color:#AAB4C0;margin-top:6px">
+                <strong style="color:#C9A84C">{views:,}</strong> views
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">{eng}%</strong> eng
+                {sig_badge}
+                &nbsp;&middot;&nbsp; <a href="{url}" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div>"""
+
+    top5_html = f"""
+    <h2 style="color:#C9A84C;margin-top:0">Top 5 Posts</h2>
+    <div class="top5-grid" style="margin-bottom:30px">{top5_cards}</div>"""
+
+    return f"""
+    {hero_html}
+    {monday_plan_html}
+    {what_working}
+    {platform_health}
+    {top5_html}"""
 
 
 # ============================================================
@@ -877,7 +1109,7 @@ def make_table_header(enriched=False):
 
 def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
                facebook_performance_html="", fb_image_performance_html="",
-               kdp_revenue_html="", filtered_repurpose_count=None):
+               kdp_revenue_html="", filtered_repurpose_count=None, plan=None):
     html_file = OUTPUT_DIR / "index.html"
     enriched = "book_or_offer" in df.columns and df["book_or_offer"].ne("—").any()
 
@@ -913,6 +1145,8 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         safe_int(facebook_rows.get("reach", pd.Series([0])).sum())
         if not facebook_rows.empty else 0
     )
+
+    ceo_tab_html = build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html)
 
     winners_count = df["content_signal"].str.contains("Winner", na=False).sum()
     sticky_count = df["content_signal"].str.contains("Sticky", na=False).sum()
@@ -1148,18 +1382,106 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             color: #D7DEE8;
         }}
         .scoreboard-table tr:last-child td {{ border-bottom: none; }}
+        /* Tab switcher */
+        .tab-bar {{
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-bottom: 2px solid rgba(201,168,76,.25);
+        }}
+        .tab-btn {{
+            background: none;
+            border: none;
+            color: #AAB4C0;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 12px 32px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            font-family: Arial, Helvetica, sans-serif;
+            transition: color .15s;
+        }}
+        .tab-btn:hover {{ color: #D7DEE8; }}
+        .tab-btn.active {{
+            color: #C9A84C;
+            border-bottom-color: #C9A84C;
+        }}
+        .tab-pane {{ display: none; }}
+        .tab-pane.active {{ display: block; }}
+        /* CEO view */
+        .ceo-hero {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }}
+        .ceo-stat {{
+            background: #101F36;
+            border-radius: 18px;
+            padding: 20px 18px;
+            border: 1px solid rgba(255,255,255,.08);
+        }}
+        .ceo-stat-label {{
+            color: #AAB4C0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }}
+        .ceo-stat-value {{
+            color: #C9A84C;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 6px 0 2px;
+            line-height: 1;
+        }}
+        .ceo-stat-sub {{
+            color: #AAB4C0;
+            font-size: 12px;
+        }}
+        .top5-grid {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }}
+        .top5-card {{
+            background: #101F36;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,.08);
+        }}
         @media (max-width: 800px) {{
             th, td {{ font-size: 11px; padding: 7px 5px; }}
             .value {{ font-size: 26px; }}
             .scoreboard-grid {{ grid-template-columns: 1fr; }}
+            .ceo-stat-value {{ font-size: 28px; }}
+            .top5-grid {{ grid-template-columns: 1fr; }}
         }}
     </style>
+    <script>
+        function showTab(id) {{
+            document.querySelectorAll('.tab-pane').forEach(function(p) {{ p.classList.remove('active'); }});
+            document.querySelectorAll('.tab-btn').forEach(function(b) {{ b.classList.remove('active'); }});
+            document.getElementById(id).classList.add('active');
+            document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+        }}
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Will Power Protocols Social Analytics</h1>
         <div class="subtitle">Instagram · YouTube · Facebook · X · Book &amp; Pillar Tracking · Monday Action Plan</div>
 
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="tab-ceo" onclick="showTab('tab-ceo')">CEO View</button>
+            <button class="tab-btn" data-tab="tab-analyst" onclick="showTab('tab-analyst')">Full Analytics</button>
+        </div>
+
+        <div id="tab-ceo" class="tab-pane active">
+            {ceo_tab_html}
+        </div>
+
+        <div id="tab-analyst" class="tab-pane">
         <div class="cards">
             <div class="card">
                 <div class="label">Posts Analyzed</div>
@@ -1277,6 +1599,7 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             Facebook metrics: Reel Plays are the main Facebook views. Reach is unique reached. 15s Quality Views are a deeper-watch signal. 3s API Views are kept as diagnostics because Meta may return 0 for Reels even when Reel Plays are available.<br>
             Never commit .env, client_secret.json, or youtube_token.json to GitHub.
         </div>
+        </div><!-- end tab-analyst -->
     </div>
 </body>
 </html>"""
@@ -1366,6 +1689,7 @@ def main():
         fb_image_performance_html,
         kdp_revenue_html,
         filtered_repurpose_count=len(plan["repurpose"]),
+        plan=plan,
     )
 
 

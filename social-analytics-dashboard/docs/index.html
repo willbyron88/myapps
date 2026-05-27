@@ -206,87 +206,134 @@
             color: #D7DEE8;
         }
         .scoreboard-table tr:last-child td { border-bottom: none; }
+        /* Tab switcher */
+        .tab-bar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-bottom: 2px solid rgba(201,168,76,.25);
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #AAB4C0;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 12px 32px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            font-family: Arial, Helvetica, sans-serif;
+            transition: color .15s;
+        }
+        .tab-btn:hover { color: #D7DEE8; }
+        .tab-btn.active {
+            color: #C9A84C;
+            border-bottom-color: #C9A84C;
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        /* CEO view */
+        .ceo-hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .ceo-stat {
+            background: #101F36;
+            border-radius: 18px;
+            padding: 20px 18px;
+            border: 1px solid rgba(255,255,255,.08);
+        }
+        .ceo-stat-label {
+            color: #AAB4C0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .ceo-stat-value {
+            color: #C9A84C;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 6px 0 2px;
+            line-height: 1;
+        }
+        .ceo-stat-sub {
+            color: #AAB4C0;
+            font-size: 12px;
+        }
+        .top5-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .top5-card {
+            background: #101F36;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,.08);
+        }
         @media (max-width: 800px) {
             th, td { font-size: 11px; padding: 7px 5px; }
             .value { font-size: 26px; }
             .scoreboard-grid { grid-template-columns: 1fr; }
+            .ceo-stat-value { font-size: 28px; }
+            .top5-grid { grid-template-columns: 1fr; }
         }
     </style>
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            document.getElementById(id).classList.add('active');
+            document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Will Power Protocols Social Analytics</h1>
         <div class="subtitle">Instagram · YouTube · Facebook · X · Book &amp; Pillar Tracking · Monday Action Plan</div>
 
-        <div class="cards">
-            <div class="card">
-                <div class="label">Posts Analyzed</div>
-                <div class="value">85</div>
-            </div>
-            <div class="card">
-                <div class="label">Total Views</div>
-                <div class="value">5,633</div>
-            </div>
-            <div class="card">
-                <div class="label">Instagram Views</div>
-                <div class="value">841</div>
-            </div>
-            <div class="card">
-                <div class="label">YouTube Views</div>
-                <div class="value">797</div>
-            </div>
-            <div class="card">
-                <div class="label">Facebook Reel Plays</div>
-                <div class="value">1,584</div>
-            </div>
-            <div class="card">
-                <div class="label">Facebook Reach</div>
-                <div class="value">1,567</div>
-            </div>
-            <div class="card">
-                <div class="label">Facebook 15s Quality Views</div>
-                <div class="value">57</div>
-            </div>
-            <div class="card">
-                <div class="label">Facebook 3s API Views</div>
-                <div class="value">371</div>
-            </div>
-            <div class="card">
-                <div class="label">YouTube Watch Minutes</div>
-                <div class="value">225</div>
-            </div>
-            <div class="card">
-                <div class="label">Average Engagement</div>
-                <div class="value">2.93%</div>
-            </div>
-            <div class="card">
-                <div class="label">Winners</div>
-                <div class="value">25</div>
-            </div>
-            <div class="card">
-                <div class="label">Promising</div>
-                <div class="value">20</div>
-            </div>
-            <div class="card">
-                <div class="label">Repurpose Signals</div>
-                <div class="value">2</div>
-            </div>
-            <div class="card">
-                <div class="label">Total KDP Revenue</div>
-                <div class="value">$19.02</div>
-            </div>
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="tab-ceo" onclick="showTab('tab-ceo')">CEO View</button>
+            <button class="tab-btn" data-tab="tab-analyst" onclick="showTab('tab-analyst')">Full Analytics</button>
         </div>
 
-        <div class="signal-help">
-            <strong>Winner</strong> = top-performing content by your own view distribution.
-            <strong>Sticky</strong> = YouTube with stronger-than-usual average view duration.
-            <strong>Promising</strong> = engagement high relative to your baseline.
-            <strong>Repurpose Candidate</strong> = worth turning into a Short, Reel, or follow-up.
+        <div id="tab-ceo" class="tab-pane active">
+            
+    
+    <div class="ceo-hero">
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">KDP Revenue</div>
+            <div class="ceo-stat-value">$24.81</div>
+            <div class="ceo-stat-sub">all time</div>
         </div>
-
-        
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Total Views</div>
+            <div class="ceo-stat-value">6,062</div>
+            <div class="ceo-stat-sub">across all platforms</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">YouTube Watch Time</div>
+            <div class="ceo-stat-value">110</div>
+            <div class="ceo-stat-sub">minutes watched</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Content Queue</div>
+            <div class="ceo-stat-value">23</div>
+            <div class="ceo-stat-sub">shorts ready to post</div>
+        </div>
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Avg Engagement</div>
+            <div class="ceo-stat-value">3.51%</div>
+            <div class="ceo-stat-sub">across all posts</div>
+        </div>
+    </div>
+    
     <div class="action-plan">
-        <h2>Monday Action Plan — Tuesday, May 26, 2026</h2>
+        <h2>Monday Action Plan — Wednesday, May 27, 2026</h2>
         
         <div class="action-section">
             <h3>This Week — 5 Posts · 4 Platforms</h3>
@@ -307,19 +354,19 @@
             <tr>
                 <td><strong>Monday</strong></td>
                 <td>The Athena Protocol</td>
-                <td style="text-align:center">1</td>
-                <td>Standard plans fail Athena athletes twice. Once for body size. Once for sex.</td>
-                <td>Fueling</td>
+                <td style="text-align:center">2</td>
+                <td>Luteal phase + Athena weight = you overheat faster. Two compounding factors.</td>
+                <td>Heat</td>
                 <td><span style="color:#AAB4C0;font-size:11px">@willpowerprotocols</span></td>
                 <td><span style="color:#1DA1F2;font-size:11px">@wpprotocols</span></td>
-                <td></td>
+                <td><span class="winner-note">⭐ Winner book</span></td>
             </tr>
             <tr>
                 <td><strong>Tuesday</strong></td>
                 <td>The Clydesdale Protocol</td>
-                <td style="text-align:center">1</td>
-                <td>Most nutrition plans assume 165 lbs. You're not 165 lbs. 700 calorie gap per half-ironman.</td>
-                <td>Fueling</td>
+                <td style="text-align:center">2</td>
+                <td>Heavier athletes overheat faster. Heat generates to mass. Dissipates to surface area.</td>
+                <td>Heat</td>
                 <td><span style="color:#AAB4C0;font-size:11px">@willpowerprotocols</span></td>
                 <td><span style="color:#1DA1F2;font-size:11px">@wpprotocols</span></td>
                 <td></td>
@@ -355,7 +402,320 @@
                 <td></td>
             </tr></tbody>
             </table>
-            <p class="action-note">20 shorts remaining in queue after this week.</p>
+            <p class="action-note">18 shorts remaining in queue after this week.</p>
+        </div>
+        
+        <div class="action-section">
+            <h3>Repurpose Queue — Cross-Post These Now</h3>
+            
+            <div class="repurpose-item">
+                <span class="platform-badge">Instagram</span>
+                <div>
+                    <div style="margin-bottom:2px">You are doing everything right. Here is the one variable destroying yo...</div>
+                    <div style="color:#C9A84C;font-size:11px">→ Cross-post to YouTube Shorts
+                        &nbsp;·&nbsp; 135 views
+                        &nbsp;·&nbsp; <a href="https://www.instagram.com/reel/DXRBmUiDl14/" target="_blank">Open</a>
+                    </div>
+                </div>
+            </div>
+            <div class="repurpose-item">
+                <span class="platform-badge">YouTube</span>
+                <div>
+                    <div style="margin-bottom:2px">I end every message with two words. Here is what they actually mean.</div>
+                    <div style="color:#C9A84C;font-size:11px">→ Cross-post to Instagram Reels
+                        &nbsp;·&nbsp; 9 views
+                        &nbsp;·&nbsp; <a href="https://www.youtube.com/watch?v=BnqdC9pLdf8" target="_blank">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-section">
+            <h3>Pillar Signal</h3>
+            <p style="margin:0">Top performing pillar: <strong style="color:#C9A84C">Sleep</strong> —
+            prioritize this topic when writing new scripts or testing campaigns.</p>
+        </div>
+        
+    </div>
+    
+    <div class="scoreboard-card" style="margin-bottom:24px">
+        <h2 style="margin-top:0;font-size:16px">What's Working</h2>
+        <ul style="margin:0;padding-left:20px;line-height:1.6;font-size:13px;color:#D7DEE8">
+            <li style="margin-bottom:10px"><strong style="color:#C9A84C">Win the Long War</strong> leads by volume — 1,606 views, 8 winner posts</li><li style="margin-bottom:10px"><strong style="color:#C9A84C">AI After 50</strong> leads by engagement — 11.5% average</li><li style="margin-bottom:10px">Top pillar by views: <strong style="color:#C9A84C">Sleep</strong> (655 views)</li><li style="margin-bottom:10px"><strong style="color:#C9A84C">Financial</strong> has 33.3% engagement on 3 posts — high signal, low volume, worth scaling</li><li style="margin-bottom:10px">2 repurpose signals ready to cross-post: <a href="https://www.instagram.com/reel/DXRBmUiDl14/" target="_blank" style="color:#C9A84C">Instagram: You are doing everything right. Here is the one va...</a> &nbsp;&middot;&nbsp; <a href="https://www.youtube.com/watch?v=BnqdC9pLdf8" target="_blank" style="color:#C9A84C">YouTube: I end every message with two words. Here is what t...</a></li>
+        </ul>
+    </div>
+    
+    <div class="scoreboard-card" style="margin-bottom:30px">
+        <h2 style="margin-top:0;font-size:16px">Platform Health</h2>
+        <table class="scoreboard-table">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th style="text-align:center">Posts</th>
+                    <th style="text-align:center">Views / Plays</th>
+                    <th style="text-align:center">Avg Eng</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Facebook Reels (WPP)</strong></td>
+                <td style="text-align:center">16</td>
+                <td style="text-align:center">1,749</td>
+                <td style="text-align:center">0.09%</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr>
+            <tr>
+                <td><strong>Instagram @willpowerprotocols</strong></td>
+                <td style="text-align:center">16</td>
+                <td style="text-align:center">937</td>
+                <td style="text-align:center">13.68%</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr>
+            <tr>
+                <td><strong>Instagram @will.byron88</strong></td>
+                <td style="text-align:center">6</td>
+                <td style="text-align:center">129</td>
+                <td style="text-align:center">6.56%</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr>
+            <tr>
+                <td><strong>YouTube</strong><div style="font-size:11px;color:#AAB4C0;margin-top:2px">110 watch min</div></td>
+                <td style="text-align:center">22</td>
+                <td style="text-align:center">906</td>
+                <td style="text-align:center">1.85%</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr>
+            <tr>
+                <td><strong>Prehistoric Memories</strong></td>
+                <td style="text-align:center">20</td>
+                <td style="text-align:center">1,590</td>
+                <td style="text-align:center">0.92%</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr>
+            <tr>
+                <td><strong>The Protocol Lab</strong></td>
+                <td style="text-align:center">11</td>
+                <td style="text-align:center">751</td>
+                <td style="text-align:center">0.03%</td>
+                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+            </tr></tbody>
+        </table>
+    </div>
+    
+    <h2 style="color:#C9A84C;margin-top:0">Top 5 Posts</h2>
+    <div class="top5-grid" style="margin-bottom:30px">
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span class="platform-badge">YouTube</span>
+                <span style="color:#AAB4C0;font-size:11px">2026-05-22</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:6px">Use AI To Protect Your Brain After 50 | Cognitive Protocol | AI After 50</div>
+            <div style="font-size:11px;color:#C9A84C;margin-top:3px">AI After 50</div>
+            <div style="font-size:12px;color:#AAB4C0;margin-top:6px">
+                <strong style="color:#C9A84C">328</strong> views
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">0.91%</strong> eng
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">Winner, Watch-Time Winner, Repurpose Candidate</strong>
+                &nbsp;&middot;&nbsp; <a href="https://www.youtube.com/watch?v=35el68RGBco" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div>
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span class="platform-badge">FB-Image-PrehistoricMemories</span>
+                <span style="color:#AAB4C0;font-size:11px">2026-05-22</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:6px">A fossil found 30 years ago was just reclassified — and it's a new species. Titanomachya g...</div>
+            
+            <div style="font-size:12px;color:#AAB4C0;margin-top:6px">
+                <strong style="color:#C9A84C">299</strong> views
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">0.33%</strong> eng
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">Winner</strong>
+                &nbsp;&middot;&nbsp; <a href="https://www.facebook.com/122100168117336301/posts/122097666921336301" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div>
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span class="platform-badge">FB-Image-TheProtocolLab</span>
+                <span style="color:#AAB4C0;font-size:11px">2026-05-24</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:6px">After 50, the hippocampus shrinks 1–2% every year.  That's the region responsible for lear...</div>
+            
+            <div style="font-size:12px;color:#AAB4C0;margin-top:6px">
+                <strong style="color:#C9A84C">291</strong> views
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">0.34%</strong> eng
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">Winner</strong>
+                &nbsp;&middot;&nbsp; <a href="https://www.facebook.com/122096332239348222/posts/122095017285348222" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div>
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span class="platform-badge">FB-Image-TheProtocolLab</span>
+                <span style="color:#AAB4C0;font-size:11px">2026-05-24</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:6px">One night of sleep deprivation raises beta-amyloid in the human brain by 17%.  Beta-amyloi...</div>
+            
+            <div style="font-size:12px;color:#AAB4C0;margin-top:6px">
+                <strong style="color:#C9A84C">235</strong> views
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">0.0%</strong> eng
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">Winner</strong>
+                &nbsp;&middot;&nbsp; <a href="https://www.facebook.com/122096332239348222/posts/122095019637348222" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div>
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span class="platform-badge">Facebook</span>
+                <span style="color:#AAB4C0;font-size:11px">2026-05-21</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:6px">Most men over 50 think they need less sleep. The science says the opposite.  Growth hormon...</div>
+            <div style="font-size:11px;color:#C9A84C;margin-top:3px">Win the Long War</div>
+            <div style="font-size:12px;color:#AAB4C0;margin-top:6px">
+                <strong style="color:#C9A84C">233</strong> views
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">0.43%</strong> eng
+                &nbsp;&middot;&nbsp; <strong style="color:#C9A84C">Winner</strong>
+                &nbsp;&middot;&nbsp; <a href="https://www.facebook.com/reel/4377515822535852/" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div></div>
+        </div>
+
+        <div id="tab-analyst" class="tab-pane">
+        <div class="cards">
+            <div class="card">
+                <div class="label">Posts Analyzed</div>
+                <div class="value">91</div>
+            </div>
+            <div class="card">
+                <div class="label">Total Views</div>
+                <div class="value">6,062</div>
+            </div>
+            <div class="card">
+                <div class="label">Instagram Views</div>
+                <div class="value">937</div>
+            </div>
+            <div class="card">
+                <div class="label">YouTube Views</div>
+                <div class="value">906</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook Reel Plays</div>
+                <div class="value">1,749</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook Reach</div>
+                <div class="value">1,719</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook 15s Quality Views</div>
+                <div class="value">61</div>
+            </div>
+            <div class="card">
+                <div class="label">Facebook 3s API Views</div>
+                <div class="value">410</div>
+            </div>
+            <div class="card">
+                <div class="label">YouTube Watch Minutes</div>
+                <div class="value">234</div>
+            </div>
+            <div class="card">
+                <div class="label">Average Engagement</div>
+                <div class="value">3.51%</div>
+            </div>
+            <div class="card">
+                <div class="label">Winners</div>
+                <div class="value">26</div>
+            </div>
+            <div class="card">
+                <div class="label">Promising</div>
+                <div class="value">20</div>
+            </div>
+            <div class="card">
+                <div class="label">Repurpose Signals</div>
+                <div class="value">2</div>
+            </div>
+            <div class="card">
+                <div class="label">Total KDP Revenue</div>
+                <div class="value">$24.81</div>
+            </div>
+        </div>
+
+        <div class="signal-help">
+            <strong>Winner</strong> = top-performing content by your own view distribution.
+            <strong>Sticky</strong> = YouTube with stronger-than-usual average view duration.
+            <strong>Promising</strong> = engagement high relative to your baseline.
+            <strong>Repurpose Candidate</strong> = worth turning into a Short, Reel, or follow-up.
+        </div>
+
+        
+    <div class="action-plan">
+        <h2>Monday Action Plan — Wednesday, May 27, 2026</h2>
+        
+        <div class="action-section">
+            <h3>This Week — 5 Posts · 4 Platforms</h3>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Book / Offer</th>
+                        <th style="text-align:center">Short #</th>
+                        <th>Topic</th>
+                        <th>Pillar</th>
+                        <th>IG / YT / FB</th>
+                        <th style="color:#1DA1F2">X</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td><strong>Monday</strong></td>
+                <td>The Athena Protocol</td>
+                <td style="text-align:center">2</td>
+                <td>Luteal phase + Athena weight = you overheat faster. Two compounding factors.</td>
+                <td>Heat</td>
+                <td><span style="color:#AAB4C0;font-size:11px">@willpowerprotocols</span></td>
+                <td><span style="color:#1DA1F2;font-size:11px">@wpprotocols</span></td>
+                <td><span class="winner-note">⭐ Winner book</span></td>
+            </tr>
+            <tr>
+                <td><strong>Tuesday</strong></td>
+                <td>The Clydesdale Protocol</td>
+                <td style="text-align:center">2</td>
+                <td>Heavier athletes overheat faster. Heat generates to mass. Dissipates to surface area.</td>
+                <td>Heat</td>
+                <td><span style="color:#AAB4C0;font-size:11px">@willpowerprotocols</span></td>
+                <td><span style="color:#1DA1F2;font-size:11px">@wpprotocols</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>Thursday</strong></td>
+                <td>The Roman Protocol</td>
+                <td style="text-align:center">1</td>
+                <td>The Romans didn't build an empire on motivation. Ordinary men. Extraordinary structure.</td>
+                <td>System</td>
+                <td><span style="color:#AAB4C0;font-size:11px">@willpowerprotocols</span></td>
+                <td><span style="color:#1DA1F2;font-size:11px">@wpprotocols</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>Saturday</strong></td>
+                <td>What the Blood Knows</td>
+                <td style="text-align:center">1</td>
+                <td>Emory 2013: mice passed fear to offspring via a scent they'd never encountered.</td>
+                <td>Hook</td>
+                <td><span style="color:#C9894C;font-size:11px;font-weight:bold">@will.byron88</span></td>
+                <td><span style="color:#C9894C;font-size:11px">@willbyron</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>Sunday</strong></td>
+                <td>Win the Long War Women's Edition</td>
+                <td style="text-align:center">1</td>
+                <td>Menopause attacks sleep architecture directly. Estrogen decline reduces REM.</td>
+                <td>Sleep</td>
+                <td><span style="color:#AAB4C0;font-size:11px">@willpowerprotocols</span></td>
+                <td><span style="color:#1DA1F2;font-size:11px">@wpprotocols</span></td>
+                <td></td>
+            </tr></tbody>
+            </table>
+            <p class="action-note">18 shorts remaining in queue after this week.</p>
         </div>
         
         <div class="action-section">
@@ -411,16 +771,30 @@
         <tr>
             <td>⭐ Win the Long War</td>
             <td style="text-align:center">18</td>
-            <td style="text-align:center">1,604</td>
+            <td style="text-align:center">1,606</td>
             <td style="text-align:center">2.64%</td>
             <td style="text-align:center">8</td>
         </tr>
         <tr>
             <td>⭐ AI After 50</td>
             <td style="text-align:center">14</td>
-            <td style="text-align:center">1,111</td>
+            <td style="text-align:center">1,113</td>
             <td style="text-align:center">11.49%</td>
             <td style="text-align:center">5</td>
+        </tr>
+        <tr>
+            <td>⭐ The Athena Protocol</td>
+            <td style="text-align:center">5</td>
+            <td style="text-align:center">333</td>
+            <td style="text-align:center">0.43%</td>
+            <td style="text-align:center">1</td>
+        </tr>
+        <tr>
+            <td>The Clydesdale Protocol</td>
+            <td style="text-align:center">5</td>
+            <td style="text-align:center">31</td>
+            <td style="text-align:center">10.0%</td>
+            <td style="text-align:center">0</td>
         </tr></tbody>
         </table>
     </div>
@@ -450,22 +824,28 @@
             <td style="text-align:center">9.02%</td>
         </tr>
         <tr>
-            <td>Zone 2</td>
-            <td style="text-align:center">3</td>
-            <td style="text-align:center">348</td>
-            <td style="text-align:center">0.58%</td>
+            <td>Fueling</td>
+            <td style="text-align:center">6</td>
+            <td style="text-align:center">357</td>
+            <td style="text-align:center">8.69%</td>
         </tr>
         <tr>
-            <td>Cholesterol</td>
+            <td>Zone 2</td>
             <td style="text-align:center">3</td>
-            <td style="text-align:center">330</td>
-            <td style="text-align:center">3.5%</td>
+            <td style="text-align:center">349</td>
+            <td style="text-align:center">0.58%</td>
         </tr>
         <tr>
             <td>Cognition</td>
             <td style="text-align:center">2</td>
             <td style="text-align:center">330</td>
             <td style="text-align:center">0.46%</td>
+        </tr>
+        <tr>
+            <td>Cholesterol</td>
+            <td style="text-align:center">3</td>
+            <td style="text-align:center">330</td>
+            <td style="text-align:center">3.5%</td>
         </tr>
         <tr>
             <td>Bloodwork</td>
@@ -482,7 +862,7 @@
         <tr>
             <td>Financial</td>
             <td style="text-align:center">3</td>
-            <td style="text-align:center">156</td>
+            <td style="text-align:center">158</td>
             <td style="text-align:center">33.33%</td>
         </tr>
         <tr>
@@ -493,8 +873,14 @@
         </tr>
         <tr>
             <td>Full Book Overview</td>
-            <td style="text-align:center">3</td>
-            <td style="text-align:center">34</td>
+            <td style="text-align:center">6</td>
+            <td style="text-align:center">41</td>
+            <td style="text-align:center">0.0%</td>
+        </tr>
+        <tr>
+            <td>Short-Form Overview</td>
+            <td style="text-align:center">1</td>
+            <td style="text-align:center">1</td>
             <td style="text-align:center">0.0%</td>
         </tr></tbody>
         </table>
@@ -626,19 +1012,19 @@
         
     <h2 style="color:#1877F2">Facebook Reels Performance
         <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
-        Auto-pulled via Page Post + Video/Reels Insights · 12 Reels/videos</span>
+        Auto-pulled via Page Post + Video/Reels Insights · 16 Reels/videos</span>
     </h2>
     <div class="scoreboard-grid">
         <div class="scoreboard-card" style="border-color:#1877F2">
             <h2 style="color:#1877F2">Facebook Reach &amp; Viewing</h2>
             <table class="scoreboard-table">
                 <tbody>
-                    <tr><td>Reel Plays / Main Views</td><td style="text-align:right"><strong>1,584</strong></td></tr>
-                    <tr><td>Reach / Unique Reached</td><td style="text-align:right"><strong>1,567</strong></td></tr>
-                    <tr><td>Plays per Reached Person</td><td style="text-align:right"><strong>1.01</strong></td></tr>
-                    <tr><td>15s Quality Views</td><td style="text-align:right"><strong>57</strong></td></tr>
-                    <tr><td>15s Quality Rate</td><td style="text-align:right"><strong>3.6%</strong></td></tr>
-                    <tr><td>Watch Minutes API</td><td style="text-align:right"><strong>115.61</strong></td></tr>
+                    <tr><td>Reel Plays / Main Views</td><td style="text-align:right"><strong>1,749</strong></td></tr>
+                    <tr><td>Reach / Unique Reached</td><td style="text-align:right"><strong>1,719</strong></td></tr>
+                    <tr><td>Plays per Reached Person</td><td style="text-align:right"><strong>1.02</strong></td></tr>
+                    <tr><td>15s Quality Views</td><td style="text-align:right"><strong>61</strong></td></tr>
+                    <tr><td>15s Quality Rate</td><td style="text-align:right"><strong>3.49%</strong></td></tr>
+                    <tr><td>Watch Minutes API</td><td style="text-align:right"><strong>124.04</strong></td></tr>
                 </tbody>
             </table>
         </div>
@@ -650,8 +1036,8 @@
                     <tr><td>Comments</td><td style="text-align:right"><strong>0</strong></td></tr>
                     <tr><td>Shares</td><td style="text-align:right"><strong>0</strong></td></tr>
                     <tr><td>Clicks</td><td style="text-align:right"><strong>1</strong></td></tr>
-                    <tr><td>3s Views API</td><td style="text-align:right"><strong>371</strong></td></tr>
-                    <tr><td>3s Unique API</td><td style="text-align:right"><strong>348</strong></td></tr>
+                    <tr><td>3s Views API</td><td style="text-align:right"><strong>410</strong></td></tr>
+                    <tr><td>3s Unique API</td><td style="text-align:right"><strong>383</strong></td></tr>
                 </tbody>
             </table>
             
@@ -791,14 +1177,14 @@
             <td>—</td>
             <td>—</td>
             <td style="font-size:11px">Cognitive decline is not inevitable. It is a variable.  After 50 the inputs that d</td>
-            <td style="text-align:center"><strong>195</strong></td>
-            <td style="text-align:center">203</td>
+            <td style="text-align:center"><strong>196</strong></td>
+            <td style="text-align:center">204</td>
             <td style="text-align:center">0.96</td>
             <td style="text-align:center">6</td>
             <td style="text-align:center">3.1%</td>
             <td style="text-align:center;color:#AAB4C0">43</td>
             <td style="text-align:center;color:#AAB4C0">43</td>
-            <td style="text-align:center">4.07</td>
+            <td style="text-align:center">4.05</td>
             <td style="text-align:center">13.23</td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">0</td>
@@ -863,6 +1249,31 @@
             <td><a href="https://www.facebook.com/reel/971178662197004/" target="_blank" style="color:#1877F2">Open ↗</a></td>
         </tr>
         <tr>
+            <td>The Athena Protocol</td>
+            <td>Fueling</td>
+            <td style="font-size:11px">Most nutrition plans assume 135 lbs. The math fails you twice — once for your body</td>
+            <td style="text-align:center"><strong>128</strong></td>
+            <td style="text-align:center">126</td>
+            <td style="text-align:center">1.02</td>
+            <td style="text-align:center">2</td>
+            <td style="text-align:center">1.6%</td>
+            <td style="text-align:center;color:#AAB4C0">25</td>
+            <td style="text-align:center;color:#AAB4C0">24</td>
+            <td style="text-align:center">2.5</td>
+            <td style="text-align:center">5.33</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-26</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
+            <td style="font-size:10px">video: 1255188883360661<br>post: 1099582573243403_122098554873340266<br>post_insights+video_insights</td>
+            <td><a href="https://www.facebook.com/reel/1255188883360661/" target="_blank" style="color:#1877F2">Open ↗</a></td>
+        </tr>
+        <tr>
             <td>Win the Long War</td>
             <td>Zone 2</td>
             <td style="font-size:11px">I dropped my cholesterol 75 points. No medication.  Zone 2 cardio 4x/week raises H</td>
@@ -891,14 +1302,14 @@
             <td>Win the Long War</td>
             <td>Full Book Overview</td>
             <td style="font-size:11px">Most health protocols for men over 50 were built for someone younger. This one was</td>
-            <td style="text-align:center"><strong>32</strong></td>
+            <td style="text-align:center"><strong>33</strong></td>
             <td style="text-align:center">23</td>
-            <td style="text-align:center">1.39</td>
+            <td style="text-align:center">1.43</td>
             <td style="text-align:center">1</td>
-            <td style="text-align:center">3.1%</td>
+            <td style="text-align:center">3.0%</td>
             <td style="text-align:center;color:#AAB4C0">12</td>
             <td style="text-align:center;color:#AAB4C0">10</td>
-            <td style="text-align:center">7.58</td>
+            <td style="text-align:center">7.35</td>
             <td style="text-align:center">4.04</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -911,6 +1322,56 @@
             <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
             <td style="font-size:10px">video: 1702505980748269<br>post: 1099582573243403_122095816941340266<br>post_insights+video_insights</td>
             <td><a href="https://www.facebook.com/reel/1702505980748269/" target="_blank" style="color:#1877F2">Open ↗</a></td>
+        </tr>
+        <tr>
+            <td>The Clydesdale Protocol</td>
+            <td>Fueling</td>
+            <td style="font-size:11px">Most nutrition plans assume 165 lbs. You're not 165 lbs.  At 240 lbs you burn 151 </td>
+            <td style="text-align:center"><strong>27</strong></td>
+            <td style="text-align:center">22</td>
+            <td style="text-align:center">1.23</td>
+            <td style="text-align:center">2</td>
+            <td style="text-align:center">7.4%</td>
+            <td style="text-align:center;color:#AAB4C0">10</td>
+            <td style="text-align:center;color:#AAB4C0">9</td>
+            <td style="text-align:center">5.7</td>
+            <td style="text-align:center">2.19</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-27</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
+            <td style="font-size:10px">video: 1466332614784982<br>post: 1099582573243403_122098931931340266<br>post_insights+video_insights</td>
+            <td><a href="https://www.facebook.com/reel/1466332614784982/" target="_blank" style="color:#1877F2">Open ↗</a></td>
+        </tr>
+        <tr>
+            <td>AI After 50</td>
+            <td>Financial</td>
+            <td style="font-size:11px">Healthcare in retirement averages $300,000 per couple.  Most retirement calculator</td>
+            <td style="text-align:center"><strong>7</strong></td>
+            <td style="text-align:center">4</td>
+            <td style="text-align:center">1.75</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;color:#AAB4C0">4</td>
+            <td style="text-align:center;color:#AAB4C0">1</td>
+            <td style="text-align:center">4.11</td>
+            <td style="text-align:center">0.48</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">1</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-22</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:180px">{"link clicks": 1}</td>
+            <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
+            <td style="font-size:10px">video: 1724691872235603<br>post: 1099582573243403_122095993773340266<br>post_insights+video_insights</td>
+            <td><a href="https://www.facebook.com/reel/1724691872235603/" target="_blank" style="color:#1877F2">Open ↗</a></td>
         </tr>
         <tr>
             <td>Win the Long War</td>
@@ -938,42 +1399,17 @@
             <td><a href="https://www.facebook.com/reel/977116165200552/" target="_blank" style="color:#1877F2">Open ↗</a></td>
         </tr>
         <tr>
-            <td>AI After 50</td>
-            <td>Financial</td>
-            <td style="font-size:11px">Healthcare in retirement averages $300,000 per couple.  Most retirement calculator</td>
-            <td style="text-align:center"><strong>5</strong></td>
-            <td style="text-align:center">4</td>
-            <td style="text-align:center">1.25</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;color:#AAB4C0">3</td>
-            <td style="text-align:center;color:#AAB4C0">1</td>
-            <td style="text-align:center">4.58</td>
-            <td style="text-align:center">0.38</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">1</td>
-            <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-22</td>
-            <td style="font-size:10px;max-width:180px">{}</td>
-            <td style="font-size:10px;max-width:180px">{"link clicks": 1}</td>
-            <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
-            <td style="font-size:10px">video: 1724691872235603<br>post: 1099582573243403_122095993773340266<br>post_insights+video_insights</td>
-            <td><a href="https://www.facebook.com/reel/1724691872235603/" target="_blank" style="color:#1877F2">Open ↗</a></td>
-        </tr>
-        <tr>
             <td>—</td>
             <td>—</td>
             <td style="font-size:11px">Zone 2 dropped my resting heart rate from 59 to 36 beats per minute.  Zone 2 is th</td>
-            <td style="text-align:center"><strong>4</strong></td>
+            <td style="text-align:center"><strong>5</strong></td>
             <td style="text-align:center">1</td>
-            <td style="text-align:center">4</td>
+            <td style="text-align:center">5</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
             <td style="text-align:center;color:#AAB4C0">3</td>
             <td style="text-align:center;color:#AAB4C0">1</td>
-            <td style="text-align:center">3.43</td>
+            <td style="text-align:center">2.79</td>
             <td style="text-align:center">0.23</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -986,17 +1422,67 @@
             <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
             <td style="font-size:10px">video: 992657277057167<br>post: 1099582573243403_122095490355340266<br>post_insights+video_insights</td>
             <td><a href="https://www.facebook.com/reel/992657277057167/" target="_blank" style="color:#1877F2">Open ↗</a></td>
+        </tr>
+        <tr>
+            <td>The Athena Protocol</td>
+            <td>Full Book Overview</td>
+            <td style="font-size:11px">Standard plans excluded Athena athletes twice — wrong sex, wrong weight. Full prot</td>
+            <td style="text-align:center"><strong>4</strong></td>
+            <td style="text-align:center">2</td>
+            <td style="text-align:center">2</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;color:#AAB4C0">2</td>
+            <td style="text-align:center;color:#AAB4C0">1</td>
+            <td style="text-align:center">9.27</td>
+            <td style="text-align:center">0.62</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-26</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
+            <td style="font-size:10px">video: 1033295572706718<br>post: 1099582573243403_122098601517340266<br>post_insights+video_insights</td>
+            <td><a href="https://www.facebook.com/reel/1033295572706718/" target="_blank" style="color:#1877F2">Open ↗</a></td>
+        </tr>
+        <tr>
+            <td>The Clydesdale Protocol</td>
+            <td>Full Book Overview</td>
+            <td style="font-size:11px">Standard endurance plans were built for 160 lbs. If you race Clydesdale the math h</td>
+            <td style="text-align:center"><strong>1</strong></td>
+            <td style="text-align:center">1</td>
+            <td style="text-align:center">1</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;color:#AAB4C0">1</td>
+            <td style="text-align:center;color:#AAB4C0">1</td>
+            <td style="text-align:center">11.1</td>
+            <td style="text-align:center">0.19</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-27</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:180px">{}</td>
+            <td style="font-size:10px;max-width:260px">blue_reels_play_count,post_clicks,post_clicks_by_type,post_impressions_unique,post_reactions_by_type_total,post_total_media_view_unique,post_video_avg_time_watched,post_video_complete_views_30s,post_video_complete_views_30s_unique,post_video_view_time,post_vid</td>
+            <td style="font-size:10px">video: 1276218117991368<br>post: 1099582573243403_122098955745340266<br>post_insights+video_insights</td>
+            <td><a href="https://www.facebook.com/reel/1276218117991368/" target="_blank" style="color:#1877F2">Open ↗</a></td>
         </tr></tbody>
             <tfoot>
                 <tr style="background:#101F36">
                     <td colspan="3"><strong style="color:#1877F2">TOTALS</strong></td>
-                    <td style="text-align:center"><strong>1,584</strong></td>
-                    <td style="text-align:center"><strong>1,567</strong></td>
-                    <td style="text-align:center"><strong>1.01</strong></td>
-                    <td style="text-align:center"><strong>57</strong></td>
-                    <td style="text-align:center"><strong>3.6%</strong></td>
-                    <td style="text-align:center"><strong>371</strong></td>
-                    <td style="text-align:center"><strong>348</strong></td>
+                    <td style="text-align:center"><strong>1,749</strong></td>
+                    <td style="text-align:center"><strong>1,719</strong></td>
+                    <td style="text-align:center"><strong>1.02</strong></td>
+                    <td style="text-align:center"><strong>61</strong></td>
+                    <td style="text-align:center"><strong>3.49%</strong></td>
+                    <td style="text-align:center"><strong>410</strong></td>
+                    <td style="text-align:center"><strong>383</strong></td>
                     <td colspan="2"></td>
                     <td style="text-align:center"><strong>3</strong></td>
                     <td style="text-align:center"><strong>0</strong></td>
@@ -1019,11 +1505,11 @@
             <table class="scoreboard-table">
                 <tbody>
                     <tr><td>Posts Analyzed</td>
-                        <td style="text-align:right"><strong>18</strong></td></tr>
+                        <td style="text-align:right"><strong>20</strong></td></tr>
                     <tr><td>DB Matched</td>
-                        <td style="text-align:right"><strong>13 / 18</strong></td></tr>
+                        <td style="text-align:right"><strong>13 / 20</strong></td></tr>
                     <tr><td>Total Reach</td>
-                        <td style="text-align:right"><strong>1,564</strong></td></tr>
+                        <td style="text-align:right"><strong>1,590</strong></td></tr>
                     <tr><td>Total Reactions</td>
                         <td style="text-align:right"><strong>30</strong></td></tr>
                     <tr><td>Total Comments</td>
@@ -1033,7 +1519,7 @@
                     <tr><td>Total Clicks</td>
                         <td style="text-align:right"><strong>71</strong></td></tr>
                     <tr><td>Avg Engagement Rate</td>
-                        <td style="text-align:right"><strong>1.03%</strong></td></tr>
+                        <td style="text-align:right"><strong>0.92%</strong></td></tr>
                 </tbody>
             </table>
         </div>
@@ -1076,12 +1562,12 @@
             <td>—</td>
             <td style="font-size:11px">—</td>
             <td style="font-size:11px;color:#AAB4C0">Göbekli Tepe is 12,000 years old. That's 6,000 years before Stonehenge. 7,000 years before</td>
-            <td style="text-align:center"><strong>224</strong></td>
+            <td style="text-align:center"><strong>225</strong></td>
             <td style="text-align:center">8</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">14</td>
-            <td style="text-align:center">3.57%</td>
+            <td style="text-align:center">3.56%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097634089336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
@@ -1090,12 +1576,12 @@
             <td>Cosmic Origins</td>
             <td style="font-size:11px">Theia impact — how the Moon formed</td>
             <td style="font-size:11px;color:#AAB4C0">About 4.5 billion years ago, a Mars-sized rock called Theia slammed into the early Earth. </td>
-            <td style="text-align:center"><strong>215</strong></td>
+            <td style="text-align:center"><strong>216</strong></td>
             <td style="text-align:center">5</td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">2</td>
             <td style="text-align:center">17</td>
-            <td style="text-align:center">2.33%</td>
+            <td style="text-align:center">2.31%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097632199336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
@@ -1104,12 +1590,12 @@
             <td>Ancient Life</td>
             <td style="font-size:11px">Woolly mammoth — extinct 4,000 years ago, being revived</td>
             <td style="font-size:11px;color:#AAB4C0">The woolly mammoth went extinct about 4,000 years ago. The pyramids of Giza were already 6</td>
-            <td style="text-align:center"><strong>213</strong></td>
+            <td style="text-align:center"><strong>214</strong></td>
             <td style="text-align:center">4</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">12</td>
-            <td style="text-align:center">1.88%</td>
+            <td style="text-align:center">1.87%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097672867336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
@@ -1118,12 +1604,12 @@
             <td>Cosmic Origins</td>
             <td style="font-size:11px">Stardust — calcium, iron, carbon forged in dying stars</td>
             <td style="font-size:11px;color:#AAB4C0">The calcium in your bones was forged inside a dying star. The iron in your blood came from</td>
-            <td style="text-align:center"><strong>199</strong></td>
+            <td style="text-align:center"><strong>200</strong></td>
             <td style="text-align:center">5</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">7</td>
-            <td style="text-align:center">2.51%</td>
+            <td style="text-align:center">2.5%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097669435336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
@@ -1132,7 +1618,7 @@
             <td>Human Origins</td>
             <td style="font-size:11px">Out of Africa — the migration that made all of us</td>
             <td style="font-size:11px;color:#AAB4C0">Around 70,000 years ago, a small group of Homo sapiens left Africa. We don't know exactly </td>
-            <td style="text-align:center"><strong>154</strong></td>
+            <td style="text-align:center"><strong>155</strong></td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -1146,12 +1632,12 @@
             <td>Ancient Life</td>
             <td style="font-size:11px">What if the asteroid had missed? The Dinosauroid</td>
             <td style="font-size:11px;color:#AAB4C0">What if the asteroid had missed? Paleontologist Dale Russell proposed that Troodon formosu</td>
-            <td style="text-align:center"><strong>94</strong></td>
+            <td style="text-align:center"><strong>95</strong></td>
             <td style="text-align:center">3</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
-            <td style="text-align:center">3.19%</td>
+            <td style="text-align:center">3.16%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097665397336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
@@ -1160,12 +1646,12 @@
             <td>Ancient Life</td>
             <td style="font-size:11px">Patagotitan mayorum — largest animal to walk Earth</td>
             <td style="font-size:11px;color:#AAB4C0">Meet Patagotitan mayorum — the largest animal to ever walk the Earth. At 121 feet long and</td>
-            <td style="text-align:center"><strong>80</strong></td>
+            <td style="text-align:center"><strong>81</strong></td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">5</td>
-            <td style="text-align:center">1.25%</td>
+            <td style="text-align:center">1.23%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097629505336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
@@ -1174,35 +1660,35 @@
             <td>Human Origins</td>
             <td style="font-size:11px">Denisovans — ghost species discovered from one finger bone</td>
             <td style="font-size:11px;color:#AAB4C0">You may be carrying the DNA of a human species we only discovered in 2010. The Denisovans </td>
-            <td style="text-align:center"><strong>70</strong></td>
+            <td style="text-align:center"><strong>71</strong></td>
             <td style="text-align:center">2</td>
             <td style="text-align:center">1</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">9</td>
-            <td style="text-align:center">2.86%</td>
+            <td style="text-align:center">2.82%</td>
             <td style="text-align:center;font-size:11px">2026-05-22</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097630609336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
         <tr>
-            <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
-            <td>Lost & Forgotten</td>
-            <td style="font-size:11px">The Library of Alexandria Did Not Burn the Way You Think It Did</td>
-            <td style="font-size:11px;color:#AAB4C0">The Library of Alexandria didn't burn in a single catastrophic night.  The story most peop</td>
-            <td style="text-align:center"><strong>3</strong></td>
+            <td style="font-size:11px;color:#C9A84C"></td>
+            <td>—</td>
+            <td style="font-size:11px">—</td>
+            <td style="font-size:11px;color:#AAB4C0">One in 500 million made it through. Whether by design  or chance — that was you.  You get </td>
+            <td style="text-align:center"><strong>6</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
             <td style="text-align:center;font-size:11px">2026-05-24</td>
-            <td><a href="https://www.facebook.com/122100168117336301/posts/122098782237336301" target="_blank" style="color:#A0714F">Open</a></td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122098629927336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
         <tr>
             <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
             <td>Human Origins</td>
             <td style="font-size:11px">The Lottery of Being Born — One in 500 Million</td>
             <td style="font-size:11px;color:#AAB4C0">One sperm out of 500 million made it through. Whether by design or chance — that was you. </td>
-            <td style="text-align:center"><strong>3</strong></td>
+            <td style="text-align:center"><strong>5</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -1214,23 +1700,37 @@
         <tr>
             <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
             <td>Human Origins</td>
-            <td style="font-size:11px">You are part Neanderthal — what you inherited</td>
-            <td style="font-size:11px;color:#AAB4C0">You are part Neanderthal. If your ancestry is non-African, approximately 1–4% of your geno</td>
-            <td style="text-align:center"><strong>2</strong></td>
+            <td style="font-size:11px">The Human Bottleneck — We Almost Went Extinct</td>
+            <td style="font-size:11px;color:#AAB4C0">Around 70,000 years ago the Toba supervolcano erupted in what is now Sumatra.  It was the </td>
+            <td style="text-align:center"><strong>4</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-22</td>
-            <td><a href="https://www.facebook.com/122100168117336301/posts/122097635865336301" target="_blank" style="color:#A0714F">Open</a></td>
+            <td style="text-align:center;font-size:11px">2026-05-24</td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122099641317336301" target="_blank" style="color:#A0714F">Open</a></td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
+            <td>Lost & Forgotten</td>
+            <td style="font-size:11px">The Library of Alexandria Did Not Burn the Way You Think It Did</td>
+            <td style="font-size:11px;color:#AAB4C0">The Library of Alexandria didn't burn in a single catastrophic night.  The story most peop</td>
+            <td style="text-align:center"><strong>4</strong></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-24</td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122098782237336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
         <tr>
             <td style="font-size:11px;color:#C9A84C"></td>
             <td>—</td>
             <td style="font-size:11px">—</td>
             <td style="font-size:11px;color:#AAB4C0"></td>
-            <td style="text-align:center"><strong>2</strong></td>
+            <td style="text-align:center"><strong>3</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -1243,22 +1743,36 @@
             <td style="font-size:11px;color:#C9A84C"></td>
             <td>—</td>
             <td style="font-size:11px">—</td>
-            <td style="font-size:11px;color:#AAB4C0">One in 500 million made it through. Whether by design  or chance — that was you.  You get </td>
-            <td style="text-align:center"><strong>2</strong></td>
+            <td style="font-size:11px;color:#AAB4C0">There is an eighth continent on Earth. We only confirmed it in 2017.  Zealandia — Te Riu-a</td>
+            <td style="text-align:center"><strong>3</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-24</td>
-            <td><a href="https://www.facebook.com/122100168117336301/posts/122098629927336301" target="_blank" style="color:#A0714F">Open</a></td>
+            <td style="text-align:center;font-size:11px">2026-05-26</td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122100063873336301" target="_blank" style="color:#A0714F">Open</a></td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
+            <td>Human Origins</td>
+            <td style="font-size:11px">You are part Neanderthal — what you inherited</td>
+            <td style="font-size:11px;color:#AAB4C0">You are part Neanderthal. If your ancestry is non-African, approximately 1–4% of your geno</td>
+            <td style="text-align:center"><strong>3</strong></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-22</td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122097635865336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr>
         <tr>
             <td style="font-size:11px;color:#C9A84C"></td>
             <td>—</td>
             <td style="font-size:11px">—</td>
             <td style="font-size:11px;color:#AAB4C0">What the Blood Knows is live on Amazon. A novel of inherited memory. Book One of The Wakin</td>
-            <td style="text-align:center"><strong>2</strong></td>
+            <td style="text-align:center"><strong>3</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -1269,24 +1783,10 @@
         </tr>
         <tr>
             <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
-            <td>Human Origins</td>
-            <td style="font-size:11px">The Human Bottleneck — We Almost Went Extinct</td>
-            <td style="font-size:11px;color:#AAB4C0">Around 70,000 years ago the Toba supervolcano erupted in what is now Sumatra.  It was the </td>
-            <td style="text-align:center"><strong>1</strong></td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-24</td>
-            <td><a href="https://www.facebook.com/122100168117336301/posts/122099641317336301" target="_blank" style="color:#A0714F">Open</a></td>
-        </tr>
-        <tr>
-            <td style="font-size:11px;color:#C9A84C">WB-FB-01</td>
             <td>Ancient Life</td>
             <td style="font-size:11px">The Ocean Had a Predator That Made Megalodon Look Small</td>
             <td style="font-size:11px;color:#AAB4C0">Everyone knows Megalodon. Fewer people know what ruled the seas before it.  Mosasaurus — a</td>
-            <td style="text-align:center"><strong>1</strong></td>
+            <td style="text-align:center"><strong>2</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -1299,27 +1799,41 @@
             <td style="font-size:11px;color:#C9A84C"></td>
             <td>—</td>
             <td style="font-size:11px">—</td>
-            <td style="font-size:11px;color:#AAB4C0">There is an eighth continent on Earth. We only confirmed it in 2017.  Zealandia — Te Riu-a</td>
-            <td style="text-align:center"><strong>0</strong></td>
+            <td style="font-size:11px;color:#AAB4C0">There are an estimated 2 trillion galaxies in the observable universe.  The Milky Way alon</td>
+            <td style="text-align:center"><strong>1</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
             <td style="text-align:center;font-size:11px">2026-05-26</td>
-            <td><a href="https://www.facebook.com/122100168117336301/posts/122100063873336301" target="_blank" style="color:#A0714F">Open</a></td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122100233307336301" target="_blank" style="color:#A0714F">Open</a></td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:#C9A84C"></td>
+            <td>—</td>
+            <td style="font-size:11px">—</td>
+            <td style="font-size:11px;color:#AAB4C0">Twenty years ago we couldn't extract usable DNA from a 10,000-year-old bone.  Now we routi</td>
+            <td style="text-align:center"><strong>0</strong></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-27</td>
+            <td><a href="https://www.facebook.com/122100168117336301/posts/122100697983336301" target="_blank" style="color:#A0714F">Open</a></td>
         </tr></tbody>
             <tfoot>
                 <tr style="background:#101F36">
                     <td colspan="4">
                         <strong style="color:#A0714F">TOTALS — Prehistoric Memories</strong>
                     </td>
-                    <td style="text-align:center"><strong>1,564</strong></td>
+                    <td style="text-align:center"><strong>1,590</strong></td>
                     <td style="text-align:center"><strong>30</strong></td>
                     <td style="text-align:center"><strong>2</strong></td>
                     <td style="text-align:center"><strong>5</strong></td>
                     <td style="text-align:center"><strong>71</strong></td>
-                    <td style="text-align:center"><strong>1.03%</strong></td>
+                    <td style="text-align:center"><strong>0.92%</strong></td>
                     <td colspan="2"></td>
 
                 </tr>
@@ -1332,11 +1846,11 @@
             <table class="scoreboard-table">
                 <tbody>
                     <tr><td>Posts Analyzed</td>
-                        <td style="text-align:right"><strong>10</strong></td></tr>
+                        <td style="text-align:right"><strong>11</strong></td></tr>
                     <tr><td>DB Matched</td>
-                        <td style="text-align:right"><strong>7 / 10</strong></td></tr>
+                        <td style="text-align:right"><strong>8 / 11</strong></td></tr>
                     <tr><td>Total Reach</td>
-                        <td style="text-align:right"><strong>745</strong></td></tr>
+                        <td style="text-align:right"><strong>751</strong></td></tr>
                     <tr><td>Total Reactions</td>
                         <td style="text-align:right"><strong>1</strong></td></tr>
                     <tr><td>Total Comments</td>
@@ -1344,7 +1858,7 @@
                     <tr><td>Total Shares</td>
                         <td style="text-align:right"><strong>1</strong></td></tr>
                     <tr><td>Total Clicks</td>
-                        <td style="text-align:right"><strong>15</strong></td></tr>
+                        <td style="text-align:right"><strong>21</strong></td></tr>
                     <tr><td>Avg Engagement Rate</td>
                         <td style="text-align:right"><strong>0.03%</strong></td></tr>
                 </tbody>
@@ -1403,7 +1917,7 @@
             <td>—</td>
             <td style="font-size:11px">—</td>
             <td style="font-size:11px;color:#AAB4C0">Most people track nothing. Or they track the wrong things.  After 50, these five numbers t</td>
-            <td style="text-align:center"><strong>211</strong></td>
+            <td style="text-align:center"><strong>212</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">1</td>
@@ -1417,7 +1931,7 @@
             <td>Metabolism & Biomarkers</td>
             <td style="font-size:11px">Your Doctor Looks at Total Cholesterol. The Number That Actually Matters Is Different.</td>
             <td style="font-size:11px;color:#AAB4C0">Total cholesterol is an almost meaningless number for predicting cardiovascular risk.  The</td>
-            <td style="text-align:center"><strong>2</strong></td>
+            <td style="text-align:center"><strong>3</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
@@ -1425,6 +1939,34 @@
             <td style="text-align:center">0.0%</td>
             <td style="text-align:center;font-size:11px">2026-05-24</td>
             <td><a href="https://www.facebook.com/122096332239348222/posts/122095619211348222" target="_blank" style="color:#2E86AB">Open</a></td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
+            <td>Hormones & Metabolism</td>
+            <td style="font-size:11px">Testosterone Drops 1% Per Year After 30. Here Is What Accelerates It.</td>
+            <td style="font-size:11px;color:#AAB4C0">Total testosterone declines roughly 1% per year after 30. By 50, many men have lost 20–30%</td>
+            <td style="text-align:center"><strong>2</strong></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-24</td>
+            <td><a href="https://www.facebook.com/122096332239348222/posts/122095108899348222" target="_blank" style="color:#2E86AB">Open</a></td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
+            <td>Hormones & Metabolism</td>
+            <td style="font-size:11px">88% of Americans Are Metabolically Unhealthy. Most Do Not Know It.</td>
+            <td style="font-size:11px;color:#AAB4C0">Only 12% of American adults have optimal metabolic health across all five markers: blood g</td>
+            <td style="text-align:center"><strong>2</strong></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">1</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-24</td>
+            <td><a href="https://www.facebook.com/122096332239348222/posts/122095987647348222" target="_blank" style="color:#2E86AB">Open</a></td>
         </tr>
         <tr>
             <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
@@ -1441,18 +1983,32 @@
             <td><a href="https://www.facebook.com/122096332239348222/posts/122095108227348222" target="_blank" style="color:#2E86AB">Open</a></td>
         </tr>
         <tr>
-            <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
-            <td>Hormones & Metabolism</td>
-            <td style="font-size:11px">88% of Americans Are Metabolically Unhealthy. Most Do Not Know It.</td>
-            <td style="font-size:11px;color:#AAB4C0">Only 12% of American adults have optimal metabolic health across all five markers: blood g</td>
-            <td style="text-align:center"><strong>1</strong></td>
+            <td style="font-size:11px;color:#C9A84C"></td>
+            <td>—</td>
+            <td style="font-size:11px">—</td>
+            <td style="font-size:11px;color:#AAB4C0">One fact. One mechanism. One protocol. Every post.  The Protocol Lab breaks down the scien</td>
+            <td style="text-align:center"><strong>2</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
             <td style="text-align:center;font-size:11px">2026-05-24</td>
-            <td><a href="https://www.facebook.com/122096332239348222/posts/122095987647348222" target="_blank" style="color:#2E86AB">Open</a></td>
+            <td><a href="https://www.facebook.com/122096332239348222/posts/122095014495348222" target="_blank" style="color:#2E86AB">Open</a></td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
+            <td>Cardiovascular & Longevity</td>
+            <td style="font-size:11px">VO2 Max Predicts Your Death Better Than Any Other Biomarker. You Can Improve It at Any Age.</td>
+            <td style="font-size:11px;color:#AAB4C0">VO2 max — the maximum rate at which your body can use oxygen during exercise — is the sing</td>
+            <td style="text-align:center"><strong>1</strong></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">5</td>
+            <td style="text-align:center">0.0%</td>
+            <td style="text-align:center;font-size:11px">2026-05-24</td>
+            <td><a href="https://www.facebook.com/122096332239348222/posts/122096205513348222" target="_blank" style="color:#2E86AB">Open</a></td>
         </tr>
         <tr>
             <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
@@ -1469,57 +2025,29 @@
             <td><a href="https://www.facebook.com/122096332239348222/posts/122095107069348222" target="_blank" style="color:#2E86AB">Open</a></td>
         </tr>
         <tr>
-            <td style="font-size:11px;color:#C9A84C">TPL-FB-01</td>
-            <td>Hormones & Metabolism</td>
-            <td style="font-size:11px">Testosterone Drops 1% Per Year After 30. Here Is What Accelerates It.</td>
-            <td style="font-size:11px;color:#AAB4C0">Total testosterone declines roughly 1% per year after 30. By 50, many men have lost 20–30%</td>
-            <td style="text-align:center"><strong>1</strong></td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-24</td>
-            <td><a href="https://www.facebook.com/122096332239348222/posts/122095108899348222" target="_blank" style="color:#2E86AB">Open</a></td>
-        </tr>
-        <tr>
             <td style="font-size:11px;color:#C9A84C"></td>
             <td>—</td>
             <td style="font-size:11px">—</td>
-            <td style="font-size:11px;color:#AAB4C0">One fact. One mechanism. One protocol. Every post.  The Protocol Lab breaks down the scien</td>
-            <td style="text-align:center"><strong>1</strong></td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0</td>
-            <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-24</td>
-            <td><a href="https://www.facebook.com/122096332239348222/posts/122095014495348222" target="_blank" style="color:#2E86AB">Open</a></td>
-        </tr>
-        <tr>
-            <td style="font-size:11px;color:#C9A84C"></td>
-            <td>—</td>
-            <td style="font-size:11px">—</td>
-            <td style="font-size:11px;color:#AAB4C0">VO2 max — the maximum rate at which your body can use oxygen during exercise — is the sing</td>
+            <td style="font-size:11px;color:#AAB4C0">The RDA for protein is 0.8g per kg of bodyweight.  That number was calculated to prevent d</td>
             <td style="text-align:center"><strong>0</strong></td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0</td>
             <td style="text-align:center">0.0%</td>
-            <td style="text-align:center;font-size:11px">2026-05-26</td>
-            <td><a href="https://www.facebook.com/122096332239348222/posts/122096205513348222" target="_blank" style="color:#2E86AB">Open</a></td>
+            <td style="text-align:center;font-size:11px">2026-05-27</td>
+            <td><a href="https://www.facebook.com/122096332239348222/posts/122096761275348222" target="_blank" style="color:#2E86AB">Open</a></td>
         </tr></tbody>
             <tfoot>
                 <tr style="background:#101F36">
                     <td colspan="4">
                         <strong style="color:#2E86AB">TOTALS — The Protocol Lab</strong>
                     </td>
-                    <td style="text-align:center"><strong>745</strong></td>
+                    <td style="text-align:center"><strong>751</strong></td>
                     <td style="text-align:center"><strong>1</strong></td>
                     <td style="text-align:center"><strong>0</strong></td>
                     <td style="text-align:center"><strong>1</strong></td>
-                    <td style="text-align:center"><strong>15</strong></td>
+                    <td style="text-align:center"><strong>21</strong></td>
                     <td style="text-align:center"><strong>0.03%</strong></td>
                     <td colspan="2"></td>
 
@@ -1549,10 +2077,10 @@
                 <tbody>
         <tr>
             <td>Win the Long War</td>
-            <td style="text-align:center">4</td>
+            <td style="text-align:center">5</td>
             <td style="text-align:center">0</td>
-            <td style="text-align:center">59</td>
-            <td style="text-align:center"><strong style="color:#C9A84C">$12.69</strong></td>
+            <td style="text-align:center">116</td>
+            <td style="text-align:center"><strong style="color:#C9A84C">$18.48</strong></td>
         </tr>
         <tr>
             <td>AI After 50</td>
@@ -1599,7 +2127,7 @@
                 <tfoot>
                     <tr style="background:#0A1628">
                         <td colspan="4"><strong style="color:#C9A84C">TOTAL ALL TIME</strong></td>
-                        <td style="text-align:center"><strong style="color:#C9A84C">$19.02</strong></td>
+                        <td style="text-align:center"><strong style="color:#C9A84C">$24.81</strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -1618,9 +2146,9 @@
                 <tbody>
         <tr>
             <td>2026-05</td>
-            <td style="text-align:center">3</td>
-            <td style="text-align:center">243</td>
-            <td style="text-align:center"><strong style="color:#C9A84C">$7.90</strong></td>
+            <td style="text-align:center">4</td>
+            <td style="text-align:center">300</td>
+            <td style="text-align:center"><strong style="color:#C9A84C">$13.69</strong></td>
         </tr>
         <tr>
             <td>2026-04</td>
@@ -1674,8 +2202,8 @@
             <td>0</td>
             <td>1</td>
             <td>0.91%</td>
-            <td>Winner, Watch-Time Winner, Promising, Repurpose Candidate</td>
-            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Good engagement; test a stronger hook or repost angle. Turn this Short into an Instagram Reel.</td>
+            <td>Winner, Watch-Time Winner, Repurpose Candidate</td>
+            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Turn this Short into an Instagram Reel.</td>
             <td><a href="https://www.youtube.com/watch?v=35el68RGBco" target="_blank">Open</a></td>
         </tr>
         
@@ -1770,7 +2298,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>Göbekli Tepe is 12,000 years old. That's 6,000 years before Stonehenge. 7,000 years before the pyramids. And it was buil...</td>
-            <td>224</td>
+            <td>225</td>
             <td>0</td>
             <td>0</td>
             <td>8</td>
@@ -1778,7 +2306,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>3.57%</td>
+            <td>3.56%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097634089336301" target="_blank">Open</a></td>
@@ -1791,7 +2319,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>About 4.5 billion years ago, a Mars-sized rock called Theia slammed into the early Earth. The impact was so catastrophic...</td>
-            <td>215</td>
+            <td>216</td>
             <td>0</td>
             <td>0</td>
             <td>5</td>
@@ -1799,7 +2327,7 @@
             <td>2</td>
             <td>0</td>
             <td>0</td>
-            <td>2.33%</td>
+            <td>2.31%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097632199336301" target="_blank">Open</a></td>
@@ -1812,7 +2340,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>The woolly mammoth went extinct about 4,000 years ago. The pyramids of Giza were already 600 years old. We tend to think...</td>
-            <td>213</td>
+            <td>214</td>
             <td>0</td>
             <td>0</td>
             <td>4</td>
@@ -1820,7 +2348,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>1.88%</td>
+            <td>1.87%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097672867336301" target="_blank">Open</a></td>
@@ -1833,7 +2361,7 @@
             <td>2026-05-23</td>
             <td>IMAGE</td>
             <td>Most people track nothing. Or they track the wrong things.  After 50, these five numbers tell you almost everything you ...</td>
-            <td>211</td>
+            <td>212</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
@@ -1896,7 +2424,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>The calcium in your bones was forged inside a dying star. The iron in your blood came from a supernova explosion billion...</td>
-            <td>199</td>
+            <td>200</td>
             <td>0</td>
             <td>0</td>
             <td>5</td>
@@ -1904,7 +2432,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>2.51%</td>
+            <td>2.5%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097669435336301" target="_blank">Open</a></td>
@@ -1938,7 +2466,7 @@
             <td>2026-05-22</td>
             <td>VIDEO</td>
             <td>Cognitive decline is not inevitable. It is a variable.  After 50 the inputs that drive brain performance are the same inputs that drive physical ...</td>
-            <td>195</td>
+            <td>196</td>
             <td>13</td>
             <td>4</td>
             <td>1</td>
@@ -2001,7 +2529,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>Around 70,000 years ago, a small group of Homo sapiens left Africa. We don't know exactly why. Climate shift. Resource p...</td>
-            <td>154</td>
+            <td>155</td>
             <td>0</td>
             <td>0</td>
             <td>1</td>
@@ -2031,8 +2559,8 @@
             <td>0</td>
             <td>0</td>
             <td>0.0%</td>
-            <td>Winner, Repurpose Candidate</td>
-            <td>Study the hook/title and make a follow-up. Turn this Short into an Instagram Reel.</td>
+            <td>Winner, Watch-Time Winner, Repurpose Candidate</td>
+            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Turn this Short into an Instagram Reel.</td>
             <td><a href="https://www.youtube.com/watch?v=BmBAcXD61Uk" target="_blank">Open</a></td>
         </tr>
         
@@ -2122,8 +2650,8 @@
             <td>0</td>
             <td>1</td>
             <td>0.91%</td>
-            <td>Winner, Watch-Time Winner, Promising, Repurpose Candidate</td>
-            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Good engagement; test a stronger hook or repost angle. Turn this Short into an Instagram Reel.</td>
+            <td>Winner, Watch-Time Winner, Repurpose Candidate</td>
+            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Turn this Short into an Instagram Reel.</td>
             <td><a href="https://www.youtube.com/watch?v=35el68RGBco" target="_blank">Open</a></td>
         </tr>
         
@@ -2218,7 +2746,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>Göbekli Tepe is 12,000 years old. That's 6,000 years before Stonehenge. 7,000 years before the pyramids. And it was buil...</td>
-            <td>224</td>
+            <td>225</td>
             <td>0</td>
             <td>0</td>
             <td>8</td>
@@ -2226,7 +2754,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>3.57%</td>
+            <td>3.56%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097634089336301" target="_blank">Open</a></td>
@@ -2239,7 +2767,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>About 4.5 billion years ago, a Mars-sized rock called Theia slammed into the early Earth. The impact was so catastrophic...</td>
-            <td>215</td>
+            <td>216</td>
             <td>0</td>
             <td>0</td>
             <td>5</td>
@@ -2247,7 +2775,7 @@
             <td>2</td>
             <td>0</td>
             <td>0</td>
-            <td>2.33%</td>
+            <td>2.31%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097632199336301" target="_blank">Open</a></td>
@@ -2260,7 +2788,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>The woolly mammoth went extinct about 4,000 years ago. The pyramids of Giza were already 600 years old. We tend to think...</td>
-            <td>213</td>
+            <td>214</td>
             <td>0</td>
             <td>0</td>
             <td>4</td>
@@ -2268,7 +2796,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>1.88%</td>
+            <td>1.87%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097672867336301" target="_blank">Open</a></td>
@@ -2281,7 +2809,7 @@
             <td>2026-05-23</td>
             <td>IMAGE</td>
             <td>Most people track nothing. Or they track the wrong things.  After 50, these five numbers tell you almost everything you ...</td>
-            <td>211</td>
+            <td>212</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
@@ -2344,7 +2872,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>The calcium in your bones was forged inside a dying star. The iron in your blood came from a supernova explosion billion...</td>
-            <td>199</td>
+            <td>200</td>
             <td>0</td>
             <td>0</td>
             <td>5</td>
@@ -2352,7 +2880,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>2.51%</td>
+            <td>2.5%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097669435336301" target="_blank">Open</a></td>
@@ -2386,7 +2914,7 @@
             <td>2026-05-22</td>
             <td>VIDEO</td>
             <td>Cognitive decline is not inevitable. It is a variable.  After 50 the inputs that drive brain performance are the same inputs that drive physical ...</td>
-            <td>195</td>
+            <td>196</td>
             <td>13</td>
             <td>4</td>
             <td>1</td>
@@ -2486,8 +3014,8 @@
             <td>0</td>
             <td>1</td>
             <td>0.91%</td>
-            <td>Winner, Watch-Time Winner, Promising, Repurpose Candidate</td>
-            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Good engagement; test a stronger hook or repost angle. Turn this Short into an Instagram Reel.</td>
+            <td>Winner, Watch-Time Winner, Repurpose Candidate</td>
+            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Turn this Short into an Instagram Reel.</td>
             <td><a href="https://www.youtube.com/watch?v=35el68RGBco" target="_blank">Open</a></td>
         </tr>
         
@@ -2540,15 +3068,15 @@
             <td>2026-05-19</td>
             <td>VIDEO</td>
             <td>Why Discipline Alone Fails After 50 — The System That Works | Win the Long War</td>
-            <td>118</td>
+            <td>119</td>
             <td>12</td>
-            <td>38</td>
+            <td>36</td>
             <td>0</td>
             <td>0</td>
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>0.85%</td>
+            <td>0.84%</td>
             <td>Sticky, Watch-Time Winner, Repurpose Candidate</td>
             <td>Audience watched longer than usual; expand this topic. This generated real watch time; create a deeper version. Turn this Short into an Instagram Reel.</td>
             <td><a href="https://www.youtube.com/watch?v=latZ4Bu3zCw" target="_blank">Open</a></td>
@@ -2570,8 +3098,8 @@
             <td>0</td>
             <td>0</td>
             <td>0.0%</td>
-            <td>Winner, Repurpose Candidate</td>
-            <td>Study the hook/title and make a follow-up. Turn this Short into an Instagram Reel.</td>
+            <td>Winner, Watch-Time Winner, Repurpose Candidate</td>
+            <td>Study the hook/title and make a follow-up. This generated real watch time; create a deeper version. Turn this Short into an Instagram Reel.</td>
             <td><a href="https://www.youtube.com/watch?v=BmBAcXD61Uk" target="_blank">Open</a></td>
         </tr>
         
@@ -2619,6 +3147,27 @@
         
         <tr>
             <td>YouTube</td>
+            <td class="col-book">The Athena Protocol</td>
+            <td class="col-pillar">Fueling</td>
+            <td>2026-05-26</td>
+            <td>VIDEO</td>
+            <td>Why Nutrition Plans Fail Athena Athletes Twice | The Athena Protocol</td>
+            <td>106</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0.0%</td>
+            <td>Watch</td>
+            <td>Keep collecting data.</td>
+            <td><a href="https://www.youtube.com/watch?v=57MerdsCFtU" target="_blank">Open</a></td>
+        </tr>
+        
+        <tr>
+            <td>YouTube</td>
             <td class="col-book">—</td>
             <td class="col-pillar">—</td>
             <td>2026-04-20</td>
@@ -2654,21 +3203,21 @@
             <td>0</td>
             <td>0</td>
             <td>0.0%</td>
-            <td>Watch</td>
-            <td>Keep collecting data.</td>
+            <td>Sticky</td>
+            <td>Audience watched longer than usual; expand this topic.</td>
             <td><a href="https://www.youtube.com/watch?v=YNH_mUUDZx8" target="_blank">Open</a></td>
         </tr>
         
         <tr>
             <td>YouTube</td>
-            <td class="col-book">Win the Long War</td>
+            <td class="col-book">The Clydesdale Protocol</td>
             <td class="col-pillar">Full Book Overview</td>
-            <td>2026-05-20</td>
+            <td>2026-05-27</td>
             <td>VIDEO</td>
-            <td>Win the Long War Video Series Ep. 1 — Why Sleep Is the Protocol for Men Over 5</td>
+            <td>The Clydesdale Protocol — Training and Racing Science for Heavy Endurance Athletes</td>
             <td>1</td>
             <td>0</td>
-            <td>4</td>
+            <td>0</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
@@ -2677,7 +3226,28 @@
             <td>0.0%</td>
             <td>Watch</td>
             <td>Keep collecting data.</td>
-            <td><a href="https://www.youtube.com/watch?v=XknMJZIozo8" target="_blank">Open</a></td>
+            <td><a href="https://www.youtube.com/watch?v=vcbGRN55vFk" target="_blank">Open</a></td>
+        </tr>
+        
+        <tr>
+            <td>YouTube</td>
+            <td class="col-book">The Athena Protocol</td>
+            <td class="col-pillar">Full Book Overview</td>
+            <td>2026-05-26</td>
+            <td>VIDEO</td>
+            <td>The Athena Protocol — Training and Racing Science for Women Endurance Athletes</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0.0%</td>
+            <td>Watch</td>
+            <td>Keep collecting data.</td>
+            <td><a href="https://www.youtube.com/watch?v=S-iFxsOpc_c" target="_blank">Open</a></td>
         </tr>
         
         <tr>
@@ -2703,14 +3273,14 @@
         
         <tr>
             <td>YouTube</td>
-            <td class="col-book">—</td>
-            <td class="col-pillar">—</td>
-            <td>2026-04-18</td>
+            <td class="col-book">Win the Long War</td>
+            <td class="col-pillar">Short-Form Overview</td>
+            <td>2026-05-20</td>
             <td>VIDEO</td>
-            <td>You're doing everything right. This one variable is destroying your results. #longevity #over50fit</td>
+            <td>Win the Long War Video Series Ep. 1 — Why Sleep Is the Protocol for Men Over 5</td>
+            <td>1</td>
             <td>0</td>
-            <td>0</td>
-            <td>0</td>
+            <td>4</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
@@ -2719,49 +3289,7 @@
             <td>0.0%</td>
             <td>Watch</td>
             <td>Keep collecting data.</td>
-            <td><a href="https://www.youtube.com/watch?v=QGXcIZAQOWE" target="_blank">Open</a></td>
-        </tr>
-        
-        <tr>
-            <td>YouTube</td>
-            <td class="col-book">—</td>
-            <td class="col-pillar">—</td>
-            <td>2026-04-14</td>
-            <td>VIDEO</td>
-            <td>This race format is taking over. And it was built for men over 50.</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0.0%</td>
-            <td>Watch</td>
-            <td>Keep collecting data.</td>
-            <td><a href="https://www.youtube.com/watch?v=AjTHhYMeLWM" target="_blank">Open</a></td>
-        </tr>
-        
-        <tr>
-            <td>YouTube</td>
-            <td class="col-book">—</td>
-            <td class="col-pillar">—</td>
-            <td>2026-05-18</td>
-            <td>VIDEO</td>
-            <td>You're doing everything right. This one variable is destroying your results.</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0.0%</td>
-            <td>Watch</td>
-            <td>Keep collecting data.</td>
-            <td><a href="https://www.youtube.com/watch?v=ZxoyWNKcvKw" target="_blank">Open</a></td>
+            <td><a href="https://www.youtube.com/watch?v=XknMJZIozo8" target="_blank">Open</a></td>
         </tr>
         </tbody>
             </table>
@@ -2857,6 +3385,27 @@
         </tr>
         
         <tr>
+            <td>Instagram-WB</td>
+            <td class="col-book">—</td>
+            <td class="col-pillar">—</td>
+            <td>2026-05-26</td>
+            <td>FEED</td>
+            <td>There is an eighth continent on Earth. We only confirmed it in 2017.  Zealandia — Te Riu-a-Māui — is a landmass roughly the size of India that li...</td>
+            <td>10</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>10.0%</td>
+            <td>Promising</td>
+            <td>Good engagement; test a stronger hook or repost angle.</td>
+            <td><a href="https://www.instagram.com/p/DY0Q_cLDQbE/" target="_blank">Open</a></td>
+        </tr>
+        
+        <tr>
             <td>YouTube</td>
             <td class="col-book">Win the Long War</td>
             <td class="col-pillar">Cholesterol</td>
@@ -2881,10 +3430,31 @@
             <td>Instagram-WB</td>
             <td class="col-book">—</td>
             <td class="col-pillar">—</td>
+            <td>2026-05-26</td>
+            <td>FEED</td>
+            <td>There are an estimated 2 trillion galaxies in the observable universe.  The Milky Way alone contains 100 to 400 billion stars. A significant frac...</td>
+            <td>11</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>9.09%</td>
+            <td>Promising</td>
+            <td>Good engagement; test a stronger hook or repost angle.</td>
+            <td><a href="https://www.instagram.com/p/DYzqa3WlI64/" target="_blank">Open</a></td>
+        </tr>
+        
+        <tr>
+            <td>Instagram-WB</td>
+            <td class="col-book">—</td>
+            <td class="col-pillar">—</td>
             <td>2026-05-24</td>
             <td>FEED</td>
             <td>One sperm out of 500 million made it through. Whether by design or chance — that was you.  And before that: your parents had to meet. Their paren...</td>
-            <td>27</td>
+            <td>28</td>
             <td>0</td>
             <td>0</td>
             <td>2</td>
@@ -2892,7 +3462,7 @@
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td>7.41%</td>
+            <td>7.14%</td>
             <td>Promising</td>
             <td>Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.instagram.com/p/DYuU4Cxlof_/" target="_blank">Open</a></td>
@@ -2905,7 +3475,7 @@
             <td>2026-05-24</td>
             <td>FEED</td>
             <td>Everyone knows Megalodon. Fewer people know what ruled the seas before it.  Mosasaurus — a 57-foot marine lizard, not a fish, not a dinosaur — do...</td>
-            <td>29</td>
+            <td>30</td>
             <td>0</td>
             <td>0</td>
             <td>2</td>
@@ -2913,7 +3483,7 @@
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td>6.9%</td>
+            <td>6.67%</td>
             <td>Promising</td>
             <td>Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.instagram.com/p/DYuRzlslkSj/" target="_blank">Open</a></td>
@@ -2926,7 +3496,7 @@
             <td>2026-05-24</td>
             <td>FEED</td>
             <td>The Library of Alexandria didn't burn in a single catastrophic night.  The story most people know — Julius Caesar's fire in 48 BC — destroyed som...</td>
-            <td>30</td>
+            <td>31</td>
             <td>0</td>
             <td>0</td>
             <td>2</td>
@@ -2934,7 +3504,7 @@
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td>6.67%</td>
+            <td>6.45%</td>
             <td>Promising</td>
             <td>Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.instagram.com/p/DYuTmwyFqTC/" target="_blank">Open</a></td>
@@ -2968,7 +3538,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>Göbekli Tepe is 12,000 years old. That's 6,000 years before Stonehenge. 7,000 years before the pyramids. And it was buil...</td>
-            <td>224</td>
+            <td>225</td>
             <td>0</td>
             <td>0</td>
             <td>8</td>
@@ -2976,7 +3546,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>3.57%</td>
+            <td>3.56%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097634089336301" target="_blank">Open</a></td>
@@ -2989,7 +3559,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>What if the asteroid had missed? Paleontologist Dale Russell proposed that Troodon formosus — one of the most intelligen...</td>
-            <td>94</td>
+            <td>95</td>
             <td>0</td>
             <td>0</td>
             <td>3</td>
@@ -2997,7 +3567,7 @@
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td>3.19%</td>
+            <td>3.16%</td>
             <td>Promising</td>
             <td>Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097665397336301" target="_blank">Open</a></td>
@@ -3010,7 +3580,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>You may be carrying the DNA of a human species we only discovered in 2010. The Denisovans were identified from a single ...</td>
-            <td>70</td>
+            <td>71</td>
             <td>0</td>
             <td>0</td>
             <td>2</td>
@@ -3018,7 +3588,7 @@
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td>2.86%</td>
+            <td>2.82%</td>
             <td>Promising</td>
             <td>Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097630609336301" target="_blank">Open</a></td>
@@ -3031,7 +3601,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>The calcium in your bones was forged inside a dying star. The iron in your blood came from a supernova explosion billion...</td>
-            <td>199</td>
+            <td>200</td>
             <td>0</td>
             <td>0</td>
             <td>5</td>
@@ -3039,7 +3609,7 @@
             <td>1</td>
             <td>0</td>
             <td>0</td>
-            <td>2.51%</td>
+            <td>2.5%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097669435336301" target="_blank">Open</a></td>
@@ -3052,7 +3622,7 @@
             <td>2026-05-22</td>
             <td>IMAGE</td>
             <td>About 4.5 billion years ago, a Mars-sized rock called Theia slammed into the early Earth. The impact was so catastrophic...</td>
-            <td>215</td>
+            <td>216</td>
             <td>0</td>
             <td>0</td>
             <td>5</td>
@@ -3060,52 +3630,10 @@
             <td>2</td>
             <td>0</td>
             <td>0</td>
-            <td>2.33%</td>
+            <td>2.31%</td>
             <td>Winner, Promising</td>
             <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
             <td><a href="https://www.facebook.com/122100168117336301/posts/122097632199336301" target="_blank">Open</a></td>
-        </tr>
-        
-        <tr>
-            <td>FB-Image-PrehistoricMemories</td>
-            <td class="col-book">—</td>
-            <td class="col-pillar">—</td>
-            <td>2026-05-22</td>
-            <td>IMAGE</td>
-            <td>The woolly mammoth went extinct about 4,000 years ago. The pyramids of Giza were already 600 years old. We tend to think...</td>
-            <td>213</td>
-            <td>0</td>
-            <td>0</td>
-            <td>4</td>
-            <td>0</td>
-            <td>1</td>
-            <td>0</td>
-            <td>0</td>
-            <td>1.88%</td>
-            <td>Winner, Promising</td>
-            <td>Study the hook/title and make a follow-up. Good engagement; test a stronger hook or repost angle.</td>
-            <td><a href="https://www.facebook.com/122100168117336301/posts/122097672867336301" target="_blank">Open</a></td>
-        </tr>
-        
-        <tr>
-            <td>Instagram</td>
-            <td class="col-book">Win the Long War</td>
-            <td class="col-pillar">System</td>
-            <td>2026-05-19</td>
-            <td>REELS</td>
-            <td>Discipline without a system is suffering in the wrong direction.  After 300 races and 40 years it comes down to 7 non-negotiables. Sleep. Fuel. M...</td>
-            <td>58</td>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>1.72%</td>
-            <td>Promising</td>
-            <td>Good engagement; test a stronger hook or repost angle.</td>
-            <td><a href="https://www.instagram.com/reel/DYh_aXNA69o/" target="_blank">Open</a></td>
         </tr>
         </tbody>
             </table>
@@ -3116,6 +3644,7 @@
             Facebook metrics: Reel Plays are the main Facebook views. Reach is unique reached. 15s Quality Views are a deeper-watch signal. 3s API Views are kept as diagnostics because Meta may return 0 for Reels even when Reel Plays are available.<br>
             Never commit .env, client_secret.json, or youtube_token.json to GitHub.
         </div>
+        </div><!-- end tab-analyst -->
     </div>
 </body>
 </html>
