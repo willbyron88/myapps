@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="wpp.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="query browser structure pragmas" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4049"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="assets" custom_title="0" dock_id="5" table="4,6:mainassets"/><table title="content" custom_title="0" dock_id="2" table="4,7:maincontent"/><table title="analytics_snapshots" custom_title="0" dock_id="1" table="4,19:mainanalytics_snapshots"/><dock_state state="000000ff00000000fd0000000100000002000005f4000002aefc0100000001fc00000000000005f40000011e00fffffffa000000010100000003fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011800fffffffb000000160064006f0063006b00420072006f00770073006500320100000000ffffffff0000011e00fffffffb000000160064006f0063006b00420072006f00770073006500350100000000ffffffff0000011800ffffff000005f40000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="analytics_snapshots" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="76"/><column index="2" value="90"/><column index="3" value="56"/><column index="4" value="55"/><column index="5" value="62"/><column index="6" value="82"/><column index="7" value="86"/><column index="8" value="40"/><column index="9" value="34"/><column index="10" value="66"/><column index="11" value="45"/><column index="12" value="39"/><column index="13" value="94"/><column index="14" value="113"/><column index="15" value="116"/><column index="16" value="102"/><column index="17" value="91"/><column index="18" value="68"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="assets" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="93"/><column index="2" value="109"/><column index="3" value="148"/><column index="4" value="241"/><column index="5" value="492"/><column index="6" value="54"/><column index="7" value="85"/><column index="8" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="content" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="1" mode="0"/></sort><column_widths><column index="1" value="68"/><column index="2" value="64"/><column index="3" value="101"/><column index="4" value="69"/><column index="5" value="83"/><column index="6" value="148"/><column index="7" value="218"/><column index="8" value="402"/><column index="9" value="71"/><column index="10" value="156"/><column index="11" value="101"/><column index="12" value="46"/><column index="13" value="300"/><column index="14" value="387"/><column index="15" value="300"/><column index="16" value="85"/><column index="17" value="300"/><column index="18" value="156"/><column index="19" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="pm_posts" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="1" mode="1"/></sort><column_widths><column index="1" value="50"/><column index="2" value="70"/><column index="3" value="85"/><column index="4" value="132"/><column index="5" value="714"/><column index="6" value="64"/><column index="7" value="300"/><column index="8" value="46"/><column index="9" value="39"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="tpl_posts" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="50"/><column index="2" value="78"/><column index="3" value="85"/><column index="4" value="210"/><column index="5" value="590"/><column index="6" value="64"/><column index="7" value="631"/><column index="8" value="46"/><column index="9" value="39"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="x_analytics" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="89"/><column index="2" value="90"/><column index="3" value="300"/><column index="4" value="62"/><column index="5" value="148"/><column index="6" value="75"/><column index="7" value="34"/><column index="8" value="49"/><column index="9" value="80"/><column index="10" value="66"/><column index="11" value="156"/><column index="12" value="90"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- PM posts 11-20 URLs (fill in as they post)
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="wpp.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="query browser structure pragmas" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4049"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="analytics_snapshots" custom_title="0" dock_id="1" table="4,19:mainanalytics_snapshots"/><table title="content" custom_title="0" dock_id="2" table="4,7:maincontent"/><table title="assets" custom_title="0" dock_id="5" table="4,6:mainassets"/><dock_state state="000000ff00000000fd00000001000000020000043c000002aefc0100000001fc000000000000043c0000011e00fffffffa000000010100000003fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011800fffffffb000000160064006f0063006b00420072006f00770073006500320100000000ffffffff0000011e00fffffffb000000160064006f0063006b00420072006f00770073006500350100000000ffffffff0000011e00ffffff0000043c0000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="analytics_snapshots" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="76"/><column index="2" value="90"/><column index="3" value="56"/><column index="4" value="55"/><column index="5" value="62"/><column index="6" value="82"/><column index="7" value="86"/><column index="8" value="40"/><column index="9" value="34"/><column index="10" value="66"/><column index="11" value="45"/><column index="12" value="39"/><column index="13" value="94"/><column index="14" value="113"/><column index="15" value="116"/><column index="16" value="102"/><column index="17" value="91"/><column index="18" value="68"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="assets" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="93"/><column index="2" value="117"/><column index="3" value="148"/><column index="4" value="241"/><column index="5" value="300"/><column index="6" value="54"/><column index="7" value="85"/><column index="8" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="content" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="1" mode="0"/></sort><column_widths><column index="1" value="68"/><column index="2" value="64"/><column index="3" value="101"/><column index="4" value="69"/><column index="5" value="83"/><column index="6" value="156"/><column index="7" value="241"/><column index="8" value="300"/><column index="9" value="71"/><column index="10" value="156"/><column index="11" value="101"/><column index="12" value="46"/><column index="13" value="300"/><column index="14" value="300"/><column index="15" value="300"/><column index="16" value="85"/><column index="17" value="300"/><column index="18" value="156"/><column index="19" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="pm_posts" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="1" mode="1"/></sort><column_widths><column index="1" value="50"/><column index="2" value="70"/><column index="3" value="85"/><column index="4" value="132"/><column index="5" value="714"/><column index="6" value="64"/><column index="7" value="300"/><column index="8" value="46"/><column index="9" value="39"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="tpl_posts" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="50"/><column index="2" value="78"/><column index="3" value="85"/><column index="4" value="210"/><column index="5" value="590"/><column index="6" value="64"/><column index="7" value="631"/><column index="8" value="46"/><column index="9" value="39"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="x_analytics" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="89"/><column index="2" value="90"/><column index="3" value="300"/><column index="4" value="62"/><column index="5" value="148"/><column index="6" value="75"/><column index="7" value="34"/><column index="8" value="49"/><column index="9" value="80"/><column index="10" value="66"/><column index="11" value="156"/><column index="12" value="90"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- PM posts 11-20 URLs (fill in as they post)
 UPDATE pm_posts SET facebook_url = 'https://www.facebook.com/photo?fbid=122098772853336301&amp;set=a.122097629493336301'
 WHERE post_id = 11;
 -- repeat for 12-20
@@ -34,115 +34,224 @@ WHERE post_id = 9;
 -- repeat for 2-10
 UPDATE tpl_posts SET facebook_url = '222'
 WHERE post_id = 10;
--- repeat for 2-10
+-- repeat for 2-10
+
+
+
+
+
+
+
+UPDATE content
+SET posted        = 'Y',
+    instagram_url = 'https://www.instagram.com/reel/DYz7rDfp8hG/',
+    youtube_url   = 'https://www.youtube.com/shorts/57MerdsCFtU',
+    facebook_url  = 'https://www.facebook.com/reel/1255188883360661',
+    x_url         = 'https://x.com/wpprotocols/status/2059337511697072259',
+    post_date     = date('now')
+WHERE book_key     = 'WPP-04'
+AND   content_type = 'Short'
+AND   short_num    = 1;  ← CHANGE THIS NUMBER
+
+SELECT short_num, content_pillar, posted, post_date,
+       instagram_url, youtube_url, facebook_url, x_url
+FROM content WHERE book_key='WPP-04'
+AND content_type='Short' ORDER BY short_num;
+
+
+
+INSERT INTO content
+(book_key, content_type, episode_num, content_pillar, campaign,
+ script_topic, ig_account, x_account, posted, youtube_url, facebook_url, x_url, post_date)
+VALUES
+('WPP-04', 'VideoEpisode', 1, 'Full Book Overview',
+ '[Book Title] Launch',
+ 'NotebookLM Full Book Overview — All 7 Pillars',
+ '@willpowerprotocols', '@wpprotocols',
+ 'Y', 
+ 'https://www.youtube.com/watch?v=S-iFxsOpc_c',
+ 'https://www.facebook.com/reel/1033295572706718',
+ 'https://x.com/wpprotocols/status/2059360563768004728',
+ date('now'));
+ 
+ -- KDP Sales — year 2026 — generated 2026-05-27
+-- Months found: 2026-04, 2026-05
+
+-- DELETE all 2026 data first (safe re-run)
+UPDATE content
+SET posted        = 'Y',
+    instagram_url = 'https://www.instagram.com/reel/DY1hBGRAZLi/',
+    youtube_url   = 'https://youtube.com/shorts/D3KDiRCiDT0',
+    facebook_url  = 'https://www.facebook.com/reel/1466332614784982',
+    x_url         = 'https://x.com/wpprotocols/status/2059559987194573140',
+    post_date     = date('now')
+WHERE book_key     = 'WPP-03'
+AND   content_type = 'Short'
+AND   short_num    = 1; -- ← CHANGE THIS NUMBER
+
+
+
+
+
+
+INSERT INTO content (
+book_key, content_type, episode_num, content_pillar, 
+campaign, script_topic, ig_account, x_account, posted, 
+youtube_url, 
+facebook_url, 
+x_url, post_date)
+VALUES ('WPP-03', 'VideoEpisode', 1, 'Full Book Overview', 'The Clydesdale Protocol Launch', 'NotebookLM Full Book Overview — Heavy Athlete Performance Variables', 
+'@willpowerprotocols', '@wpprotocols', 'N', 
+'https://www.youtube.com/watch?v=vcbGRN55vFk', 
+'https://www.facebook.com/reel/1276218117991368', 
+'https://x.com/wpprotocols/status/2059574156090311145',  
+date('now'));
+
+select * from content where content_type = 'VideoEpisode'
+ 
+-- FIX 1: WPP-01 Episode 1 — wrong descriptions
+-- This is the 2-min Sleep video, YouTube only. Not a full overview.
+UPDATE content
+SET content_pillar = 'Short-Form Overview',
+    script_topic   = 'NotebookLM 2-Minute Video — Sleep &amp; Recovery Protocol'
+WHERE content_id = 48;
+ 
+ 
+-- FIX 2: WPP-04 Episode 1 — campaign still has placeholder text
+UPDATE content
+SET campaign = 'The Athena Protocol Launch'
+WHERE content_id = 50;
+ 
+ 
+-- FIX 3: WPP-03 Episode 1 — posted = N but URLs are filled in
+-- Mark it posted if you've already published it today
+UPDATE content
+SET posted    = 'Y',
+    post_date = date('now')
+WHERE content_id = 51;
+ 
+ 
+-- ═══════════════════════════════════════════════════════════════
+-- VERIFY — all 4 rows clean
+-- ═══════════════════════════════════════════════════════════════
+ 
+SELECT content_id, book_key, episode_num, content_pillar, campaign,
+       script_topic, posted, post_date, youtube_url, facebook_url, x_url
+FROM content
+WHERE content_type = 'VideoEpisode'
+ORDER BY book_key, episode_num;
+
+select * from assets
+
+UPDATE assets SET launch_date = '2026-05-27' WHERE asset_key = 'WB-FB-02';
+UPDATE assets SET launch_date = '2026-05-01' WHERE asset_key = 'TPL-FB-01';
+UPDATE assets SET notes = 'Will Byron literary fiction X account' WHERE asset_key = 'WB-X-01';
+UPDATE assets SET notes = 'WPP Shorts + VideoEpisodes · tracked in content table · Conner voice · 4 platforms' WHERE asset_key = 'WPP-IG-01';
+
+UPDATE assets SET notes = 'X analytics imported via wpp_x_importer.py every Monday · under 280 chars · 2-3 hashtags' WHERE asset_key = 'WPP-X-01';
+
+UPDATE assets SET notes = 'Shorts + NotebookLM VideoEpisodes · all uploaded to YouTube · one channel for all WPP books' WHERE asset_key = 'WPP-YT-01';
+
+UPDATE assets
+SET asset_key    = 'PM-FB-01',
+    name = 'Prehistoric Memories FB Page',
+    url          = 'https://www.facebook.com/prehistoricmemories',
+    notes        = 'Science/paleo image content · 5 pillars · 4x/week · drives to amazon.com/author/willbyron · bridges to The Waking Series'
+WHERE asset_key = 'WB-FB-01';
 
 
+-- FIX 2: WB-X-01 has wrong URL — @willbyron88 should be @willbyron
+UPDATE assets
+SET url = 'https://x.com/willbyron88'
+WHERE asset_key = 'WB-X-01';
 
 
+-- FIX 3: WB-IG-01 notes are wrong — @will.byron88 does NOT cross-post from PM
+-- PM is a Facebook-only image page. WB-IG-01 is the Will Byron fiction Instagram.
+UPDATE assets
+SET notes = 'Will Byron literary fiction Instagram · Marine Sniper voice · WB-01 Shorts'
+WHERE asset_key = 'WB-IG-01';
+
+
+-- ADD: Will Byron Facebook page — the actual new page
+INSERT INTO assets (asset_key, asset_type, brand, name, url, brand, status, notes)
+VALUES ('WB-FB-02', 'FacebookPage', 'WillByron', 'Will Byron FB Page',
+        'https://www.facebook.com/will.byron88',
+        'Will Byron', 'Active',
+        'Will Byron author page · LIVE May 27 2026 · WB-01 Shorts + VideoEpisode · never-expiring token in .env as FB_PAGE_ACCESS_TOKEN_WB');
+
+
+-- ADD: Prehistoric Memories Instagram (if @will.byron88 was the only WB IG)
+-- PM is Facebook only — no IG account needed. Skip.
+
+
+-- ADD: Will Byron X account with correct handle
+-- Already exists as WB-X-01 — just needed URL fix above
+
+
+-- ═══════════════════════════════════════════════════════════════
+-- VERIFY — full assets table clean view
+-- ═══════════════════════════════════════════════════════════════
+
+SELECT *
+FROM assets
+ORDER BY  asset_type;
+
+ 
+
+PRAGMA table_info(assets);
+UPDATE assets 
+SET asset_key = 'WB-FB-01' 
+WHERE asset_key = 'WB-FB-02';
+UPDATE assets SET notes = 'WPP Shorts + VideoEpisodes · tracked in content table · Conner voice · 4 platforms' WHERE asset_key = 'WPP-IG-01';
+
+UPDATE assets SET notes = 'X analytics imported via wpp_x_importer.py every Monday · under 280 chars · 2-3 hashtags' WHERE asset_key = 'WPP-X-01';
+
+UPDATE assets SET notes = 'Shorts + NotebookLM VideoEpisodes · all uploaded to YouTube · one channel for all WPP books' WHERE asset_key = 'WPP-YT-01';
+
+select * from assets
+UPDATE pm_posts 
+SET asset_key = 'PM-FB-01' 
+WHERE asset_key = 'WB-FB-01';
 
 
 
 UPDATE content
 SET posted        = 'Y',
-    instagram_url = 'https://www.instagram.com/reel/DYz7rDfp8hG/',
-    youtube_url   = 'https://www.youtube.com/shorts/57MerdsCFtU',
-    facebook_url  = 'https://www.facebook.com/reel/1255188883360661',
-    x_url         = 'https://x.com/wpprotocols/status/2059337511697072259',
+    instagram_url = 'https://www.instagram.com/p/DY23Ed9JG8y/',
+    youtube_url   = 'https://youtube.com/shorts/NA_Ukkl4Z5c',
+    facebook_url  = 'https://www.facebook.com/reel/1350116453883847',
+    x_url         = 'https://x.com/wpprotocols/status/2059749639084286234',
     post_date     = date('now')
-WHERE book_key     = 'WPP-04'
+WHERE book_key     = 'WPP-05'
+AND   content_type = 'Short'
+AND   short_num    = 1;
+
+UPDATE content
+SET posted        = 'Y',
+    instagram_url = 'https://www.instagram.com/reel/DY2uMuoIQAn/',
+    youtube_url   = 'https://youtube.com/shorts/jgIbJFkHzqk',
+    facebook_url  = 'https://www.facebook.com/reel/967576302579880',
+    x_url         = 'https://x.com/WillByron88/status/2059730140100206633',
+    post_date     = date('now')
+WHERE book_key     = 'WB-01'
 AND   content_type = 'Short'
 AND   short_num    = 1;  ← CHANGE THIS NUMBER
 
-SELECT short_num, content_pillar, posted, post_date,
-       instagram_url, youtube_url, facebook_url, x_url
-FROM content WHERE book_key='WPP-04'
-AND content_type='Short' ORDER BY short_num;
 
-
-
-INSERT INTO content
-(book_key, content_type, episode_num, content_pillar, campaign,
- script_topic, ig_account, x_account, posted, youtube_url, facebook_url, x_url, post_date)
-VALUES
-('WPP-04', 'VideoEpisode', 1, 'Full Book Overview',
- '[Book Title] Launch',
- 'NotebookLM Full Book Overview — All 7 Pillars',
- '@willpowerprotocols', '@wpprotocols',
- 'Y', 
- 'https://www.youtube.com/watch?v=S-iFxsOpc_c',
- 'https://www.facebook.com/reel/1033295572706718',
- 'https://x.com/wpprotocols/status/2059360563768004728',
- date('now'));
- 
- -- KDP Sales — year 2026 — generated 2026-05-27
+-- KDP Sales — year 2026 — generated 2026-05-27
 -- Months found: 2026-04, 2026-05
+select * from content
 
--- DELETE all 2026 data first (safe re-run)
+
 UPDATE content
 SET posted        = 'Y',
-    instagram_url = 'https://www.instagram.com/reel/DY1hBGRAZLi/',
-    youtube_url   = 'https://youtube.com/shorts/D3KDiRCiDT0',
-    facebook_url  = 'https://www.facebook.com/reel/1466332614784982',
-    x_url         = 'https://x.com/wpprotocols/status/2059559987194573140',
+    instagram_url = 'https://www.instagram.com/p/DY24JVvOvZy/',
+    youtube_url   = 'https://youtube.com/shorts/_fesBgiISUc',
+    facebook_url  = 'https://www.facebook.com/reel/1404160878424270',
+    x_url         = 'https://x.com/wpprotocols/status/2059751502449615224',
     post_date     = date('now')
-WHERE book_key     = 'WPP-03'
+WHERE book_key     = 'WPP-02'
 AND   content_type = 'Short'
-AND   short_num    = 1; -- ← CHANGE THIS NUMBER
-
-
-
-
-
-
-INSERT INTO content (
-book_key, content_type, episode_num, content_pillar, 
-campaign, script_topic, ig_account, x_account, posted, 
-youtube_url, 
-facebook_url, 
-x_url, post_date)
-VALUES ('WPP-03', 'VideoEpisode', 1, 'Full Book Overview', 'The Clydesdale Protocol Launch', 'NotebookLM Full Book Overview — Heavy Athlete Performance Variables', 
-'@willpowerprotocols', '@wpprotocols', 'N', 
-'https://www.youtube.com/watch?v=vcbGRN55vFk', 
-'https://www.facebook.com/reel/1276218117991368', 
-'https://x.com/wpprotocols/status/2059574156090311145',  
-date('now'));
-
-select * from content where content_type = 'VideoEpisode'
- 
--- FIX 1: WPP-01 Episode 1 — wrong descriptions
--- This is the 2-min Sleep video, YouTube only. Not a full overview.
-UPDATE content
-SET content_pillar = 'Short-Form Overview',
-    script_topic   = 'NotebookLM 2-Minute Video — Sleep &amp; Recovery Protocol'
-WHERE content_id = 48;
- 
- 
--- FIX 2: WPP-04 Episode 1 — campaign still has placeholder text
-UPDATE content
-SET campaign = 'The Athena Protocol Launch'
-WHERE content_id = 50;
- 
- 
--- FIX 3: WPP-03 Episode 1 — posted = N but URLs are filled in
--- Mark it posted if you've already published it today
-UPDATE content
-SET posted    = 'Y',
-    post_date = date('now')
-WHERE content_id = 51;
- 
- 
--- ═══════════════════════════════════════════════════════════════
--- VERIFY — all 4 rows clean
--- ═══════════════════════════════════════════════════════════════
- 
-SELECT content_id, book_key, episode_num, content_pillar, campaign,
-       script_topic, posted, post_date, youtube_url, facebook_url, x_url
-FROM content
-WHERE content_type = 'VideoEpisode'
-ORDER BY book_key, episode_num;
- 
-
-
-
-
+AND   short_num    = 1; 
 </sql><current_tab id="0"/></tab_sql></sqlb_project>

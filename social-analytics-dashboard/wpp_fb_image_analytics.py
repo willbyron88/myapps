@@ -85,6 +85,13 @@ PAGES = [
         "db_table":  "tpl_posts",
         "color":     "#2E86AB",   # science blue
     },
+    {
+        "page_id":   os.getenv("FB_PAGE_ID_WB"),
+        "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_WB"),
+        "name":      "Will Byron",
+        "db_table":  None,        # no wb_posts table yet; matched when table is created
+        "color":     "#C9894C",   # Will Byron brand amber
+    },
 ]
 
 IMAGE_POST_METRICS = [
@@ -145,13 +152,14 @@ def _find_db() -> Path | None:
     return None
 
 
-def _load_db_lookup(table: str) -> dict:
-    """Build a fbid -> {pillar, topic, post_date, asset_key} lookup
-    from pm_posts or tpl_posts.
+def _load_db_lookup(table: str | None) -> dict:
+    """Build a fbid -> {pillar, topic, post_date, asset_key} lookup.
 
-    Only includes rows where facebook_url is not NULL/empty, since
-    those are the only ones we can match against.
+    Returns {} immediately when table is None (page has no DB table yet).
+    Only includes rows where facebook_url is not NULL/empty.
     """
+    if not table:
+        return {}
     db_path = _find_db()
     if db_path is None:
         return {}
@@ -477,7 +485,7 @@ def build_fb_image_performance_html(rows: list[dict]) -> str:
     df = pd.DataFrame(rows)
 
     section_html = """
-    <h2 style="color:#E8A838">Prehistoric Memories &amp; Protocol Lab — Facebook Image Posts
+    <h2 style="color:#E8A838">Facebook Image Posts — PM, TPL &amp; Will Byron
         <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
         Auto-pulled via Page Post Insights</span>
     </h2>"""

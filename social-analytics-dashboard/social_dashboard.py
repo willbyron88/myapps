@@ -934,11 +934,13 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
     # ── Platform Health ───────────────────────────────────────────
     PLATFORM_DISPLAY = [
         ("Facebook",                     "Facebook Reels (WPP)"),
+        ("Facebook-WB",                  "Facebook Reels (Will Byron)"),
         ("Instagram",                    "Instagram @willpowerprotocols"),
         ("Instagram-WB",                 "Instagram @will.byron88"),
         ("YouTube",                      "YouTube"),
         ("FB-Image-PrehistoricMemories", "Prehistoric Memories"),
         ("FB-Image-TheProtocolLab",      "The Protocol Lab"),
+        ("FB-Image-WillByron",           "Will Byron Images"),
     ]
     plat_rows = ""
     for plat_key, plat_label in PLATFORM_DISPLAY:

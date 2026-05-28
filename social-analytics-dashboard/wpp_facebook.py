@@ -45,10 +45,12 @@ load_dotenv()
 # Config — loaded from .env
 # ─────────────────────────────────────────────────────────────────
 
-FB_PAGE_ID          = os.getenv("FB_PAGE_ID_WPP")
+FB_PAGE_ID           = os.getenv("FB_PAGE_ID_WPP")
 FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN_WPP")
-FB_BASE_URL         = "https://graph.facebook.com/v25.0"
-MAX_FACEBOOK_POSTS  = 50
+WB_PAGE_ID           = os.getenv("FB_PAGE_ID_WB")
+WB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN_WB")
+FB_BASE_URL          = "https://graph.facebook.com/v25.0"
+MAX_FACEBOOK_POSTS   = 50
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -152,12 +154,13 @@ def fb_extract_reel_id_from_url(url: str) -> str:
 # Graph API GET helper
 # ─────────────────────────────────────────────────────────────────
 
-def fb_get_json(path_or_url: str, params: dict | None = None) -> dict | None:
+def fb_get_json(path_or_url: str, params: dict | None = None, token: str | None = None) -> dict | None:
     """GET helper for Graph API paths. Returns JSON or None.
     Never raises — one bad metric should not stop the dashboard.
+    Pass token explicitly to use a page-specific access token.
     """
     params = dict(params or {})
-    params.setdefault("access_token", FB_PAGE_ACCESS_TOKEN)
+    params.setdefault("access_token", token or FB_PAGE_ACCESS_TOKEN)
     url = (
         path_or_url
         if str(path_or_url).startswith("http")
@@ -214,6 +217,7 @@ def fb_fetch_insights(
     object_id: str,
     metrics: list[str],
     edge: str = "video_insights",
+    token: str | None = None,
 ) -> dict:
     """Fetch insight metrics from /{id}/video_insights or /{id}/insights.
 
@@ -247,7 +251,7 @@ def fb_fetch_insights(
         return out
 
     # Fast path: most tokens/objects support multi-metric calls.
-    data = fb_get_json(f"{object_id}/{edge}", {"metric": ",".join(metrics)})
+    data = fb_get_json(f"{object_id}/{edge}", {"metric": ",".join(metrics)}, token=token)
     parsed = parse_payload(data)
     if parsed:
         return parsed
@@ -255,7 +259,7 @@ def fb_fetch_insights(
     # Slow path: one metric at a time — safer for Reels.
     out = {}
     for metric in metrics:
-        data = fb_get_json(f"{object_id}/{edge}", {"metric": metric})
+        data = fb_get_json(f"{object_id}/{edge}", {"metric": metric}, token=token)
         out.update(parse_payload(data))
     return out
 
@@ -287,13 +291,19 @@ def fb_sum_reactions_from_insights(insights: dict) -> int:
 # Video candidate collector
 # ─────────────────────────────────────────────────────────────────
 
-def fb_collect_video_candidates(limit: int = 50) -> list[dict]:
-    """Collect Facebook Reels/videos from the Page.
+def fb_collect_video_candidates(
+    limit: int = 50,
+    page_id: str | None = None,
+    token: str | None = None,
+) -> list[dict]:
+    """Collect Facebook Reels/videos from a Page.
 
     Prefers /video_reels and /videos because those IDs work with
     /{video-id}/video_insights. Uses /posts as a fallback so older
     Page posts still appear and can expose attached video target IDs.
+    Pass page_id and token to target a page other than FB_PAGE_ID_WPP.
     """
+    page_id = page_id or FB_PAGE_ID
     candidates = {}
 
     def add_candidate(item: dict, source: str, fallback_message: str = ""):
@@ -341,8 +351,9 @@ def fb_collect_video_candidates(limit: int = 50) -> list[dict]:
     # Primary: /video_reels and /videos give IDs that work with video_insights.
     for edge in ["video_reels", "videos"]:
         data = fb_get_json(
-            f"{FB_PAGE_ID}/{edge}",
+            f"{page_id}/{edge}",
             {"fields": "id,description,title,created_time,permalink_url,length", "limit": limit},
+            token=token,
         )
         if data:
             for item in data.get("data", []):
@@ -350,7 +361,7 @@ def fb_collect_video_candidates(limit: int = 50) -> list[dict]:
 
     # Fallback: /posts can expose Reel target IDs via attachments.
     posts_data = fb_get_json(
-        f"{FB_PAGE_ID}/posts",
+        f"{page_id}/posts",
         {
             "fields": (
                 "id,message,created_time,permalink_url,"
@@ -359,6 +370,7 @@ def fb_collect_video_candidates(limit: int = 50) -> list[dict]:
             ),
             "limit": limit,
         },
+        token=token,
     )
     if posts_data:
         for post in posts_data.get("data", []):
@@ -407,19 +419,16 @@ def fb_collect_video_candidates(limit: int = 50) -> list[dict]:
 # Main fetcher — called by social_dashboard.py
 # ─────────────────────────────────────────────────────────────────
 
-def fetch_facebook_rows(limit: int = 50) -> list[dict]:
-    """Fetch all Facebook Reel/video rows for the analytics dataframe.
+def _build_fb_page_rows(
+    page_id: str, token: str, platform_label: str, limit: int = 50
+) -> list[dict]:
+    """Fetch and build row dicts for a single Facebook page.
 
-    Returns a list of dicts with the same column structure as
-    fetch_instagram_rows and fetch_youtube_rows so they can be
-    concatenated into one dataframe in social_dashboard.py.
+    Shared by WPP and Will Byron — platform_label differentiates them
+    in the combined dataframe ("Facebook" vs "Facebook-WB").
     """
-    if not FB_PAGE_ID or not FB_PAGE_ACCESS_TOKEN:
-        print("Skipping Facebook: missing FB_PAGE_ID or FB_PAGE_ACCESS_TOKEN in .env.")
-        return []
-
-    videos = fb_collect_video_candidates(limit=limit)
-    print(f"Facebook: {len(videos)} Reels/videos found.")
+    videos = fb_collect_video_candidates(limit=limit, page_id=page_id, token=token)
+    print(f"{platform_label}: {len(videos)} Reels/videos found.")
 
     rows = []
     for video in videos:
@@ -430,14 +439,9 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
         created_time = _safe_text(video.get("created_time", ""))
         length       = _safe_int(video.get("length", 0))
 
-        # Page post insights are the reliable source for this token.
-        # Collect post-level first, then layer in video_insights metrics
-        # (especially blue_reels_play_count) without overwriting proven values.
-        post_insights  = fb_fetch_insights(post_id,  FACEBOOK_POST_FALLBACK_METRICS, edge="insights")
-        video_insights = fb_fetch_insights(video_id, FACEBOOK_REEL_VIDEO_METRICS,    edge="video_insights")
+        post_insights  = fb_fetch_insights(post_id,  FACEBOOK_POST_FALLBACK_METRICS, edge="insights",       token=token)
+        video_insights = fb_fetch_insights(video_id, FACEBOOK_REEL_VIDEO_METRICS,    edge="video_insights", token=token)
 
-        # video_insights first, then post_insights overwrite where both exist —
-        # ensures proven post-level numbers win.
         combined = {**video_insights, **post_insights}
 
         reel_plays           = _safe_int(combined.get("blue_reels_play_count"))
@@ -457,8 +461,6 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
         total_media_view     = _safe_int(combined.get("post_total_media_view"))
         total_media_unique   = _safe_int(combined.get("post_total_media_view_unique"))
 
-        # blue_reels_play_count is the best top-line number for Reels.
-        # Fall back to total_media_view then 3-second views for older posts.
         views             = reel_plays or total_media_view or three_second_views
         estimated_minutes = round(watch_ms / 1000 / 60, 2) if watch_ms else 0
         avg_watch_seconds = round(avg_watch_ms / 1000, 2) if avg_watch_ms else 0
@@ -467,14 +469,13 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
 
         if views == 0:
             print(
-                f"Facebook metric warning: zero views for {permalink or video_id} "
+                f"{platform_label} metric warning: zero views for {permalink or video_id} "
                 f"video_id={video_id} post_id={post_id} "
                 f"metrics_returned={sorted(combined.keys())}"
             )
 
         rows.append({
-            # ── Standard cross-platform columns ──────────────────
-            "platform":                          "Facebook",
+            "platform":                          platform_label,
             "publishedAt":                       created_time,
             "published_at":                      created_time,
             "published_date":                    created_time[:10],
@@ -503,7 +504,6 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
             "recommended_action":                "",
             "book_or_offer":                     "—",
             "content_pillar":                    "—",
-            # ── Facebook-specific columns ─────────────────────────
             "facebook_reel_plays":               reel_plays,
             "facebook_3s_views":                 three_second_views,
             "facebook_3s_unique_views":          three_second_unique,
@@ -528,7 +528,25 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
             "facebook_raw_metrics_json":         json.dumps(combined, default=str, ensure_ascii=False),
         })
 
-    print(f"Facebook: {len(rows)} rows built.")
+    print(f"{platform_label}: {len(rows)} rows built.")
+    return rows
+
+
+def fetch_facebook_rows(limit: int = 50) -> list[dict]:
+    """Fetch Facebook Reel/video rows for WPP and Will Byron pages.
+
+    WPP rows have platform='Facebook', Will Byron rows have platform='Facebook-WB'.
+    Skips any page whose credentials are missing from .env.
+    """
+    rows = []
+    for page_id, token, label in [
+        (FB_PAGE_ID,  FB_PAGE_ACCESS_TOKEN,  "Facebook"),
+        (WB_PAGE_ID,  WB_PAGE_ACCESS_TOKEN,  "Facebook-WB"),
+    ]:
+        if not page_id or not token:
+            print(f"Skipping {label}: missing FB credentials in .env.")
+            continue
+        rows.extend(_build_fb_page_rows(page_id, token, label, limit=limit))
     return rows
 
 
@@ -536,39 +554,26 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
 # HTML section builder — called by social_dashboard.py
 # ─────────────────────────────────────────────────────────────────
 
-def build_facebook_performance_html(df: pd.DataFrame) -> str:
-    """Build the Facebook Reels performance section for the dashboard.
+# Page configurations: (platform_label, accent_color, display_title)
+_FB_PAGE_CONFIGS = [
+    ("Facebook",    "#1877F2", "Will Power Protocols Reels"),
+    ("Facebook-WB", "#C9894C", "Will Byron Reels"),
+]
 
-    Main metrics shown:
-        Reel Plays     — best top-line views for Reels
-        Reach          — unique people reached
-        15s Views      — deeper watch signal
-        3s API Views   — diagnostic (Meta may return 0 for Reels
-                         even when Reel Plays are available)
-    """
-    fb_rows = df[df["platform"] == "Facebook"] if not df.empty else pd.DataFrame()
 
-    if fb_rows.empty:
-        return """
-    <h2 style="color:#1877F2">Facebook Performance</h2>
-    <div class="scoreboard-card" style="border-color:#1877F2">
-        <p style="color:#AAB4C0;font-size:13px">No Facebook Reels/videos found.
-        Check FB_PAGE_ID and FB_PAGE_ACCESS_TOKEN in .env and confirm
-        the token has access to Page video/Reels insights.</p>
-    </div>"""
-
-    total_views    = _safe_int(fb_rows["views"].sum())
-    total_reel_plays = _safe_int(fb_rows.get("facebook_reel_plays", pd.Series([0])).sum())
-    total_3s       = _safe_int(fb_rows.get("facebook_3s_views", pd.Series([0])).sum())
+def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
+    """Build scoreboard + detail table HTML for one Facebook page's rows."""
+    total_views     = _safe_int(fb_rows["views"].sum())
+    total_3s        = _safe_int(fb_rows.get("facebook_3s_views", pd.Series([0])).sum())
     total_3s_unique = _safe_int(fb_rows.get("facebook_3s_unique_views", pd.Series([0])).sum())
-    total_15s      = _safe_int(fb_rows.get("facebook_15s_views", pd.Series([0])).sum())
-    total_reach    = _safe_int(fb_rows.get("reach", pd.Series([0])).sum())
+    total_15s       = _safe_int(fb_rows.get("facebook_15s_views", pd.Series([0])).sum())
+    total_reach     = _safe_int(fb_rows.get("reach", pd.Series([0])).sum())
     total_reactions = _safe_int(fb_rows.get("likes", pd.Series([0])).sum())
-    total_comments = _safe_int(fb_rows.get("comments", pd.Series([0])).sum())
-    total_shares   = _safe_int(fb_rows.get("shares", pd.Series([0])).sum())
-    total_clicks   = _safe_int(fb_rows.get("clicks", pd.Series([0])).sum())
+    total_comments  = _safe_int(fb_rows.get("comments", pd.Series([0])).sum())
+    total_shares    = _safe_int(fb_rows.get("shares", pd.Series([0])).sum())
+    total_clicks    = _safe_int(fb_rows.get("clicks", pd.Series([0])).sum())
     total_watch_min = _safe_float(fb_rows.get("estimated_minutes_watched", pd.Series([0])).sum())
-    quality_rate   = round((total_15s / total_views) * 100, 2) if total_views else 0.0
+    quality_rate    = round((total_15s / total_views) * 100, 2) if total_views else 0.0
     plays_per_reach = round((total_views / total_reach), 2) if total_reach else 0.0
 
     rows_html = ""
@@ -592,13 +597,13 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
         pub          = _safe_text(r.get("published_at", ""))[:10]
         url          = _safe_text(r.get("url", ""))
         caption      = _safe_text(r.get("title_or_caption", ""))[:82]
-        metric_source   = _safe_text(r.get("facebook_metric_source", ""))
-        video_id_used   = _safe_text(r.get("facebook_video_id_used", ""))
-        post_id_used    = _safe_text(r.get("facebook_post_id_fallback", ""))
+        metric_source    = _safe_text(r.get("facebook_metric_source", ""))
+        video_id_used    = _safe_text(r.get("facebook_video_id_used", ""))
+        post_id_used     = _safe_text(r.get("facebook_post_id_fallback", ""))
         reactions_by_type = _safe_text(r.get("facebook_reactions_by_type", ""))[:180]
-        clicks_by_type  = _safe_text(r.get("facebook_clicks_by_type", ""))[:180]
-        metrics_found   = _safe_text(r.get("facebook_insight_metrics_returned", ""))[:260]
-        three_sec_note  = "API 0" if views > 0 and v3 == 0 else f"{v3:,}"
+        clicks_by_type   = _safe_text(r.get("facebook_clicks_by_type", ""))[:180]
+        metrics_found    = _safe_text(r.get("facebook_insight_metrics_returned", ""))[:260]
+        three_sec_note   = "API 0" if views > 0 and v3 == 0 else f"{v3:,}"
 
         rows_html += f"""
         <tr>
@@ -624,7 +629,7 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
             <td style="font-size:10px;max-width:180px">{clicks_by_type}</td>
             <td style="font-size:10px;max-width:260px">{metrics_found}</td>
             <td style="font-size:10px">video: {video_id_used}<br>post: {post_id_used}<br>{metric_source}</td>
-            <td><a href="{url}" target="_blank" style="color:#1877F2">Open ↗</a></td>
+            <td><a href="{url}" target="_blank" style="color:{color}">Open &#x2197;</a></td>
         </tr>"""
 
     diagnostics_note = ""
@@ -636,13 +641,9 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
         </p>"""
 
     return f"""
-    <h2 style="color:#1877F2">Facebook Reels Performance
-        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
-        Auto-pulled via Page Post + Video/Reels Insights · {len(fb_rows)} Reels/videos</span>
-    </h2>
     <div class="scoreboard-grid">
-        <div class="scoreboard-card" style="border-color:#1877F2">
-            <h2 style="color:#1877F2">Facebook Reach &amp; Viewing</h2>
+        <div class="scoreboard-card" style="border-color:{color}">
+            <h2 style="color:{color}">Reach &amp; Viewing</h2>
             <table class="scoreboard-table">
                 <tbody>
                     <tr><td>Reel Plays / Main Views</td><td style="text-align:right"><strong>{total_views:,}</strong></td></tr>
@@ -654,8 +655,8 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
                 </tbody>
             </table>
         </div>
-        <div class="scoreboard-card" style="border-color:#1877F2">
-            <h2 style="color:#1877F2">Facebook Engagement &amp; Diagnostics</h2>
+        <div class="scoreboard-card" style="border-color:{color}">
+            <h2 style="color:{color}">Engagement &amp; Diagnostics</h2>
             <table class="scoreboard-table">
                 <tbody>
                     <tr><td>Reactions</td><td style="text-align:right"><strong>{total_reactions:,}</strong></td></tr>
@@ -669,13 +670,11 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
             {diagnostics_note}
         </div>
     </div>
-    <div class="table-wrap" style="border:1px solid #1877F2;border-radius:14px;margin-bottom:30px">
+    <div class="table-wrap" style="border:1px solid {color};border-radius:14px;margin-bottom:30px">
         <table style="min-width:2000px">
             <thead>
                 <tr>
-                    <th>Book</th>
-                    <th>Pillar</th>
-                    <th>Caption</th>
+                    <th>Book</th><th>Pillar</th><th>Caption</th>
                     <th style="text-align:center">Reel Plays</th>
                     <th style="text-align:center">Reach</th>
                     <th style="text-align:center">Plays/Reach</th>
@@ -701,7 +700,7 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
             <tbody>{rows_html}</tbody>
             <tfoot>
                 <tr style="background:#101F36">
-                    <td colspan="3"><strong style="color:#1877F2">TOTALS</strong></td>
+                    <td colspan="3"><strong style="color:{color}">TOTALS</strong></td>
                     <td style="text-align:center"><strong>{total_views:,}</strong></td>
                     <td style="text-align:center"><strong>{total_reach:,}</strong></td>
                     <td style="text-align:center"><strong>{plays_per_reach:g}</strong></td>
@@ -719,3 +718,42 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
             </tfoot>
         </table>
     </div>"""
+
+
+def build_facebook_performance_html(df: pd.DataFrame) -> str:
+    """Build the Facebook Reels performance section for all pages.
+
+    Renders a sub-section per page (WPP and Will Byron) using the shared
+    _build_fb_page_section_html helper. Each sub-section has a scoreboard
+    summary and a full detail table.
+    """
+    all_fb = (
+        df[df["platform"].isin(["Facebook", "Facebook-WB"])]
+        if not df.empty else pd.DataFrame()
+    )
+
+    if all_fb.empty:
+        return """
+    <h2 style="color:#1877F2">Facebook Reels Performance</h2>
+    <div class="scoreboard-card" style="border-color:#1877F2">
+        <p style="color:#AAB4C0;font-size:13px">No Facebook Reels/videos found.
+        Check FB_PAGE_ID_WPP / FB_PAGE_ID_WB and their tokens in .env.</p>
+    </div>"""
+
+    html = f"""
+    <h2 style="color:#1877F2">Facebook Reels Performance
+        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
+        Auto-pulled via Page Post + Video/Reels Insights &middot; {len(all_fb)} Reels/videos across all pages</span>
+    </h2>"""
+
+    for platform, color, title in _FB_PAGE_CONFIGS:
+        page_rows = df[df["platform"] == platform] if not df.empty else pd.DataFrame()
+        if page_rows.empty:
+            continue
+        html += f"""
+    <h3 style="color:{color};margin-top:24px;margin-bottom:10px">{title}
+        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:10px">{len(page_rows)} videos</span>
+    </h3>"""
+        html += _build_fb_page_section_html(page_rows, color)
+
+    return html
