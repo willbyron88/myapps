@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from wpp_x_importer import build_x_performance_html
 from wpp_facebook import fetch_facebook_rows, build_facebook_performance_html
-from wpp_instagram import fetch_instagram_rows
+from wpp_instagram import fetch_instagram_rows, build_instagram_performance_html
 from wpp_instagram_wb import fetch_instagram_wb_rows
 from wpp_youtube import fetch_youtube_rows
 from wpp_kdp import build_kdp_revenue_html, get_kdp_revenue_data
@@ -35,6 +35,20 @@ MIN_ENGAGEMENT_VIEWS = 5
 # ---------- SQLite Database ----------
 WPP_DB_FILE = "wpp.db"
 POST_DAYS = ["Monday", "Tuesday", "Thursday", "Saturday", "Sunday"]
+
+# Human-readable display names for every platform key.
+# Used in table cells, filter dropdowns, and cards throughout the dashboard.
+PLATFORM_LABELS = {
+    "Facebook":                     "Facebook Reels (WPP)",
+    "Facebook-WB":                  "Facebook Reels (Will Byron)",
+    "Instagram":                    "Instagram (@willpowerprotocols)",
+    "Instagram-WB":                 "Instagram (@will.byron88)",
+    "YouTube":                      "YouTube",
+    "FB-Image-PrehistoricMemories": "Facebook Images (Prehistoric Memories)",
+    "FB-Image-TheProtocolLab":      "Facebook Images (The Protocol Lab)",
+    "FB-Image-WillByron":           "Facebook Images (Will Byron)",
+    "X":                            "X",
+}
 
 
 # ============================================================
@@ -227,6 +241,49 @@ def load_wpp_content():
                     "already_crossposted": already_crossposted,
                     "on_x":              bool(x_url),
                 })
+
+    # Also load PM and TPL instagram_urls so cross-posted images get pillar enrichment.
+    # PM posts to @will.byron88, TPL posts to @willpowerprotocols — tokens already in .env.
+    try:
+        import sqlite3 as _sqlite3
+        _conn = _sqlite3.connect(db_path)
+        _brand_map = [
+            ("pm_posts",  "Prehistoric Memories", "@will.byron88"),
+            ("tpl_posts", "The Protocol Lab",     "@willpowerprotocols"),
+        ]
+        for _table, _brand, _ig_acct in _brand_map:
+            _cols = [r[1] for r in _conn.execute(f"PRAGMA table_info({_table})").fetchall()]
+            if "instagram_url" not in _cols:
+                continue
+            _ig_rows = _conn.execute(
+                f"SELECT instagram_url, pillar FROM {_table} "
+                f"WHERE instagram_url IS NOT NULL AND instagram_url != '' AND posted='Y'"
+            ).fetchall()
+            _added = 0
+            for _ig_url, _pillar in _ig_rows:
+                _ig_url = str(_ig_url).strip()
+                if not _ig_url:
+                    continue
+                enrich_rows.append({
+                    "url":               _ig_url,
+                    "url_normalized":    normalize_url(_ig_url),
+                    "book_or_offer":     _brand,
+                    "content_type":      "Image",
+                    "content_pillar":    str(_pillar or ""),
+                    "campaign":          "",
+                    "short_num":         "",
+                    "episode_num":       "",
+                    "account":           _ig_acct,
+                    "x_account":         "",
+                    "already_crossposted": True,
+                    "on_x":              False,
+                })
+                _added += 1
+            if _added:
+                print(f"  -> {_brand} IG cross-posts: {_added} enrichment URLs added")
+        _conn.close()
+    except Exception as _e:
+        print(f"Could not load PM/TPL instagram_urls: {_e}")
 
     content_map = pd.DataFrame(enrich_rows) if enrich_rows else pd.DataFrame()
     print(f"  -> Enrichment URLs: {len(content_map)}")
@@ -533,6 +590,16 @@ def generate_monday_plan(df, queue_df):
                 [b for b in book_cycle if b != chosen_book] + [chosen_book]
             )
 
+    # Books that have matched posts historically but nothing in last 30 days.
+    from datetime import date as _date, timedelta
+    cutoff_str = (_date.today() - timedelta(days=30)).strftime("%Y-%m-%d")
+    books_no_recent = []
+    if has_content_map:
+        recent = df[df["published_at"].fillna("") >= cutoff_str]
+        active_books    = set(recent[recent["book_or_offer"].ne("—")]["book_or_offer"].unique())
+        all_known_books = set(df[df["book_or_offer"].ne("—")]["book_or_offer"].unique())
+        books_no_recent = sorted(all_known_books - active_books)
+
     return {
         "schedule": schedule,
         "repurpose": repurpose,
@@ -542,6 +609,7 @@ def generate_monday_plan(df, queue_df):
         "unposted_count": unposted_count,
         "has_queue": has_queue,
         "has_content_map": has_content_map,
+        "books_no_recent": books_no_recent,
     }
 
 
@@ -549,69 +617,51 @@ def build_monday_plan_html(plan):
     today_str = date.today().strftime("%A, %B %d, %Y")
 
     if plan["schedule"]:
-        sched_rows = ""
-        for s in plan["schedule"]:
+        items_html = ""
+        for i, s in enumerate(plan["schedule"], 1):
             note_html = (
-                f'<span class="winner-note">{s["note"]}</span>'
-                if s["note"]
-                else ""
+                f' <span style="color:#C9A84C;font-size:11px;font-weight:bold">{s["note"]}</span>'
+                if s["note"] else ""
             )
-            account = s.get("account", "@willpowerprotocols")
+            account   = s.get("account", "@willpowerprotocols")
             x_account = s.get("x_account", "@wpprotocols")
-            wb = account == "@will.byron88"
-            account_html = (
-                f'<span style="color:#C9894C;font-size:11px;font-weight:bold">{account}</span>'
-                if wb else
-                f'<span style="color:#AAB4C0;font-size:11px">{account}</span>'
-            )
-            x_html = (
-                f'<span style="color:#C9894C;font-size:11px">@willbyron</span>'
-                if wb else
-                f'<span style="color:#1DA1F2;font-size:11px">{x_account}</span>'
-            )
+            wb        = account == "@will.byron88"
+            acct_color = "#C9894C" if wb else "#AAB4C0"
+            x_color    = "#C9894C" if wb else "#1DA1F2"
+            x_handle   = "@willbyron" if wb else x_account
+            items_html += f"""
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:14px;padding-top:1px">{i}.</div>
+                <div style="font-size:13px;color:#D7DEE8;line-height:1.5">
+                    <strong style="color:#FFFFFF">{s["book"]}</strong>
+                    &nbsp;&middot;&nbsp; Short #{s["short_num"]}
+                    &nbsp;&middot;&nbsp; {s["topic"]}{note_html}
+                    <div style="color:#AAB4C0;font-size:12px;margin-top:2px">
+                        {s["pillar"]} &nbsp;&middot;&nbsp;
+                        <span style="color:{acct_color}">{account}</span>
+                        &nbsp;&middot;&nbsp;
+                        <span style="color:{x_color}">{x_handle}</span>
+                    </div>
+                </div>
+            </div>"""
 
-            sched_rows += f"""
-            <tr>
-                <td><strong>{s["day"]}</strong></td>
-                <td>{s["book"]}</td>
-                <td style="text-align:center">{s["short_num"]}</td>
-                <td>{s["topic"]}</td>
-                <td>{s["pillar"]}</td>
-                <td>{account_html}</td>
-                <td>{x_html}</td>
-                <td>{note_html}</td>
-            </tr>"""
-
+        remaining = max(plan["unposted_count"] - len(plan["schedule"]), 0)
         schedule_html = f"""
         <div class="action-section">
-            <h3>This Week — 5 Posts · 4 Platforms</h3>
-            <table class="schedule-table">
-                <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>Book / Offer</th>
-                        <th style="text-align:center">Short #</th>
-                        <th>Topic</th>
-                        <th>Pillar</th>
-                        <th>IG / YT / FB</th>
-                        <th style="color:#1DA1F2">X</th>
-                        <th>Note</th>
-                    </tr>
-                </thead>
-                <tbody>{sched_rows}</tbody>
-            </table>
-            <p class="action-note">{max(plan["unposted_count"] - len(plan["schedule"]), 0)} shorts remaining in queue after this week.</p>
+            <h3>Post These Next, In Order</h3>
+            {items_html}
+            <p class="action-note">{remaining} more in queue after these.</p>
         </div>"""
     elif not plan["has_queue"]:
         schedule_html = """
         <div class="action-section">
-            <h3>This Week — 5 Posts</h3>
-            <p class="action-note">Add <strong>wpp.db</strong> to unlock the weekly schedule.</p>
+            <h3>Post Queue</h3>
+            <p class="action-note">Add <strong>wpp.db</strong> to unlock the post queue.</p>
         </div>"""
     else:
         schedule_html = """
         <div class="action-section">
-            <h3>This Week — 5 Posts</h3>
+            <h3>Post Queue</h3>
             <p class="action-note">Queue is empty. Add more unposted rows to wpp.db.</p>
         </div>"""
 
@@ -932,15 +982,18 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
     </div>"""
 
     # ── Platform Health ───────────────────────────────────────────
+    from datetime import date as _today_date
+    today = _today_date.today()
+
     PLATFORM_DISPLAY = [
         ("Facebook",                     "Facebook Reels (WPP)"),
         ("Facebook-WB",                  "Facebook Reels (Will Byron)"),
         ("Instagram",                    "Instagram @willpowerprotocols"),
         ("Instagram-WB",                 "Instagram @will.byron88"),
         ("YouTube",                      "YouTube"),
-        ("FB-Image-PrehistoricMemories", "Prehistoric Memories"),
-        ("FB-Image-TheProtocolLab",      "The Protocol Lab"),
-        ("FB-Image-WillByron",           "Will Byron Images"),
+        ("FB-Image-PrehistoricMemories", "Facebook Images (Prehistoric Memories)"),
+        ("FB-Image-TheProtocolLab",      "Facebook Images (The Protocol Lab)"),
+        ("FB-Image-WillByron",           "Facebook Images (Will Byron)"),
     ]
     plat_rows = ""
     for plat_key, plat_label in PLATFORM_DISPLAY:
@@ -949,6 +1002,7 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
             plat_rows += f"""
             <tr>
                 <td>{plat_label}</td>
+                <td style="text-align:center">—</td>
                 <td style="text-align:center">—</td>
                 <td style="text-align:center">—</td>
                 <td style="text-align:center">—</td>
@@ -966,13 +1020,26 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
                     f'<div style="font-size:11px;color:#AAB4C0;margin-top:2px">'
                     f'{mins:,} watch min</div>'
                 )
+            # Last post date + staleness warning
+            last_pub = p["published_at"].dropna().max() or ""
+            try:
+                days_ago = (today - _today_date.fromisoformat(str(last_pub)[:10])).days
+                last_pub_str = str(last_pub)[:10]
+                if days_ago > 7:
+                    status_html = f'<span style="color:#FFB347;font-size:12px">Silent {days_ago}d</span>'
+                else:
+                    status_html = f'<span style="color:#5CFF7E;font-size:12px">Active</span>'
+            except Exception:
+                last_pub_str = "—"
+                status_html  = '<span style="color:#5CFF7E;font-size:12px">Active</span>'
             plat_rows += f"""
             <tr>
                 <td><strong>{plat_label}</strong>{extra}</td>
                 <td style="text-align:center">{posts}</td>
                 <td style="text-align:center">{views:,}</td>
                 <td style="text-align:center">{eng_str}</td>
-                <td><span style="color:#5CFF7E;font-size:12px">Active</span></td>
+                <td style="text-align:center;font-size:12px;color:#AAB4C0">{last_pub_str}</td>
+                <td>{status_html}</td>
             </tr>"""
 
     platform_health = f"""
@@ -985,6 +1052,7 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
                     <th style="text-align:center">Posts</th>
                     <th style="text-align:center">Views / Plays</th>
                     <th style="text-align:center">Avg Eng</th>
+                    <th style="text-align:center">Last Post</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -992,11 +1060,31 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
         </table>
     </div>"""
 
+    # ── Books with no activity in last 30 days ────────────────────
+    if plan and plan.get("books_no_recent"):
+        book_items = "".join(
+            f'<li style="margin-bottom:5px;color:#D7DEE8">{b}</li>'
+            for b in plan["books_no_recent"]
+        )
+        books_silent_card = f"""
+    <div class="scoreboard-card" style="margin-bottom:24px;border-color:#FFB347">
+        <h2 style="margin-top:0;font-size:16px;color:#FFB347">No Posts in Last 30 Days</h2>
+        <ul style="margin:0;padding-left:20px;font-size:13px;line-height:1.6">
+            {book_items}
+        </ul>
+        <p style="color:#AAB4C0;font-size:12px;margin:8px 0 0">
+            These books have matched content in the DB but no new posts in the last 30 days.
+        </p>
+    </div>"""
+    else:
+        books_silent_card = ""
+
     # ── Top 5 Posts ────────────────────────────────────────────────
     top5 = df.sort_values("views", ascending=False).head(5)
     top5_cards = ""
     for _, row in top5.iterrows():
-        plat   = safe_text(row.get("platform"))
+        plat         = safe_text(row.get("platform"))
+        plat_display = PLATFORM_LABELS.get(plat, plat)
         title  = truncate_text(safe_text(row.get("title_or_caption")), 90)
         views  = safe_int(row.get("views"))
         eng    = row.get("engagement_rate_percent", 0)
@@ -1015,7 +1103,7 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
         top5_cards += f"""
         <div class="top5-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-                <span class="platform-badge">{plat}</span>
+                <span class="platform-badge">{plat_display}</span>
                 <span style="color:#AAB4C0;font-size:11px">{pub}</span>
             </div>
             <div style="font-size:13px;line-height:1.4;margin-bottom:6px">{title}</div>
@@ -1037,6 +1125,7 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
     {monday_plan_html}
     {what_working}
     {platform_health}
+    {books_silent_card}
     {top5_html}"""
 
 
@@ -1111,6 +1200,7 @@ def make_table_header(enriched=False):
 
 def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
                facebook_performance_html="", fb_image_performance_html="",
+               instagram_performance_html="",
                kdp_revenue_html="", filtered_repurpose_count=None, plan=None):
     html_file = OUTPUT_DIR / "index.html"
     enriched = "book_or_offer" in df.columns and df["book_or_offer"].ne("—").any()
@@ -1159,22 +1249,111 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         else df["content_signal"].str.contains("Repurpose Candidate", na=False).sum()
     )
 
-    top_views = df.sort_values("views", ascending=False).head(15)
-    top_watch_time = youtube_rows.sort_values(
-        "estimated_minutes_watched", ascending=False
-    ).head(15)
-    top_engagement = (
-        df[df["views"] >= MIN_ENGAGEMENT_VIEWS]
-        .sort_values("engagement_rate_percent", ascending=False)
-        .head(15)
-    )
-    content_intelligence = (
-        df[df["content_signal"].ne("Watch")]
-        .sort_values(["views", "engagement_rate_percent"], ascending=False)
-        .head(20)
+    # Per-platform average engagement for benchmark indicators (#8)
+    plat_avg_eng = (
+        df.groupby("platform")["engagement_rate_percent"].mean().to_dict()
     )
 
-    th = make_table_header(enriched)
+    # Build consolidated table rows — all posts sorted by views (#7)
+    book_th   = "<th>Book</th>"   if enriched else ""
+    pillar_th = "<th>Pillar</th>" if enriched else ""
+    consolidated_rows = ""
+    for _, row in df.sort_values("views", ascending=False).iterrows():
+        plat    = safe_text(row.get("platform"))
+        views   = safe_int(row.get("views"))
+        eng     = safe_float(row.get("engagement_rate_percent"))
+        watch_m = safe_float(row.get("estimated_minutes_watched"))
+        avg_eng = plat_avg_eng.get(plat, 0)
+        if avg_eng > 0:
+            bench_cls  = "bench-above" if eng >= avg_eng else "bench-below"
+            bench_html = (
+                f'<span class="{bench_cls}" title="Platform avg: {round(avg_eng,1)}%">'
+                f"{eng}%</span>"
+            )
+        else:
+            bench_html = f"{eng}%"
+        pub    = safe_text(row.get("published_at"))
+        mtype  = safe_text(row.get("media_type"))
+        cap    = safe_text(row.get("title_or_caption"))
+        url    = safe_text(row.get("url"))
+        likes  = safe_int(row.get("likes"))
+        cmnts  = safe_int(row.get("comments"))
+        shrs   = safe_int(row.get("shares"))
+        sig    = safe_text(row.get("content_signal"))
+        action = safe_text(row.get("recommended_action"))
+        book_td   = (
+            f'<td class="col-book">{safe_text(row.get("book_or_offer","—"))}</td>'
+            if enriched else ""
+        )
+        pillar_td = (
+            f'<td class="col-pillar">{safe_text(row.get("content_pillar","—"))}</td>'
+            if enriched else ""
+        )
+        consolidated_rows += f"""
+        <tr data-platform="{plat}" data-views="{views}" data-eng="{eng}" data-watchmin="{watch_m}">
+            <td style="white-space:nowrap">{PLATFORM_LABELS.get(plat, plat)}</td>
+            {book_td}
+            {pillar_td}
+            <td>{pub}</td>
+            <td style="font-size:11px">{mtype}</td>
+            <td style="font-size:12px">{cap}</td>
+            <td style="text-align:center"><strong>{views:,}</strong></td>
+            <td style="text-align:center">{watch_m:g}</td>
+            <td style="text-align:center">{likes:,}</td>
+            <td style="text-align:center">{cmnts:,}</td>
+            <td style="text-align:center">{shrs:,}</td>
+            <td style="text-align:center">{bench_html}</td>
+            <td style="font-size:12px">{sig}</td>
+            <td style="font-size:12px">{action}</td>
+            <td><a href="{url}" target="_blank">Open</a></td>
+        </tr>"""
+
+    # Platform filter options
+    distinct_plats = sorted(df["platform"].dropna().unique())
+    plat_options   = "".join(
+        f'<option value="{p}">{PLATFORM_LABELS.get(p, p)}</option>'
+        for p in distinct_plats
+    )
+
+    # Unmatched posts report (#1)
+    unmatched_df = df[df["book_or_offer"] == "—"] if enriched else pd.DataFrame()
+    if not unmatched_df.empty:
+        unmatched_rows = ""
+        for _, r in unmatched_df.sort_values(["platform", "published_at"]).iterrows():
+            u_plat = safe_text(r.get("platform"))
+            u_pub  = safe_text(r.get("published_at"))
+            u_cap  = safe_text(r.get("title_or_caption"))[:100]
+            u_url  = safe_text(r.get("url"))
+            unmatched_rows += f"""
+            <tr>
+                <td style="font-size:12px;white-space:nowrap">{PLATFORM_LABELS.get(u_plat, u_plat)}</td>
+                <td style="font-size:12px">{u_pub}</td>
+                <td style="font-size:12px">{u_cap}</td>
+                <td><a href="{u_url}" target="_blank" style="color:#FFB347">Open</a></td>
+            </tr>"""
+        unmatched_section = f"""
+        <div class="unmatched-report">
+            <h2>Action Required: {len(unmatched_df)} Posts Not in Database</h2>
+            <p style="color:#AAB4C0;font-size:13px;margin-top:0">
+            These posts have no matching URL in wpp.db. Add their URLs to the content table
+            to unlock book and pillar tracking.
+            </p>
+            <div class="table-wrap" style="margin-bottom:0">
+                <table style="min-width:800px">
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th>Published</th>
+                            <th>Caption</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>{unmatched_rows}</tbody>
+                </table>
+            </div>
+        </div>"""
+    else:
+        unmatched_section = ""
 
     html = f"""
 <!DOCTYPE html>
@@ -1384,6 +1563,47 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             color: #D7DEE8;
         }}
         .scoreboard-table tr:last-child td {{ border-bottom: none; }}
+        /* Sort / filter bar */
+        .sort-bar {{
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }}
+        .sort-btn {{
+            background: rgba(201,168,76,.12);
+            border: 1px solid rgba(201,168,76,.3);
+            color: #AAB4C0;
+            font-size: 12px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: Arial, Helvetica, sans-serif;
+            transition: all .15s;
+        }}
+        .sort-btn:hover {{ color: #D7DEE8; border-color: #C9A84C; }}
+        .sort-btn.active {{ background: rgba(201,168,76,.25); color: #C9A84C; border-color: #C9A84C; }}
+        .plat-select {{
+            background: #101F36;
+            border: 1px solid rgba(255,255,255,.2);
+            color: #D7DEE8;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-family: Arial, Helvetica, sans-serif;
+        }}
+        .bench-above {{ color: #5CFF7E; font-weight: bold; }}
+        .bench-below {{ color: #FF6B6B; }}
+        /* Unmatched report */
+        .unmatched-report {{
+            background: #101F36;
+            border: 1px solid #FFB347;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 30px;
+        }}
+        .unmatched-report h2 {{ margin-top: 0; color: #FFB347; font-size: 16px; }}
         /* Tab switcher */
         .tab-bar {{
             display: flex;
@@ -1466,6 +1686,27 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             document.querySelectorAll('.tab-btn').forEach(function(b) {{ b.classList.remove('active'); }});
             document.getElementById(id).classList.add('active');
             document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+        }}
+        var _allRows = null;
+        function _getRows() {{
+            if (!_allRows) _allRows = Array.from(document.querySelectorAll('#mainTable tbody tr'));
+            return _allRows;
+        }}
+        function filterTable() {{
+            var plat = document.getElementById('platFilter').value;
+            _getRows().forEach(function(r) {{
+                r.style.display = (!plat || r.getAttribute('data-platform') === plat) ? '' : 'none';
+            }});
+        }}
+        function sortTable(col, btn) {{
+            document.querySelectorAll('.sort-btn').forEach(function(b) {{ b.classList.remove('active'); }});
+            btn.classList.add('active');
+            var visible = _getRows().filter(function(r) {{ return r.style.display !== 'none'; }});
+            visible.sort(function(a, b) {{
+                return parseFloat(b.getAttribute('data-' + col) || 0) - parseFloat(a.getAttribute('data-' + col) || 0);
+            }});
+            var tbody = document.querySelector('#mainTable tbody');
+            visible.forEach(function(r) {{ tbody.appendChild(r); }});
         }}
     </script>
 </head>
@@ -1554,6 +1795,8 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
 
         {scoreboard_html}
 
+        {instagram_performance_html}
+
         {x_performance_html}
 
         {facebook_performance_html}
@@ -1562,43 +1805,50 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
 
         {kdp_revenue_html}
 
-        <h2>Content Intelligence</h2>
-        <div class="subtitle">Posts with a useful signal and suggested next action.</div>
-        <div class="table-wrap">
-            <table>
-                <thead>{th}</thead>
-                <tbody>{make_table_rows(content_intelligence, enriched)}</tbody>
-            </table>
-        </div>
+        {unmatched_section}
 
-        <h2>Top Content by Views</h2>
-        <div class="table-wrap">
-            <table>
-                <thead>{th}</thead>
-                <tbody>{make_table_rows(top_views, enriched)}</tbody>
-            </table>
+        <h2>All Posts</h2>
+        <div class="sort-bar">
+            <label style="color:#AAB4C0;font-size:13px">Platform:
+                <select id="platFilter" class="plat-select" onchange="filterTable()">
+                    <option value="">All Platforms</option>
+                    {plat_options}
+                </select>
+            </label>
+            <span style="color:#AAB4C0;font-size:13px">Sort:</span>
+            <button class="sort-btn active" onclick="sortTable('views', this)">Views</button>
+            <button class="sort-btn" onclick="sortTable('eng', this)">Engagement</button>
+            <button class="sort-btn" onclick="sortTable('watchmin', this)">Watch Time</button>
         </div>
-
-        <h2>Top YouTube Content by Watch Time</h2>
         <div class="table-wrap">
-            <table>
-                <thead>{th}</thead>
-                <tbody>{make_table_rows(top_watch_time, enriched)}</tbody>
-            </table>
-        </div>
-
-        <h2>Top Content by Engagement Rate</h2>
-        <div class="subtitle">Filtered to posts with at least {MIN_ENGAGEMENT_VIEWS} views.</div>
-        <div class="table-wrap">
-            <table>
-                <thead>{th}</thead>
-                <tbody>{make_table_rows(top_engagement, enriched)}</tbody>
+            <table id="mainTable">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        {book_th}
+                        {pillar_th}
+                        <th>Published</th>
+                        <th>Type</th>
+                        <th>Title / Caption</th>
+                        <th style="text-align:center">Views</th>
+                        <th style="text-align:center">Watch Min</th>
+                        <th style="text-align:center">Likes</th>
+                        <th style="text-align:center">Comm</th>
+                        <th style="text-align:center">Shares</th>
+                        <th style="text-align:center">Eng %</th>
+                        <th>Signal</th>
+                        <th>Action</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>{consolidated_rows}</tbody>
             </table>
         </div>
 
         <div class="note">
-            Watch minutes, average view duration, and subscribers gained are YouTube-only metrics.<br>
-            Facebook metrics: Reel Plays are the main Facebook views. Reach is unique reached. 15s Quality Views are a deeper-watch signal. 3s API Views are kept as diagnostics because Meta may return 0 for Reels even when Reel Plays are available.<br>
+            <strong style="color:#5CFF7E">Green</strong> Eng % = above your platform average.
+            <strong style="color:#FF6B6B">Red</strong> = below. Hover for the platform average.<br>
+            Watch minutes are YouTube-only. Facebook Reel Plays are the main view metric.<br>
             Never commit .env, client_secret.json, or youtube_token.json to GitHub.
         </div>
         </div><!-- end tab-analyst -->
@@ -1677,6 +1927,7 @@ def main():
     x_performance_html = build_x_performance_html(content_map)
     facebook_performance_html = build_facebook_performance_html(df)
     fb_image_performance_html = build_fb_image_performance_html(fb_image_rows)
+    instagram_performance_html = build_instagram_performance_html(ig_rows + ig_wb_rows)
 
     # Build KDP Revenue
     kdp_revenue_html = build_kdp_revenue_html()
@@ -1686,10 +1937,11 @@ def main():
         df,
         monday_plan_html,
         scoreboard_html,
-        x_performance_html,
-        facebook_performance_html,
-        fb_image_performance_html,
-        kdp_revenue_html,
+        x_performance_html=x_performance_html,
+        facebook_performance_html=facebook_performance_html,
+        fb_image_performance_html=fb_image_performance_html,
+        instagram_performance_html=instagram_performance_html,
+        kdp_revenue_html=kdp_revenue_html,
         filtered_repurpose_count=len(plan["repurpose"]),
         plan=plan,
     )

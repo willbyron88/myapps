@@ -151,3 +151,146 @@ def fetch_instagram_rows(limit: int = 50) -> list[dict]:
         })
 
     return rows
+
+
+# ─────────────────────────────────────────────────────────────────
+# HTML builder — called by social_dashboard.py
+# ─────────────────────────────────────────────────────────────────
+
+_IG_ACCOUNT_CONFIGS = [
+    ("Instagram",    "@willpowerprotocols", "#E1306C"),
+    ("Instagram-WB", "@will.byron88",       "#C9894C"),
+]
+
+
+def build_instagram_performance_html(rows: list[dict]) -> str:
+    """Build Instagram performance section for both IG accounts.
+
+    Takes a combined list of rows from fetch_instagram_rows and
+    fetch_instagram_wb_rows and renders a scoreboard + detail table
+    for each account. Returns empty string if no rows.
+    """
+    if not rows:
+        return ""
+
+    df = pd.DataFrame(rows)
+
+    section_html = """
+    <h2 style="color:#E1306C">Instagram Performance
+        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:12px">
+        Auto-pulled via Instagram Graph API</span>
+    </h2>"""
+
+    for plat_key, handle, color in _IG_ACCOUNT_CONFIGS:
+        page_rows = df[df["platform"] == plat_key].copy()
+
+        if page_rows.empty:
+            section_html += f"""
+    <div class="scoreboard-card" style="border-color:{color};margin-bottom:20px">
+        <h2 style="color:{color}">Instagram {handle}</h2>
+        <p style="color:#AAB4C0;font-size:13px">No posts found or credentials missing.</p>
+    </div>"""
+            continue
+
+        page_rows = page_rows.sort_values("views", ascending=False)
+
+        total_views    = _safe_int(page_rows["views"].sum())
+        total_likes    = _safe_int(page_rows["likes"].sum())
+        total_comments = _safe_int(page_rows["comments"].sum())
+        total_shares   = _safe_int(page_rows["shares"].sum())
+        total_saves    = _safe_int(page_rows["saves"].sum())
+        avg_eng        = round(page_rows["engagement_rate_percent"].mean(), 2)
+
+        summary_html = f"""
+    <div class="scoreboard-grid" style="margin-bottom:16px">
+        <div class="scoreboard-card" style="border-color:{color}">
+            <h2 style="color:{color}">Instagram {handle}</h2>
+            <table class="scoreboard-table">
+                <tbody>
+                    <tr><td>Posts Analyzed</td>
+                        <td style="text-align:right"><strong>{len(page_rows)}</strong></td></tr>
+                    <tr><td>Total Views</td>
+                        <td style="text-align:right"><strong>{total_views:,}</strong></td></tr>
+                    <tr><td>Total Likes</td>
+                        <td style="text-align:right"><strong>{total_likes:,}</strong></td></tr>
+                    <tr><td>Total Comments</td>
+                        <td style="text-align:right"><strong>{total_comments:,}</strong></td></tr>
+                    <tr><td>Total Shares</td>
+                        <td style="text-align:right"><strong>{total_shares:,}</strong></td></tr>
+                    <tr><td>Total Saves</td>
+                        <td style="text-align:right"><strong>{total_saves:,}</strong></td></tr>
+                    <tr><td>Avg Engagement Rate</td>
+                        <td style="text-align:right"><strong>{avg_eng}%</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>"""
+
+        detail_rows = ""
+        for _, r in page_rows.iterrows():
+            views_v    = _safe_int(r.get("views"))
+            likes_v    = _safe_int(r.get("likes"))
+            comments_v = _safe_int(r.get("comments"))
+            shares_v   = _safe_int(r.get("shares"))
+            saves_v    = _safe_int(r.get("saves"))
+            eng_v      = r.get("engagement_rate_percent", 0.0)
+            mtype_v    = str(r.get("media_type") or "")
+            pub_v      = str(r.get("published_at") or "")[:10]
+            cap_v      = str(r.get("title_or_caption") or "")[:90]
+            url_v      = str(r.get("url") or "")
+            book_v     = str(r.get("book_or_offer") or "—")
+
+            detail_rows += f"""
+        <tr>
+            <td style="font-size:11px;color:#AAB4C0">{mtype_v}</td>
+            <td style="font-size:11px;color:#C9A84C">{book_v}</td>
+            <td style="font-size:11px">{cap_v}</td>
+            <td style="text-align:center"><strong>{views_v:,}</strong></td>
+            <td style="text-align:center">{likes_v}</td>
+            <td style="text-align:center">{comments_v}</td>
+            <td style="text-align:center">{shares_v}</td>
+            <td style="text-align:center">{saves_v}</td>
+            <td style="text-align:center">{eng_v}%</td>
+            <td style="text-align:center;font-size:11px">{pub_v}</td>
+            <td><a href="{url_v}" target="_blank" style="color:{color}">Open</a></td>
+        </tr>"""
+
+        table_html = f"""
+    <div class="table-wrap" style="border:1px solid {color};border-radius:14px;margin-bottom:30px">
+        <table style="min-width:1000px">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Book / Brand</th>
+                    <th>Caption</th>
+                    <th style="text-align:center">Views</th>
+                    <th style="text-align:center">Likes</th>
+                    <th style="text-align:center">Comments</th>
+                    <th style="text-align:center">Shares</th>
+                    <th style="text-align:center">Saves</th>
+                    <th style="text-align:center">Eng %</th>
+                    <th style="text-align:center">Date</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>{detail_rows}</tbody>
+            <tfoot>
+                <tr style="background:#101F36">
+                    <td colspan="3">
+                        <strong style="color:{color}">TOTALS — Instagram {handle}</strong>
+                    </td>
+                    <td style="text-align:center"><strong>{total_views:,}</strong></td>
+                    <td style="text-align:center"><strong>{total_likes:,}</strong></td>
+                    <td style="text-align:center"><strong>{total_comments:,}</strong></td>
+                    <td style="text-align:center"><strong>{total_shares:,}</strong></td>
+                    <td style="text-align:center"><strong>{total_saves:,}</strong></td>
+                    <td style="text-align:center"><strong>{avg_eng}%</strong></td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>"""
+
+        section_html += summary_html + table_html
+
+    return section_html

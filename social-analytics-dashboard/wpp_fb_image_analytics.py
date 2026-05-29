@@ -75,22 +75,25 @@ PAGES = [
         "page_id":   os.getenv("FB_PAGE_ID_PM"),
         "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_PM"),
         "name":      "Prehistoric Memories",
+        "page_url":  "",   # update to actual page URL e.g. facebook.com/prehistoricmemories
         "db_table":  "pm_posts",
-        "color":     "#A0714F",   # warm earth-brown
+        "color":     "#A0714F",
     },
     {
         "page_id":   os.getenv("FB_PAGE_ID_TPL"),
         "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_TPL"),
         "name":      "The Protocol Lab",
+        "page_url":  "facebook.com/theprotocollab",
         "db_table":  "tpl_posts",
-        "color":     "#2E86AB",   # science blue
+        "color":     "#2E86AB",
     },
     {
         "page_id":   os.getenv("FB_PAGE_ID_WB"),
         "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_WB"),
         "name":      "Will Byron",
-        "db_table":  None,        # no wb_posts table yet; matched when table is created
-        "color":     "#C9894C",   # Will Byron brand amber
+        "page_url":  "facebook.com/will.byron88",
+        "db_table":  None,   # no wb_posts table yet; add when created
+        "color":     "#C9894C",
     },
 ]
 
@@ -434,6 +437,7 @@ def fetch_fb_image_rows(limit: int = 50) -> list[dict]:
             all_rows.append({
                 "platform":           f"FB-Image-{page_name.replace(' ', '')}",
                 "page_name":          page_name,
+                "book_or_offer":      page_name,   # prevents "—" in unmatched report
                 "asset_key":          db_info.get("asset_key", ""),
                 "pillar":             db_info.get("pillar", "—"),
                 "topic":              db_info.get("topic", "—"),
@@ -493,12 +497,18 @@ def build_fb_image_performance_html(rows: list[dict]) -> str:
     for page in PAGES:
         page_name = page["name"]
         color     = page["color"]
+        page_url  = page.get("page_url", "")
+        url_link  = (
+            f' &middot; <a href="https://{page_url}" target="_blank"'
+            f' style="color:#AAB4C0;font-size:12px;font-weight:normal">{page_url}</a>'
+            if page_url else ""
+        )
         page_rows = df[df["page_name"] == page_name].copy()
 
         if page_rows.empty:
             section_html += f"""
     <div class="scoreboard-card" style="border-color:{color};margin-bottom:20px">
-        <h2 style="color:{color}">{page_name}</h2>
+        <h2 style="color:{color}">{page_name}{url_link}</h2>
         <p style="color:#AAB4C0;font-size:13px">No image posts found or credentials missing.</p>
     </div>"""
             continue
@@ -517,7 +527,7 @@ def build_fb_image_performance_html(rows: list[dict]) -> str:
         summary_html = f"""
     <div class="scoreboard-grid" style="margin-bottom:16px">
         <div class="scoreboard-card" style="border-color:{color}">
-            <h2 style="color:{color}">{page_name} — Reach &amp; Impressions</h2>
+            <h2 style="color:{color}">{page_name}{url_link}</h2>
             <table class="scoreboard-table">
                 <tbody>
                     <tr><td>Posts Analyzed</td>

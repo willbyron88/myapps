@@ -556,16 +556,14 @@ def fetch_facebook_rows(limit: int = 50) -> list[dict]:
 
 # Page configurations: (platform_label, accent_color, display_title)
 _FB_PAGE_CONFIGS = [
-    ("Facebook",    "#1877F2", "Will Power Protocols Reels"),
-    ("Facebook-WB", "#C9894C", "Will Byron Reels"),
+    ("Facebook",    "#1877F2", "Will Power Protocols Reels", "facebook.com/willpowerprotocols"),
+    ("Facebook-WB", "#C9894C", "Will Byron Reels",           "facebook.com/will.byron88"),
 ]
 
 
 def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
     """Build scoreboard + detail table HTML for one Facebook page's rows."""
     total_views     = _safe_int(fb_rows["views"].sum())
-    total_3s        = _safe_int(fb_rows.get("facebook_3s_views", pd.Series([0])).sum())
-    total_3s_unique = _safe_int(fb_rows.get("facebook_3s_unique_views", pd.Series([0])).sum())
     total_15s       = _safe_int(fb_rows.get("facebook_15s_views", pd.Series([0])).sum())
     total_reach     = _safe_int(fb_rows.get("reach", pd.Series([0])).sum())
     total_reactions = _safe_int(fb_rows.get("likes", pd.Series([0])).sum())
@@ -578,32 +576,23 @@ def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
 
     rows_html = ""
     for _, r in fb_rows.sort_values("views", ascending=False).iterrows():
-        book         = _safe_text(r.get("book_or_offer", "—"))
-        pillar       = _safe_text(r.get("content_pillar", "—"))
-        views        = _safe_int(r.get("views"))
-        v3           = _safe_int(r.get("facebook_3s_views"))
-        unique_3     = _safe_int(r.get("facebook_3s_unique_views"))
-        v15          = _safe_int(r.get("facebook_15s_views"))
-        reach        = _safe_int(r.get("reach"))
-        qrate        = round((v15 / views) * 100, 1) if views else 0.0
-        play_reach   = round((views / reach), 2) if reach else 0.0
-        avg_sec      = _safe_float(r.get("average_view_duration_seconds"))
-        watch_min    = _safe_float(r.get("estimated_minutes_watched"))
-        reactions    = _safe_int(r.get("likes"))
-        comments     = _safe_int(r.get("comments"))
-        shares       = _safe_int(r.get("shares"))
-        clicks       = _safe_int(r.get("clicks"))
-        eng          = _safe_float(r.get("engagement_rate_percent"))
-        pub          = _safe_text(r.get("published_at", ""))[:10]
-        url          = _safe_text(r.get("url", ""))
-        caption      = _safe_text(r.get("title_or_caption", ""))[:82]
-        metric_source    = _safe_text(r.get("facebook_metric_source", ""))
-        video_id_used    = _safe_text(r.get("facebook_video_id_used", ""))
-        post_id_used     = _safe_text(r.get("facebook_post_id_fallback", ""))
-        reactions_by_type = _safe_text(r.get("facebook_reactions_by_type", ""))[:180]
-        clicks_by_type   = _safe_text(r.get("facebook_clicks_by_type", ""))[:180]
-        metrics_found    = _safe_text(r.get("facebook_insight_metrics_returned", ""))[:260]
-        three_sec_note   = "API 0" if views > 0 and v3 == 0 else f"{v3:,}"
+        book      = _safe_text(r.get("book_or_offer", "—"))
+        pillar    = _safe_text(r.get("content_pillar", "—"))
+        views     = _safe_int(r.get("views"))
+        v15       = _safe_int(r.get("facebook_15s_views"))
+        reach     = _safe_int(r.get("reach"))
+        qrate     = round((v15 / views) * 100, 1) if views else 0.0
+        play_reach = round((views / reach), 2) if reach else 0.0
+        avg_sec   = _safe_float(r.get("average_view_duration_seconds"))
+        watch_min = _safe_float(r.get("estimated_minutes_watched"))
+        reactions = _safe_int(r.get("likes"))
+        comments  = _safe_int(r.get("comments"))
+        shares    = _safe_int(r.get("shares"))
+        clicks    = _safe_int(r.get("clicks"))
+        eng       = _safe_float(r.get("engagement_rate_percent"))
+        pub       = _safe_text(r.get("published_at", ""))[:10]
+        url       = _safe_text(r.get("url", ""))
+        caption   = _safe_text(r.get("title_or_caption", ""))[:82]
 
         rows_html += f"""
         <tr>
@@ -615,8 +604,6 @@ def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
             <td style="text-align:center">{play_reach:g}</td>
             <td style="text-align:center">{v15:,}</td>
             <td style="text-align:center">{qrate}%</td>
-            <td style="text-align:center;color:#AAB4C0">{three_sec_note}</td>
-            <td style="text-align:center;color:#AAB4C0">{unique_3:,}</td>
             <td style="text-align:center">{avg_sec:g}</td>
             <td style="text-align:center">{watch_min:g}</td>
             <td style="text-align:center">{reactions}</td>
@@ -625,20 +612,8 @@ def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
             <td style="text-align:center">{clicks}</td>
             <td style="text-align:center">{eng}%</td>
             <td style="text-align:center;font-size:11px">{pub}</td>
-            <td style="font-size:10px;max-width:180px">{reactions_by_type}</td>
-            <td style="font-size:10px;max-width:180px">{clicks_by_type}</td>
-            <td style="font-size:10px;max-width:260px">{metrics_found}</td>
-            <td style="font-size:10px">video: {video_id_used}<br>post: {post_id_used}<br>{metric_source}</td>
             <td><a href="{url}" target="_blank" style="color:{color}">Open &#x2197;</a></td>
         </tr>"""
-
-    diagnostics_note = ""
-    if total_views > 0 and total_3s == 0:
-        diagnostics_note = """
-        <p style="color:#AAB4C0;font-size:12px;margin-top:10px">
-        Note: Meta returned Reel Plays and 15s views but 3s views came back as 0
-        for these Reel objects. Treat 3s as an API diagnostic, not your main metric.
-        </p>"""
 
     return f"""
     <div class="scoreboard-grid">
@@ -651,27 +626,24 @@ def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
                     <tr><td>Plays per Reached Person</td><td style="text-align:right"><strong>{plays_per_reach:g}</strong></td></tr>
                     <tr><td>15s Quality Views</td><td style="text-align:right"><strong>{total_15s:,}</strong></td></tr>
                     <tr><td>15s Quality Rate</td><td style="text-align:right"><strong>{quality_rate}%</strong></td></tr>
-                    <tr><td>Watch Minutes API</td><td style="text-align:right"><strong>{total_watch_min:g}</strong></td></tr>
+                    <tr><td>Watch Minutes</td><td style="text-align:right"><strong>{total_watch_min:g}</strong></td></tr>
                 </tbody>
             </table>
         </div>
         <div class="scoreboard-card" style="border-color:{color}">
-            <h2 style="color:{color}">Engagement &amp; Diagnostics</h2>
+            <h2 style="color:{color}">Engagement</h2>
             <table class="scoreboard-table">
                 <tbody>
                     <tr><td>Reactions</td><td style="text-align:right"><strong>{total_reactions:,}</strong></td></tr>
                     <tr><td>Comments</td><td style="text-align:right"><strong>{total_comments:,}</strong></td></tr>
                     <tr><td>Shares</td><td style="text-align:right"><strong>{total_shares:,}</strong></td></tr>
                     <tr><td>Clicks</td><td style="text-align:right"><strong>{total_clicks:,}</strong></td></tr>
-                    <tr><td>3s Views API</td><td style="text-align:right"><strong>{total_3s:,}</strong></td></tr>
-                    <tr><td>3s Unique API</td><td style="text-align:right"><strong>{total_3s_unique:,}</strong></td></tr>
                 </tbody>
             </table>
-            {diagnostics_note}
         </div>
     </div>
     <div class="table-wrap" style="border:1px solid {color};border-radius:14px;margin-bottom:30px">
-        <table style="min-width:2000px">
+        <table style="min-width:1400px">
             <thead>
                 <tr>
                     <th>Book</th><th>Pillar</th><th>Caption</th>
@@ -680,20 +652,14 @@ def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
                     <th style="text-align:center">Plays/Reach</th>
                     <th style="text-align:center">15s Views</th>
                     <th style="text-align:center">15s Rate</th>
-                    <th style="text-align:center">3s API</th>
-                    <th style="text-align:center">3s Unique API</th>
-                    <th style="text-align:center">Avg Sec API</th>
-                    <th style="text-align:center">Watch Min API</th>
+                    <th style="text-align:center">Avg Sec</th>
+                    <th style="text-align:center">Watch Min</th>
                     <th style="text-align:center">React</th>
                     <th style="text-align:center">Comm</th>
                     <th style="text-align:center">Share</th>
                     <th style="text-align:center">Clicks</th>
                     <th style="text-align:center">Eng %</th>
                     <th style="text-align:center">Posted</th>
-                    <th>Reactions by Type</th>
-                    <th>Clicks by Type</th>
-                    <th>Metrics Returned</th>
-                    <th>IDs / Source</th>
                     <th>Link</th>
                 </tr>
             </thead>
@@ -706,14 +672,12 @@ def _build_fb_page_section_html(fb_rows: pd.DataFrame, color: str) -> str:
                     <td style="text-align:center"><strong>{plays_per_reach:g}</strong></td>
                     <td style="text-align:center"><strong>{total_15s:,}</strong></td>
                     <td style="text-align:center"><strong>{quality_rate}%</strong></td>
-                    <td style="text-align:center"><strong>{total_3s:,}</strong></td>
-                    <td style="text-align:center"><strong>{total_3s_unique:,}</strong></td>
                     <td colspan="2"></td>
                     <td style="text-align:center"><strong>{total_reactions:,}</strong></td>
                     <td style="text-align:center"><strong>{total_comments:,}</strong></td>
                     <td style="text-align:center"><strong>{total_shares:,}</strong></td>
                     <td style="text-align:center"><strong>{total_clicks:,}</strong></td>
-                    <td colspan="7"></td>
+                    <td colspan="3"></td>
                 </tr>
             </tfoot>
         </table>
@@ -746,13 +710,16 @@ def build_facebook_performance_html(df: pd.DataFrame) -> str:
         Auto-pulled via Page Post + Video/Reels Insights &middot; {len(all_fb)} Reels/videos across all pages</span>
     </h2>"""
 
-    for platform, color, title in _FB_PAGE_CONFIGS:
+    for platform, color, title, page_url in _FB_PAGE_CONFIGS:
         page_rows = df[df["platform"] == platform] if not df.empty else pd.DataFrame()
         if page_rows.empty:
             continue
         html += f"""
     <h3 style="color:{color};margin-top:24px;margin-bottom:10px">{title}
-        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:10px">{len(page_rows)} videos</span>
+        <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:10px">
+        {len(page_rows)} videos &middot;
+        <a href="https://{page_url}" target="_blank" style="color:#AAB4C0">{page_url}</a>
+        </span>
     </h3>"""
         html += _build_fb_page_section_html(page_rows, color)
 
