@@ -163,17 +163,22 @@ _IG_ACCOUNT_CONFIGS = [
 ]
 
 
-def build_instagram_performance_html(rows: list[dict]) -> str:
+def build_instagram_performance_html(rows_or_df) -> str:
     """Build Instagram performance section for both IG accounts.
 
-    Takes a combined list of rows from fetch_instagram_rows and
-    fetch_instagram_wb_rows and renders a scoreboard + detail table
-    for each account. Returns empty string if no rows.
+    Accepts either a combined list of raw row dicts or an enriched DataFrame
+    (post merge_content_map). Returns empty string if no rows.
     """
-    if not rows:
+    if rows_or_df is None:
         return ""
-
-    df = pd.DataFrame(rows)
+    if isinstance(rows_or_df, pd.DataFrame):
+        df = rows_or_df[rows_or_df["platform"].isin(["Instagram", "Instagram-WB"])].copy()
+    else:
+        if not rows_or_df:
+            return ""
+        df = pd.DataFrame(rows_or_df)
+    if df.empty:
+        return ""
 
     section_html = """
     <h2 style="color:#E1306C">Instagram Performance
@@ -239,11 +244,13 @@ def build_instagram_performance_html(rows: list[dict]) -> str:
             cap_v      = str(r.get("title_or_caption") or "")[:90]
             url_v      = str(r.get("url") or "")
             book_v     = str(r.get("book_or_offer") or "—")
+            pillar_v   = str(r.get("content_pillar") or "—")
 
             detail_rows += f"""
         <tr>
             <td style="font-size:11px;color:#AAB4C0">{mtype_v}</td>
             <td style="font-size:11px;color:#C9A84C">{book_v}</td>
+            <td style="font-size:11px;color:#AAB4C0">{pillar_v}</td>
             <td style="font-size:11px">{cap_v}</td>
             <td style="text-align:center"><strong>{views_v:,}</strong></td>
             <td style="text-align:center">{likes_v}</td>
@@ -262,6 +269,7 @@ def build_instagram_performance_html(rows: list[dict]) -> str:
                 <tr>
                     <th>Type</th>
                     <th>Book / Brand</th>
+                    <th>Pillar</th>
                     <th>Caption</th>
                     <th style="text-align:center">Views</th>
                     <th style="text-align:center">Likes</th>
@@ -276,7 +284,7 @@ def build_instagram_performance_html(rows: list[dict]) -> str:
             <tbody>{detail_rows}</tbody>
             <tfoot>
                 <tr style="background:#101F36">
-                    <td colspan="3">
+                    <td colspan="4">
                         <strong style="color:{color}">TOTALS — Instagram {handle}</strong>
                     </td>
                     <td style="text-align:center"><strong>{total_views:,}</strong></td>

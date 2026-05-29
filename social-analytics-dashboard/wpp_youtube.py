@@ -30,8 +30,9 @@ load_dotenv()
 # Config
 # ─────────────────────────────────────────────────────────────────
 
-YOUTUBE_API_KEY    = os.getenv("YOUTUBE_API_KEY")
-YOUTUBE_CHANNEL_ID = os.getenv("YOUTUBE_CHANNEL_ID")
+YOUTUBE_API_KEY      = os.getenv("YOUTUBE_API_KEY")
+YOUTUBE_CHANNEL_ID   = os.getenv("YOUTUBE_CHANNEL_ID")
+YOUTUBE_CHANNEL_HANDLE = os.getenv("YOUTUBE_CHANNEL_HANDLE", "Will Power Protocols")
 START_DATE         = "2026-01-01"
 TOKEN_FILE         = "youtube_token.json"
 CLIENT_SECRET_FILE = "client_secret.json"
@@ -146,6 +147,7 @@ def get_youtube_video_metadata(youtube_data, video_ids: list[str]) -> dict:
             stats    = item.get("statistics", {})
             metadata[video_id] = {
                 "platform":                      "YouTube",
+                "channel_label":                 YOUTUBE_CHANNEL_HANDLE,
                 "published_at":                  snippet.get("publishedAt"),
                 "media_type":                    "VIDEO",
                 "title_or_caption":              snippet.get("title", ""),

@@ -43,7 +43,7 @@ PLATFORM_LABELS = {
     "Facebook-WB":                  "Facebook Reels (Will Byron)",
     "Instagram":                    "Instagram (@willpowerprotocols)",
     "Instagram-WB":                 "Instagram (@will.byron88)",
-    "YouTube":                      "YouTube",
+    "YouTube":                      "YouTube (Will Power Protocols)",
     "FB-Image-PrehistoricMemories": "Facebook Images (Prehistoric Memories)",
     "FB-Image-TheProtocolLab":      "Facebook Images (The Protocol Lab)",
     "FB-Image-WillByron":           "Facebook Images (Will Byron)",
@@ -303,7 +303,7 @@ def load_wpp_content():
     if len(ep_queue):
         print(f"  -> Episode queue: {len(ep_queue)} unposted video/podcast episodes")
 
-    return content_map, queue_df
+    return content_map, queue_df, ep_queue
 
 
 def merge_content_map(df, content_map):
@@ -453,7 +453,7 @@ def add_content_intelligence(df):
 # Monday Action Plan Builder
 # ============================================================
 
-def generate_monday_plan(df, queue_df):
+def generate_monday_plan(df, queue_df, ep_queue=None):
     has_content_map = (
         "book_or_offer" in df.columns
         and df["book_or_offer"].ne("—").any()
@@ -600,6 +600,39 @@ def generate_monday_plan(df, queue_df):
         all_known_books = set(df[df["book_or_offer"].ne("—")]["book_or_offer"].unique())
         books_no_recent = sorted(all_known_books - active_books)
 
+    # ── Unposted long-form video episodes ────────────────────────
+    episode_items = []
+    if ep_queue is not None and not ep_queue.empty:
+        for _, row in ep_queue.iterrows():
+            episode_items.append({
+                "book":       str(row.get("book_or_offer", "Unknown")),
+                "ep_num":     str(row.get("episode_num", "?")),
+                "topic":      str(row.get("script_topic", "")),
+                "pillar":     str(row.get("content_pillar", "")),
+            })
+
+    # ── Unposted image posts from tpl_posts and pm_posts ─────────
+    unposted_images = []
+    try:
+        import sqlite3 as _sq
+        _conn = _sq.connect(WPP_DB_FILE)
+        _cur  = _conn.cursor()
+        for _table, _brand in [("tpl_posts", "The Protocol Lab"), ("pm_posts", "Prehistoric Memories")]:
+            _cur.execute(
+                f"SELECT post_id, pillar, topic, post_type FROM {_table} WHERE posted='N' ORDER BY post_id"
+            )
+            for pid, pillar, topic, ptype in _cur.fetchall():
+                unposted_images.append({
+                    "brand":    _brand,
+                    "post_id":  pid,
+                    "pillar":   pillar or "—",
+                    "topic":    topic or "—",
+                    "type":     ptype or "image",
+                })
+        _conn.close()
+    except Exception:
+        pass
+
     return {
         "schedule": schedule,
         "repurpose": repurpose,
@@ -610,6 +643,8 @@ def generate_monday_plan(df, queue_df):
         "has_queue": has_queue,
         "has_content_map": has_content_map,
         "books_no_recent": books_no_recent,
+        "episode_items": episode_items,
+        "unposted_images": unposted_images,
     }
 
 
@@ -729,10 +764,59 @@ def build_monday_plan_html(plan):
     else:
         test_html = ""
 
+    # ── Unposted long-form video episodes ────────────────────────
+    episode_items   = plan.get("episode_items", [])
+    unposted_images = plan.get("unposted_images", [])
+
+    if episode_items:
+        ep_rows = ""
+        for ep in episode_items:
+            ep_rows += f"""
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:13px;padding-top:1px">&#9654;</div>
+                <div style="font-size:13px;color:#D7DEE8;line-height:1.5">
+                    <strong style="color:#FFFFFF">{ep["book"]}</strong>
+                    &nbsp;&middot;&nbsp; Episode #{ep["ep_num"]}
+                    &nbsp;&middot;&nbsp; {ep["topic"]}
+                    <div style="color:#AAB4C0;font-size:11px;margin-top:2px">{ep["pillar"]}</div>
+                </div>
+            </div>"""
+        episodes_html = f"""
+        <div class="action-section">
+            <h3>Unposted Long-Form Videos ({len(episode_items)})</h3>
+            {ep_rows}
+        </div>"""
+    else:
+        episodes_html = ""
+
+    if unposted_images:
+        img_rows = ""
+        for img in unposted_images:
+            brand_color = "#E1306C" if "Protocol Lab" in img["brand"] else "#C9A84C"
+            img_rows += f"""
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                <div style="min-width:22px;color:{brand_color};font-weight:bold;font-size:11px;padding-top:2px">IMG</div>
+                <div style="font-size:13px;color:#D7DEE8;line-height:1.5">
+                    <span style="color:{brand_color};font-size:11px">{img["brand"]}</span>
+                    &nbsp;&middot;&nbsp; #{img["post_id"]}
+                    &nbsp;&middot;&nbsp; {img["topic"]}
+                    <div style="color:#AAB4C0;font-size:11px;margin-top:2px">{img["pillar"]} &nbsp;&middot;&nbsp; {img["type"]}</div>
+                </div>
+            </div>"""
+        images_html = f"""
+        <div class="action-section">
+            <h3>Unposted Image Posts — TPL &amp; PM ({len(unposted_images)})</h3>
+            {img_rows}
+        </div>"""
+    else:
+        images_html = ""
+
     return f"""
     <div class="action-plan">
         <h2>Monday Action Plan — {today_str}</h2>
         {schedule_html}
+        {episodes_html}
+        {images_html}
         {repurpose_html}
         {pillar_html}
         {test_html}
@@ -852,6 +936,599 @@ def build_scoreboard_html(df):
     </div>"""
 
 
+
+
+# ============================================================
+# Intelligence Panel Builder
+# ============================================================
+
+def build_intelligence_panel_html(df):
+    """Build the 7-section Intelligence Panel appended to the CEO tab."""
+    import sqlite3 as _sqlite3
+    import json as _json
+    from datetime import date as _date
+
+    def _sf(v):
+        try: return float(v or 0)
+        except: return 0.0
+
+    def _si(v):
+        try: return int(float(v or 0))
+        except: return 0
+
+    # ── Load DB ───────────────────────────────────────────────────
+    try:
+        conn = _sqlite3.connect(WPP_DB_FILE)
+        cur  = conn.cursor()
+
+        def _cfg(key):
+            cur.execute("SELECT value FROM config WHERE key=?", (key,))
+            r = cur.fetchone()
+            return _json.loads(r[0]) if r else []
+
+        pub_q      = _cfg("publishing_queue")
+        rocket_q   = _cfg("rocket_queue")
+        pillar_map = _cfg("pillar_book_map")
+        triggers   = _cfg("business_triggers")
+        gumroad    = _cfg("gumroad_guides")
+
+        cur.execute("""
+            SELECT snapshot_year, snapshot_month, SUM(royalties_usd), SUM(ku_pages)
+            FROM kdp_snapshots
+            GROUP BY snapshot_year, snapshot_month
+            ORDER BY snapshot_year DESC, snapshot_month DESC
+            LIMIT 6
+        """)
+        kdp_monthly_rows = cur.fetchall()
+
+        cur.execute("""
+            SELECT k.book_key, b.title,
+                   SUM(k.royalties_usd), SUM(k.kindle_units), SUM(k.ku_pages)
+            FROM kdp_snapshots k JOIN books b ON k.book_key = b.book_key
+            GROUP BY k.book_key
+            ORDER BY SUM(k.royalties_usd) DESC
+        """)
+        kdp_by_book = cur.fetchall()
+
+        cur.execute("""
+            SELECT book_key, COUNT(*) FROM content
+            WHERE posted='Y' AND content_type='Short'
+            GROUP BY book_key
+        """)
+        shorts_posted = dict(cur.fetchall())
+
+        cur.execute("""
+            SELECT c.book_key, b.title, COUNT(*), MIN(c.short_num)
+            FROM content c JOIN books b ON c.book_key = b.book_key
+            WHERE c.posted='N' AND c.content_type='Short'
+            GROUP BY c.book_key ORDER BY b.title
+        """)
+        unposted_rows = cur.fetchall()
+
+        conn.close()
+    except Exception as e:
+        return f'<p style="color:#FF6B6B">Intelligence Panel load error: {e}</p>'
+
+    today = _date.today()
+
+    # ── Lookup structures ─────────────────────────────────────────
+    slot_to_book = {b["slot"]: b for b in pub_q}
+
+    slot_to_pillars = {}
+    for entry in pillar_map:
+        for slot in entry.get("maps_to_slots", []):
+            slot_to_pillars.setdefault(slot, []).append(entry["pillar"])
+
+    # Pillar stats from live df (engagement lives here, not in empty analytics_snapshots)
+    pillar_stats = {}
+    if "content_pillar" in df.columns and "engagement_rate_percent" in df.columns:
+        known_p = df[
+            df["content_pillar"].notna()
+            & df["content_pillar"].ne("")
+            & df["content_pillar"].ne("—")
+        ]
+        for pillar, grp in known_p.groupby("content_pillar"):
+            pillar_stats[pillar] = {
+                "count":   len(grp),
+                "avg_eng": round(float(grp["engagement_rate_percent"].mean()), 1),
+                "views":   _si(grp["views"].sum()),
+            }
+
+    high_signal = {p for p, s in pillar_stats.items() if s["avg_eng"] >= 10}
+    exceptional = {p for p, s in pillar_stats.items() if s["avg_eng"] >= 20}
+
+    # ── Title → revenue/book_key maps ────────────────────────────
+    title_to_rev = {t: _sf(rev) for _, t, rev, _, _ in kdp_by_book}
+    title_to_bk  = {t: bk for bk, t, _, _, _ in kdp_by_book}
+
+    # ── SECTION 1 — Monthly KDP Trend ─────────────────────────────
+    cur_month_str = today.strftime("%Y-%m")
+    days_elapsed  = today.day
+    cur_rev = 0.0
+    cur_ku  = 0
+    prev_months = []
+    for yr, mo, rev, ku in kdp_monthly_rows:
+        if mo == cur_month_str:
+            cur_rev = _sf(rev)
+            cur_ku  = _si(ku)
+        else:
+            prev_months.append((mo, _sf(rev), _si(ku)))
+
+    run_rate = (cur_rev / days_elapsed * 30) if days_elapsed > 0 else 0.0
+
+    months_display = [(cur_month_str, cur_rev, cur_ku)] + prev_months[:2]
+    trend_rows = ""
+    for i, (mo, rev, ku) in enumerate(months_display):
+        if i == 0:
+            mom_cell = (
+                f'<span style="color:#AAB4C0;font-size:11px">current &nbsp;'
+                f'(run rate: <strong style="color:#C9A84C">${run_rate:.2f}/mo</strong>)</span>'
+            )
+        else:
+            prior_rev = months_display[i - 1][1]
+            if rev > 0:
+                pct     = (prior_rev - rev) / rev * 100
+                clr     = "#5CFF7E" if pct >= 0 else "#FF6B6B"
+                sign    = "+" if pct >= 0 else ""
+                mom_cell = f'<span style="color:{clr}">{sign}{pct:.1f}%</span>'
+            else:
+                mom_cell = "—"
+        trend_rows += f"""
+            <tr>
+                <td style="font-size:12px">{mo}</td>
+                <td style="text-align:right"><strong style="color:#C9A84C">${rev:.2f}</strong></td>
+                <td style="text-align:right">{ku:,}</td>
+                <td>{mom_cell}</td>
+            </tr>"""
+
+    s1_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">Monthly KDP Trend</h2>
+        <table class="scoreboard-table" style="width:100%">
+            <thead><tr>
+                <th>Month</th><th style="text-align:right">Revenue</th>
+                <th style="text-align:right">KU Pages</th><th>MoM Change</th>
+            </tr></thead>
+            <tbody>{trend_rows}</tbody>
+        </table>
+        <p style="color:#AAB4C0;font-size:11px;margin:8px 0 0">
+            Run rate = revenue so far / {days_elapsed} days elapsed x 30
+        </p>
+    </div>"""
+
+    # ── SECTION 2 — $500/Month Trigger Tracker ────────────────────
+    progress_pct = min(run_rate / 500 * 100, 100)
+    bar_color    = "#5CFF7E" if run_rate >= 500 else "#C9A84C" if run_rate >= 250 else "#FFB347"
+    trigger_rows = ""
+    for t in triggers:
+        status   = t.get("status", "pending")
+        clr      = "#5CFF7E" if status == "complete" else "#C9A84C"
+        dot      = "&#9679;" if status == "complete" else "&#9675;"
+        trigger_rows += f"""
+            <tr>
+                <td style="color:{clr};font-size:12px">{dot}&nbsp;{t.get('trigger','')}</td>
+                <td style="font-size:12px;color:#AAB4C0">{t.get('unlocks','')}</td>
+                <td style="text-align:center"><span style="color:{clr};font-size:11px">{status}</span></td>
+            </tr>"""
+
+    s2_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">$500/Month Trigger Tracker</h2>
+        <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px">
+                <span style="color:#AAB4C0">Current monthly run rate</span>
+                <strong style="color:{bar_color}">${run_rate:.2f}/mo</strong>
+            </div>
+            <div style="background:#1A2A3A;border-radius:6px;height:14px;overflow:hidden">
+                <div style="width:{progress_pct:.1f}%;height:100%;background:{bar_color};border-radius:6px"></div>
+            </div>
+            <div style="text-align:right;font-size:11px;color:#AAB4C0;margin-top:3px">
+                {progress_pct:.1f}% of $500 goal
+            </div>
+        </div>
+        <table class="scoreboard-table" style="width:100%">
+            <thead><tr>
+                <th>Trigger</th><th>Unlocks</th><th style="text-align:center">Status</th>
+            </tr></thead>
+            <tbody>{trigger_rows}</tbody>
+        </table>
+    </div>"""
+
+    # ── SECTION 3 — Revenue Per Book Ranked ───────────────────────
+    book_rev_rows = ""
+    rank = 0
+    for bk, title, total_rev, kindle_units, ku_pages in kdp_by_book:
+        rev = _sf(total_rev)
+        ku  = _si(ku_pages)
+        if rev == 0 and ku == 0:
+            continue
+        rank += 1
+        sp = shorts_posted.get(bk, 0)
+        book_rev_rows += f"""
+            <tr>
+                <td style="text-align:center;color:#AAB4C0">{rank}</td>
+                <td style="font-size:12px">{title}</td>
+                <td style="text-align:right"><strong style="color:#C9A84C">${rev:.2f}</strong></td>
+                <td style="text-align:right">{ku:,}</td>
+                <td style="text-align:center">{sp}</td>
+            </tr>"""
+    if not book_rev_rows:
+        book_rev_rows = '<tr><td colspan="5" style="color:#AAB4C0;text-align:center">No KDP revenue data yet</td></tr>'
+
+    s3_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">Revenue Per Book — Ranked</h2>
+        <table class="scoreboard-table" style="width:100%">
+            <thead><tr>
+                <th style="text-align:center">#</th><th>Title</th>
+                <th style="text-align:right">Revenue</th>
+                <th style="text-align:right">KU Pages</th>
+                <th style="text-align:center">Shorts Posted</th>
+            </tr></thead>
+            <tbody>{book_rev_rows}</tbody>
+        </table>
+    </div>"""
+
+    # ── SECTION 4a — Pillar Performance ───────────────────────────
+    eligible = sorted(
+        [(p, s) for p, s in pillar_stats.items() if s["count"] >= 3],
+        key=lambda x: x[1]["avg_eng"], reverse=True
+    )
+    pillar_rows = ""
+    for pillar, s in eligible:
+        eng = s["avg_eng"]
+        if eng >= 20:
+            badge = ' <span style="color:#FF6B6B">EXCEPTIONAL &#128293;</span>'
+        elif eng >= 10:
+            badge = ' <span style="color:#C9A84C">HIGH SIGNAL &#11088;</span>'
+        else:
+            badge = ""
+        pillar_rows += f"""
+            <tr>
+                <td style="font-size:12px">{pillar}{badge}</td>
+                <td style="text-align:center">{s['count']}</td>
+                <td style="text-align:right"><strong style="color:#C9A84C">{eng}%</strong></td>
+                <td style="text-align:right">{s['views']:,}</td>
+            </tr>"""
+    if not pillar_rows:
+        pillar_rows = '<tr><td colspan="4" style="color:#AAB4C0;text-align:center;font-size:12px">Not enough data yet — need 3+ posts per pillar.</td></tr>'
+
+    s4a_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">4a &mdash; Pillar Performance</h2>
+        <table class="scoreboard-table" style="width:100%">
+            <thead><tr>
+                <th>Pillar</th><th style="text-align:center">Posts</th>
+                <th style="text-align:right">Avg Eng %</th><th style="text-align:right">Total Views</th>
+            </tr></thead>
+            <tbody>{pillar_rows}</tbody>
+        </table>
+        <p style="color:#AAB4C0;font-size:11px;margin:8px 0 0">
+            Only pillars with 3+ posts shown. HIGH SIGNAL = &gt;10% engagement. EXCEPTIONAL = &gt;20%.
+        </p>
+    </div>"""
+
+    # ── SECTION 4b — Book Queue with Pillar Intelligence ──────────
+    queue_planned = sorted(
+        [b for b in pub_q if b.get("status") in ("planned", "idea") and b.get("priority", 99) <= 3],
+        key=lambda x: (x.get("priority", 99), x.get("slot", 99))
+    )
+    queue_rows = ""
+    for book in queue_planned:
+        slot     = book.get("slot")
+        title    = book.get("title", "")
+        series   = book.get("series", "")
+        price    = book.get("price", "")
+        status   = book.get("status", "")
+        priority = book.get("priority", "")
+        rocket_v = book.get("rocket_validated", False)
+
+        pillars_for_slot = slot_to_pillars.get(slot, [])
+        mapped_pillar    = pillars_for_slot[0] if pillars_for_slot else None
+        p_data           = pillar_stats.get(mapped_pillar) if mapped_pillar else None
+
+        if p_data:
+            p_eng_str = f"{p_data['avg_eng']}% ({p_data['count']} posts)"
+        elif mapped_pillar:
+            p_eng_str = "No data yet"
+        else:
+            p_eng_str = "—"
+
+        if mapped_pillar is None:
+            rec, rec_color = "No signal yet", "#AAB4C0"
+        elif p_data is None or p_data["count"] < 3:
+            rec, rec_color = "Insufficient pillar data — use Rocket only", "#AAB4C0"
+        elif p_data["avg_eng"] >= 10 and rocket_v:
+            rec, rec_color = "GO — write this next &#128640;", "#5CFF7E"
+        elif p_data["avg_eng"] >= 10 and not rocket_v:
+            rec, rec_color = "Data supports prioritizing — run Rocket &#11088;", "#C9A84C"
+        else:
+            rec, rec_color = "Insufficient pillar data — use Rocket only", "#AAB4C0"
+
+        s_color   = "#C9A84C" if status == "planned" else "#AAB4C0"
+        rocket_td = '<span style="color:#5CFF7E">Yes</span>' if rocket_v else '<span style="color:#AAB4C0">No</span>'
+
+        queue_rows += f"""
+            <tr>
+                <td style="text-align:center;color:#AAB4C0">{slot}</td>
+                <td style="font-size:12px"><strong>{title}</strong>
+                    <div style="color:#AAB4C0;font-size:10px">{series}</div></td>
+                <td style="text-align:center">{price}</td>
+                <td style="text-align:center"><span style="color:{s_color}">{status}</span></td>
+                <td style="text-align:center;color:#AAB4C0">{priority}</td>
+                <td style="font-size:11px">{mapped_pillar or '—'}</td>
+                <td style="font-size:11px;color:#AAB4C0">{p_eng_str}</td>
+                <td style="text-align:center">{rocket_td}</td>
+                <td style="font-size:11px;color:{rec_color}">{rec}</td>
+            </tr>"""
+
+    s4b_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">4b &mdash; Book Queue with Pillar Intelligence</h2>
+        <div class="table-wrap">
+        <table style="min-width:1100px">
+            <thead><tr>
+                <th>Slot</th><th>Title</th><th style="text-align:center">Price</th>
+                <th style="text-align:center">Status</th><th style="text-align:center">Pri</th>
+                <th>Mapped Pillar</th><th>Pillar Eng</th>
+                <th style="text-align:center">Rocket</th><th>Recommendation</th>
+            </tr></thead>
+            <tbody>{queue_rows}</tbody>
+        </table>
+        </div>
+        <p style="color:#AAB4C0;font-size:11px;margin:8px 0 0;font-style:italic">
+            Directional only &mdash; 90 days minimum for confident decisions.
+            Always validate with Publisher Rocket.
+        </p>
+    </div>"""
+
+    # ── SECTION 4c — Publisher Rocket Queue ───────────────────────
+    rocket_rows = ""
+    for rq in rocket_q:
+        rank      = rq.get("rank", "")
+        keyword   = rq.get("keyword", "")
+        priority  = rq.get("priority", "")
+        slot      = rq.get("maps_to_slot")
+        validated = rq.get("validated", False)
+        notes     = rq.get("notes", "")
+
+        book_title = slot_to_book.get(slot, {}).get("title", "—") if slot else "—"
+
+        if priority == "high":
+            p_color = "#C9A84C"
+        elif priority == "medium":
+            p_color = "#D7DEE8"
+        else:
+            p_color = "#6B7A8D"
+
+        flag = ""
+        if priority == "watch" and slot:
+            for p in slot_to_pillars.get(slot, []):
+                if p in high_signal:
+                    flag = f' &nbsp;<span style="color:#C9A84C;font-size:11px">Pillar signal supports researching now.</span>'
+                    break
+
+        val_td = '<span style="color:#5CFF7E">Yes</span>' if validated else '<span style="color:#AAB4C0">No</span>'
+        rocket_rows += f"""
+            <tr style="color:{p_color}">
+                <td style="text-align:center">{rank}</td>
+                <td style="font-size:12px">{keyword}{flag}</td>
+                <td style="text-align:center;font-size:11px">{priority}</td>
+                <td style="font-size:11px;color:#AAB4C0">{book_title}</td>
+                <td style="text-align:center">{val_td}</td>
+                <td style="font-size:11px;color:#6B7A8D">{notes}</td>
+            </tr>"""
+
+    s4c_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">4c &mdash; Publisher Rocket Queue</h2>
+        <div class="table-wrap">
+        <table style="min-width:900px">
+            <thead><tr>
+                <th style="text-align:center">#</th><th>Keyword</th>
+                <th style="text-align:center">Priority</th><th>Maps To Book</th>
+                <th style="text-align:center">Validated</th><th>Notes</th>
+            </tr></thead>
+            <tbody>{rocket_rows}</tbody>
+        </table>
+        </div>
+    </div>"""
+
+    # ── SECTION 5 — Unposted Content by Brand (3 cards side-by-side) ──
+    # Card A: Unposted Shorts
+    total_unposted   = sum(r[2] for r in unposted_rows)
+    short_rows_html = ""
+    for bk, title, cnt, next_num in unposted_rows:
+        short_rows_html += f"""
+            <tr>
+                <td style="font-size:12px">{title}</td>
+                <td style="text-align:center"><strong style="color:#C9A84C">{cnt}</strong></td>
+                <td style="text-align:center;color:#AAB4C0">Short #{next_num or '—'}</td>
+            </tr>"""
+    if not short_rows_html:
+        short_rows_html = '<tr><td colspan="3" style="color:#AAB4C0;text-align:center;font-size:12px">All shorts posted.</td></tr>'
+
+    # Card B & C: Unposted TPL / PM image posts
+    tpl_rows_html = ""
+    pm_rows_html  = ""
+    tpl_count = 0
+    pm_count  = 0
+    try:
+        _conn2 = _sqlite3.connect(WPP_DB_FILE)
+        _cur2  = _conn2.cursor()
+        _cur2.execute("SELECT post_id, pillar, topic FROM tpl_posts WHERE posted='N' ORDER BY post_id")
+        for pid, pillar, topic in _cur2.fetchall():
+            tpl_count += 1
+            tpl_rows_html += f"""
+            <tr>
+                <td style="text-align:center;color:#AAB4C0;font-size:11px">{pid}</td>
+                <td style="font-size:11px;color:#AAB4C0">{pillar or '—'}</td>
+                <td style="font-size:11px">{(topic or '')[:55]}</td>
+            </tr>"""
+        _cur2.execute("SELECT post_id, pillar, topic FROM pm_posts WHERE posted='N' ORDER BY post_id")
+        for pid, pillar, topic in _cur2.fetchall():
+            pm_count += 1
+            pm_rows_html += f"""
+            <tr>
+                <td style="text-align:center;color:#AAB4C0;font-size:11px">{pid}</td>
+                <td style="font-size:11px;color:#AAB4C0">{pillar or '—'}</td>
+                <td style="font-size:11px">{(topic or '')[:55]}</td>
+            </tr>"""
+        _conn2.close()
+    except Exception:
+        pass
+    if not tpl_rows_html:
+        tpl_rows_html = '<tr><td colspan="3" style="color:#AAB4C0;text-align:center;font-size:12px">All TPL posts published.</td></tr>'
+    if not pm_rows_html:
+        pm_rows_html  = '<tr><td colspan="3" style="color:#AAB4C0;text-align:center;font-size:12px">All PM posts published.</td></tr>'
+
+    s5_html = f"""
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+
+        <div class="scoreboard-card" style="margin-bottom:0">
+            <h2 style="margin-top:0;font-size:14px">Unposted Shorts
+                <span style="font-size:11px;color:#AAB4C0;font-weight:normal;margin-left:8px">{total_unposted} in queue</span>
+            </h2>
+            <table class="scoreboard-table" style="width:100%">
+                <thead><tr>
+                    <th>Book</th>
+                    <th style="text-align:center">Rem.</th>
+                    <th style="text-align:center">Next</th>
+                </tr></thead>
+                <tbody>{short_rows_html}</tbody>
+            </table>
+        </div>
+
+        <div class="scoreboard-card" style="margin-bottom:0;border-color:#E1306C">
+            <h2 style="margin-top:0;font-size:14px;color:#E1306C">Unposted TPL Posts
+                <span style="font-size:11px;color:#AAB4C0;font-weight:normal;margin-left:8px">{tpl_count} pending</span>
+            </h2>
+            <table class="scoreboard-table" style="width:100%">
+                <thead><tr>
+                    <th style="text-align:center">#</th>
+                    <th>Pillar</th>
+                    <th>Topic</th>
+                </tr></thead>
+                <tbody>{tpl_rows_html}</tbody>
+            </table>
+        </div>
+
+        <div class="scoreboard-card" style="margin-bottom:0;border-color:#FF8C00">
+            <h2 style="margin-top:0;font-size:14px;color:#FF8C00">Unposted PM Posts
+                <span style="font-size:11px;color:#AAB4C0;font-weight:normal;margin-left:8px">{pm_count} pending</span>
+            </h2>
+            <table class="scoreboard-table" style="width:100%">
+                <thead><tr>
+                    <th style="text-align:center">#</th>
+                    <th>Pillar</th>
+                    <th>Topic</th>
+                </tr></thead>
+                <tbody>{pm_rows_html}</tbody>
+            </table>
+        </div>
+
+    </div>"""
+
+    # ── SECTION 6 — Platform ROI ──────────────────────────────────
+    roi_rows = ""
+    if "book_or_offer" in df.columns:
+        known_df = df[df["book_or_offer"].ne("—") & df["book_or_offer"].notna()]
+        if not known_df.empty:
+            views_by_title = known_df.groupby("book_or_offer")["views"].sum().to_dict()
+            all_titles     = set(views_by_title) | set(title_to_rev)
+            roi_data = []
+            for title in all_titles:
+                views = _si(views_by_title.get(title, 0))
+                rev   = _sf(title_to_rev.get(title, 0))
+                bk    = title_to_bk.get(title, "")
+                sp    = shorts_posted.get(bk, 0)
+                roi_data.append((title, views, sp, rev))
+            roi_data.sort(key=lambda x: x[1], reverse=True)
+            for title, views, sp, rev in roi_data:
+                if views == 0 and rev == 0:
+                    continue
+                vpd = f"{views / rev:,.0f}" if rev > 0 else "—"
+                roi_rows += f"""
+                    <tr>
+                        <td style="font-size:12px">{title}</td>
+                        <td style="text-align:right"><strong>{views:,}</strong></td>
+                        <td style="text-align:center">{sp}</td>
+                        <td style="text-align:right"><strong style="color:#C9A84C">${rev:.2f}</strong></td>
+                        <td style="text-align:right;color:#AAB4C0">{vpd}</td>
+                    </tr>"""
+    if not roi_rows:
+        roi_rows = '<tr><td colspan="5" style="color:#AAB4C0;text-align:center">No matched data available yet.</td></tr>'
+
+    s6_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">Platform ROI</h2>
+        <table class="scoreboard-table" style="width:100%">
+            <thead><tr>
+                <th>Book</th>
+                <th style="text-align:right">Total Views</th>
+                <th style="text-align:center">Shorts Posted</th>
+                <th style="text-align:right">Revenue Earned</th>
+                <th style="text-align:right">Views per $1</th>
+            </tr></thead>
+            <tbody>{roi_rows}</tbody>
+        </table>
+    </div>"""
+
+    # ── SECTION 7 — Gumroad Pipeline ──────────────────────────────
+    gumroad_rows = ""
+    for g in gumroad:
+        status  = g.get("status", "")
+        s_color = "#5CFF7E" if status == "live" else "#C9A84C" if status == "in-progress" else "#AAB4C0"
+        gumroad_rows += f"""
+            <tr>
+                <td style="font-size:12px">{g.get('title','')}</td>
+                <td style="text-align:center">{g.get('price','')}</td>
+                <td style="text-align:center;color:#AAB4C0">{g.get('pages','')}</td>
+                <td style="text-align:center"><span style="color:{s_color}">{status}</span></td>
+                <td style="font-size:11px;color:#AAB4C0">{g.get('notes','')}</td>
+            </tr>"""
+
+    s7_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:20px">
+        <h2 style="margin-top:0;font-size:15px">Gumroad Pipeline</h2>
+        <p style="color:#AAB4C0;font-size:12px;margin-top:0">
+            Trigger: email list + website live at $500/mo.
+        </p>
+        <div class="table-wrap">
+        <table style="min-width:900px">
+            <thead><tr>
+                <th>Title</th><th style="text-align:center">Price</th>
+                <th style="text-align:center">Pages</th>
+                <th style="text-align:center">Status</th><th>Notes</th>
+            </tr></thead>
+            <tbody>{gumroad_rows}</tbody>
+        </table>
+        </div>
+    </div>"""
+
+    # ── Gold INTELLIGENCE PANEL divider ───────────────────────────
+    gold_divider = """
+    <div style="font-family:'Bebas Neue','Impact',sans-serif;font-size:26px;
+                color:#C9A84C;letter-spacing:4px;margin:36px 0 20px;
+                border-bottom:2px solid #C9A84C;padding-bottom:8px">
+        INTELLIGENCE PANEL
+    </div>"""
+
+    return f"""
+    <div style="margin-top:32px">
+        <h2 style="color:#C9A84C;margin-bottom:8px;font-size:16px">KDP Revenue Intelligence</h2>
+        {s1_html}
+        {s2_html}
+        {s3_html}
+        {gold_divider}
+        {s4a_html}
+        {s4b_html}
+        {s4c_html}
+        <h2 style="color:#C9A84C;margin:28px 0 8px;font-size:16px">Content &amp; Pipeline</h2>
+        {s5_html}
+        {s6_html}
+        {s7_html}
+    </div>"""
 
 
 # ============================================================
@@ -990,7 +1667,7 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
         ("Facebook-WB",                  "Facebook Reels (Will Byron)"),
         ("Instagram",                    "Instagram @willpowerprotocols"),
         ("Instagram-WB",                 "Instagram @will.byron88"),
-        ("YouTube",                      "YouTube"),
+        ("YouTube",                      "YouTube (Will Power Protocols)"),
         ("FB-Image-PrehistoricMemories", "Facebook Images (Prehistoric Memories)"),
         ("FB-Image-TheProtocolLab",      "Facebook Images (The Protocol Lab)"),
         ("FB-Image-WillByron",           "Facebook Images (Will Byron)"),
@@ -1120,13 +1797,16 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
     <h2 style="color:#C9A84C;margin-top:0">Top 5 Posts</h2>
     <div class="top5-grid" style="margin-bottom:30px">{top5_cards}</div>"""
 
+    intelligence_panel_html = build_intelligence_panel_html(df)
+
     return f"""
     {hero_html}
     {monday_plan_html}
     {what_working}
     {platform_health}
     {books_silent_card}
-    {top5_html}"""
+    {top5_html}
+    {intelligence_panel_html}"""
 
 
 # ============================================================
@@ -1315,8 +1995,15 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         for p in distinct_plats
     )
 
-    # Unmatched posts report (#1)
-    unmatched_df = df[df["book_or_offer"] == "—"] if enriched else pd.DataFrame()
+    # Unmatched posts report — exclude FB-Image platforms (tracked via pm_posts/tpl_posts, not content table)
+    _FB_IMAGE_PLATFORMS = {"FB-Image-PrehistoricMemories", "FB-Image-TheProtocolLab", "FB-Image-WillByron"}
+    unmatched_df = (
+        df[
+            (df["book_or_offer"] == "—") &
+            (~df["platform"].isin(_FB_IMAGE_PLATFORMS))
+        ]
+        if enriched else pd.DataFrame()
+    )
     if not unmatched_df.empty:
         unmatched_rows = ""
         for _, r in unmatched_df.sort_values(["platform", "published_at"]).iterrows():
@@ -1868,7 +2555,7 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
 
 def main():
     # Load DB content
-    content_map, queue_df = load_wpp_content()
+    content_map, queue_df, ep_queue = load_wpp_content()
 
     # Fetch all platforms
     rows = []
@@ -1921,13 +2608,13 @@ def main():
     print(f"Saved {csv_file}")
 
     # Build sections
-    plan = generate_monday_plan(df, queue_df)
+    plan = generate_monday_plan(df, queue_df, ep_queue)
     monday_plan_html = build_monday_plan_html(plan)
     scoreboard_html = build_scoreboard_html(df)
     x_performance_html = build_x_performance_html(content_map)
     facebook_performance_html = build_facebook_performance_html(df)
     fb_image_performance_html = build_fb_image_performance_html(fb_image_rows)
-    instagram_performance_html = build_instagram_performance_html(ig_rows + ig_wb_rows)
+    instagram_performance_html = build_instagram_performance_html(df)
 
     # Build KDP Revenue
     kdp_revenue_html = build_kdp_revenue_html()

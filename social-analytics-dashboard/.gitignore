@@ -4,3 +4,4 @@ youtube_token.json
 __pycache__/
 *.pyc
 .venv/
+finance-dashboard/
