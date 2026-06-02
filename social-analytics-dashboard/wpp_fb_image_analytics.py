@@ -1,25 +1,33 @@
 """
 wpp_fb_image_analytics.py
 ─────────────────────────────────────────────────────────────────
-Facebook Image Post Analytics — Prehistoric Memories & The Protocol Lab.
+Facebook Image Post Analytics — WPP, Prehistoric Memories, Protocol Lab, Will Byron.
 
-Pulls analytics for IMAGE posts (not Reels/videos) from two Facebook
-pages, matches each post's photo URL back to pm_posts / tpl_posts in
-wpp.db to enrich with pillar and topic, then builds an HTML section
-for the social analytics dashboard.
+Pulls analytics for IMAGE posts (not Reels/videos) from all four Facebook
+pages, matches each post's photo URL back to pm_posts / tpl_posts /
+gumroad_posts in wpp.db to enrich with pillar and topic, then builds an
+HTML section for the social analytics dashboard.
 
 USAGE in social_dashboard.py:
     from wpp_fb_image_analytics import fetch_fb_image_rows, build_fb_image_performance_html
 
 .env keys required:
+    FB_PAGE_ID_WPP             Will Power Protocols page ID
+    FB_PAGE_ACCESS_TOKEN_WPP   Will Power Protocols page access token
     FB_PAGE_ID_PM              Prehistoric Memories page ID
     FB_PAGE_ACCESS_TOKEN_PM    Prehistoric Memories page access token
     FB_PAGE_ID_TPL             The Protocol Lab page ID
     FB_PAGE_ACCESS_TOKEN_TPL   The Protocol Lab page access token
+    FB_PAGE_ID_WB              Will Byron page ID
+    FB_PAGE_ACCESS_TOKEN_WB    Will Byron page access token
 
 DB tables read:
     pm_posts  (asset_key, pillar, topic, facebook_url, posted, post_date)
     tpl_posts (asset_key, pillar, topic, facebook_url, posted, post_date)
+
+URL stored in df:
+    photo?fbid=ID format when attachment fbid is available — matches
+    the same format stored in tpl_posts, pm_posts, and gumroad_posts.
 
 MATCHING LOGIC:
     Facebook stores photo posts with a URL like:
@@ -72,10 +80,18 @@ DB_CANDIDATES = [
 # Page definitions — each dict drives both the API calls and DB lookup.
 PAGES = [
     {
+        "page_id":   os.getenv("FB_PAGE_ID_WPP"),
+        "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_WPP"),
+        "name":      "WillPowerProtocols",
+        "page_url":  "facebook.com/willpowerprotocols",
+        "db_table":  None,   # image posts on WPP page tracked via gumroad_posts
+        "color":     "#C9A84C",
+    },
+    {
         "page_id":   os.getenv("FB_PAGE_ID_PM"),
         "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_PM"),
         "name":      "Prehistoric Memories",
-        "page_url":  "",   # update to actual page URL e.g. facebook.com/prehistoricmemories
+        "page_url":  "",
         "db_table":  "pm_posts",
         "color":     "#A0714F",
     },
@@ -92,7 +108,7 @@ PAGES = [
         "token":     os.getenv("FB_PAGE_ACCESS_TOKEN_WB"),
         "name":      "Will Byron",
         "page_url":  "facebook.com/will.byron88",
-        "db_table":  None,   # no wb_posts table yet; add when created
+        "db_table":  None,
         "color":     "#C9894C",
     },
 ]
@@ -448,9 +464,14 @@ def fetch_fb_image_rows(limit: int = 50) -> list[dict]:
                 "clicks":             clicks,
                 "engagement_rate":    eng_rate,
                 "facebook_url":       permalink,
+                "fbid":               post.get("fbid", ""),
                 "title_or_caption":   _truncate_text(post["message"]),
-                # Standard columns so merge_content_map / CSV stay consistent.
-                "url":                permalink,
+                # Use photo?fbid= URL so normalize_url can match against
+                # tpl_posts, pm_posts, and gumroad_posts which store this format.
+                "url": (
+                    f"https://www.facebook.com/photo?fbid={fbid}"
+                    if fbid else permalink
+                ),
                 "views":              reach,
                 "likes":              reactions,
                 "comments":           comments,

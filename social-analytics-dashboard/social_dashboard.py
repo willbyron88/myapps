@@ -14,6 +14,9 @@ from wpp_instagram_wb import fetch_instagram_wb_rows
 from wpp_youtube import fetch_youtube_rows
 from wpp_kdp import build_kdp_revenue_html, get_kdp_revenue_data
 from wpp_fb_image_analytics import fetch_fb_image_rows, build_fb_image_performance_html
+from wpp_ai_briefing import generate_ai_briefing
+from wpp_trends import fetch_trends_data, build_trends_html
+from wpp_gumroad import fetch_gumroad_data, load_gumroad_posts, build_gumroad_revenue_html
 # ============================================================
 # Configuration
 # ============================================================
@@ -130,6 +133,11 @@ def normalize_url(url):
     x_match = re.search(r'(?:twitter|x)\.com/([^/?]+)/status/(\d+)', url, re.IGNORECASE)
     if x_match:
         return f"https://x.com/{x_match.group(1)}/status/{x_match.group(2)}"
+
+    # Facebook: photo posts — photo?fbid=, photo/?fbid=, photo.php?fbid=
+    fb_photo_match = re.search(r'facebook\.com/photo[./]?(?:php)?\??/?fbid=(\d+)', url, re.IGNORECASE)
+    if fb_photo_match:
+        return f"https://www.facebook.com/photo?fbid={fb_photo_match.group(1)}"
 
     # Facebook: normalize Reel, video, and post permalink formats
     fb_reel_match = re.search(r'facebook\.com/reel/(\d+)', url, re.IGNORECASE)
@@ -486,6 +494,7 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
 
     pillar_winner = "—"
     pillar_scores = {}
+    pillar_engagement = {}  # pillar -> avg_eng_pct
     if has_content_map:
         known = df[df["content_pillar"].ne("—")]
         if not known.empty:
@@ -493,6 +502,8 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
             if not pillar_views.empty:
                 pillar_winner = pillar_views.idxmax()
                 pillar_scores = pillar_views.sort_values(ascending=False).to_dict()
+            pillar_eng = known.groupby("content_pillar")["engagement_rate_percent"].mean()
+            pillar_engagement = {p: round(float(e), 1) for p, e in pillar_eng.items()}
 
     book_test_signals = []
     if has_content_map:
@@ -573,13 +584,16 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
             note = "⭐ Winner book" if chosen_book in winner_books else ""
             account = str(item.get("account", "@willpowerprotocols"))
             x_account = str(item.get("x_account", "@wpprotocols"))
+            pillar = str(item.get("content_pillar", ""))
+            pillar_eng = pillar_engagement.get(pillar)
 
             schedule.append({
                 "day": day,
                 "book": chosen_book,
                 "short_num": str(item.get("short_num", "?")),
                 "topic": str(item.get("script_topic", "")),
-                "pillar": str(item.get("content_pillar", "")),
+                "pillar": pillar,
+                "pillar_eng": pillar_eng,
                 "account": account,
                 "x_account": x_account,
                 "note": note,
@@ -611,23 +625,49 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
                 "pillar":     str(row.get("content_pillar", "")),
             })
 
+    # ── Pillar engagement from posted FB image rows (brand-specific) ─
+    def _img_pillar_eng(platform_key):
+        """Return {pillar: (avg_eng_pct, avg_reach, post_count)} for a FB image platform."""
+        p = df[df["platform"] == platform_key]
+        if p.empty or "pillar" not in p.columns:
+            return {}
+        known = p[p["pillar"].notna() & p["pillar"].ne("") & p["pillar"].ne("—")]
+        if known.empty:
+            return {}
+        result = {}
+        for pillar, grp in known.groupby("pillar"):
+            result[pillar] = {
+                "eng":   round(float(grp["engagement_rate_percent"].mean()), 2),
+                "reach": int(grp["reach"].mean()) if "reach" in grp.columns else 0,
+                "posts": len(grp),
+            }
+        return result
+
+    tpl_pillar_eng = _img_pillar_eng("FB-Image-TheProtocolLab")
+    pm_pillar_eng  = _img_pillar_eng("FB-Image-PrehistoricMemories")
+
     # ── Unposted image posts from tpl_posts and pm_posts ─────────
     unposted_images = []
     try:
         import sqlite3 as _sq
         _conn = _sq.connect(WPP_DB_FILE)
         _cur  = _conn.cursor()
-        for _table, _brand in [("tpl_posts", "The Protocol Lab"), ("pm_posts", "Prehistoric Memories")]:
+        for _table, _brand, _peng in [
+            ("tpl_posts", "The Protocol Lab",    tpl_pillar_eng),
+            ("pm_posts",  "Prehistoric Memories", pm_pillar_eng),
+        ]:
             _cur.execute(
                 f"SELECT post_id, pillar, topic, post_type FROM {_table} WHERE posted='N' ORDER BY post_id"
             )
             for pid, pillar, topic, ptype in _cur.fetchall():
+                pillar = pillar or "—"
                 unposted_images.append({
-                    "brand":    _brand,
-                    "post_id":  pid,
-                    "pillar":   pillar or "—",
-                    "topic":    topic or "—",
-                    "type":     ptype or "image",
+                    "brand":     _brand,
+                    "post_id":   pid,
+                    "pillar":    pillar,
+                    "topic":     topic or "—",
+                    "type":      ptype or "image",
+                    "pillar_eng": _peng.get(pillar),
                 })
         _conn.close()
     except Exception:
@@ -638,6 +678,7 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
         "repurpose": repurpose,
         "pillar_winner": pillar_winner,
         "pillar_scores": pillar_scores,
+        "pillar_engagement": pillar_engagement,
         "book_test_signals": book_test_signals,
         "unposted_count": unposted_count,
         "has_queue": has_queue,
@@ -645,6 +686,8 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
         "books_no_recent": books_no_recent,
         "episode_items": episode_items,
         "unposted_images": unposted_images,
+        "tpl_pillar_eng": tpl_pillar_eng,
+        "pm_pillar_eng":  pm_pillar_eng,
     }
 
 
@@ -664,6 +707,18 @@ def build_monday_plan_html(plan):
             acct_color = "#C9894C" if wb else "#AAB4C0"
             x_color    = "#C9894C" if wb else "#1DA1F2"
             x_handle   = "@willbyron" if wb else x_account
+            pillar_eng = s.get("pillar_eng")
+            if pillar_eng is not None:
+                if pillar_eng >= 20:
+                    psig = f'<span style="color:#FF6B6B;font-size:10px;font-weight:bold;margin-left:6px">EXCEPTIONAL {pillar_eng}%</span>'
+                elif pillar_eng >= 10:
+                    psig = f'<span style="color:#5CFF7E;font-size:10px;font-weight:bold;margin-left:6px">HOT {pillar_eng}%</span>'
+                elif pillar_eng >= 5:
+                    psig = f'<span style="color:#AAB4C0;font-size:10px;margin-left:6px">{pillar_eng}% eng</span>'
+                else:
+                    psig = f'<span style="color:#6B7A8D;font-size:10px;margin-left:6px">{pillar_eng}% eng</span>'
+            else:
+                psig = '<span style="color:#6B7A8D;font-size:10px;margin-left:6px">no data</span>'
             items_html += f"""
             <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
                 <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:14px;padding-top:1px">{i}.</div>
@@ -672,7 +727,7 @@ def build_monday_plan_html(plan):
                     &nbsp;&middot;&nbsp; Short #{s["short_num"]}
                     &nbsp;&middot;&nbsp; {s["topic"]}{note_html}
                     <div style="color:#AAB4C0;font-size:12px;margin-top:2px">
-                        {s["pillar"]} &nbsp;&middot;&nbsp;
+                        {s["pillar"]}{psig} &nbsp;&middot;&nbsp;
                         <span style="color:{acct_color}">{account}</span>
                         &nbsp;&middot;&nbsp;
                         <span style="color:{x_color}">{x_handle}</span>
@@ -793,6 +848,23 @@ def build_monday_plan_html(plan):
         img_rows = ""
         for img in unposted_images:
             brand_color = "#E1306C" if "Protocol Lab" in img["brand"] else "#C9A84C"
+            pdata = img.get("pillar_eng")
+            if pdata is not None:
+                eng   = pdata["eng"]
+                reach = pdata["reach"]
+                posts = pdata["posts"]
+                if eng >= 1.5:
+                    psig = f'<span style="color:#5CFF7E;font-size:10px;font-weight:bold;margin-left:6px">HOT {eng}% eng &middot; {reach} avg reach</span>'
+                elif eng >= 0.5:
+                    psig = f'<span style="color:#C9A84C;font-size:10px;margin-left:6px">{eng}% eng &middot; {reach} avg reach</span>'
+                elif reach >= 150:
+                    psig = f'<span style="color:#C9A84C;font-size:10px;margin-left:6px">{reach} avg reach</span>'
+                elif reach >= 50:
+                    psig = f'<span style="color:#AAB4C0;font-size:10px;margin-left:6px">{reach} avg reach</span>'
+                else:
+                    psig = f'<span style="color:#6B7A8D;font-size:10px;margin-left:6px">low reach so far ({posts} posted)</span>'
+            else:
+                psig = '<span style="color:#6B7A8D;font-size:10px;margin-left:6px">no posts yet</span>'
             img_rows += f"""
             <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
                 <div style="min-width:22px;color:{brand_color};font-weight:bold;font-size:11px;padding-top:2px">IMG</div>
@@ -800,7 +872,7 @@ def build_monday_plan_html(plan):
                     <span style="color:{brand_color};font-size:11px">{img["brand"]}</span>
                     &nbsp;&middot;&nbsp; #{img["post_id"]}
                     &nbsp;&middot;&nbsp; {img["topic"]}
-                    <div style="color:#AAB4C0;font-size:11px;margin-top:2px">{img["pillar"]} &nbsp;&middot;&nbsp; {img["type"]}</div>
+                    <div style="color:#AAB4C0;font-size:11px;margin-top:2px">{img["pillar"]}{psig} &nbsp;&middot;&nbsp; {img["type"]}</div>
                 </div>
             </div>"""
         images_html = f"""
@@ -942,7 +1014,7 @@ def build_scoreboard_html(df):
 # Intelligence Panel Builder
 # ============================================================
 
-def build_intelligence_panel_html(df):
+def build_intelligence_panel_html(df, trends_html="", gumroad_data=None, gumroad_posts=None):
     """Build the 7-section Intelligence Panel appended to the CEO tab."""
     import sqlite3 as _sqlite3
     import json as _json
@@ -1334,100 +1406,6 @@ def build_intelligence_panel_html(df):
         </div>
     </div>"""
 
-    # ── SECTION 5 — Unposted Content by Brand (3 cards side-by-side) ──
-    # Card A: Unposted Shorts
-    total_unposted   = sum(r[2] for r in unposted_rows)
-    short_rows_html = ""
-    for bk, title, cnt, next_num in unposted_rows:
-        short_rows_html += f"""
-            <tr>
-                <td style="font-size:12px">{title}</td>
-                <td style="text-align:center"><strong style="color:#C9A84C">{cnt}</strong></td>
-                <td style="text-align:center;color:#AAB4C0">Short #{next_num or '—'}</td>
-            </tr>"""
-    if not short_rows_html:
-        short_rows_html = '<tr><td colspan="3" style="color:#AAB4C0;text-align:center;font-size:12px">All shorts posted.</td></tr>'
-
-    # Card B & C: Unposted TPL / PM image posts
-    tpl_rows_html = ""
-    pm_rows_html  = ""
-    tpl_count = 0
-    pm_count  = 0
-    try:
-        _conn2 = _sqlite3.connect(WPP_DB_FILE)
-        _cur2  = _conn2.cursor()
-        _cur2.execute("SELECT post_id, pillar, topic FROM tpl_posts WHERE posted='N' ORDER BY post_id")
-        for pid, pillar, topic in _cur2.fetchall():
-            tpl_count += 1
-            tpl_rows_html += f"""
-            <tr>
-                <td style="text-align:center;color:#AAB4C0;font-size:11px">{pid}</td>
-                <td style="font-size:11px;color:#AAB4C0">{pillar or '—'}</td>
-                <td style="font-size:11px">{(topic or '')[:55]}</td>
-            </tr>"""
-        _cur2.execute("SELECT post_id, pillar, topic FROM pm_posts WHERE posted='N' ORDER BY post_id")
-        for pid, pillar, topic in _cur2.fetchall():
-            pm_count += 1
-            pm_rows_html += f"""
-            <tr>
-                <td style="text-align:center;color:#AAB4C0;font-size:11px">{pid}</td>
-                <td style="font-size:11px;color:#AAB4C0">{pillar or '—'}</td>
-                <td style="font-size:11px">{(topic or '')[:55]}</td>
-            </tr>"""
-        _conn2.close()
-    except Exception:
-        pass
-    if not tpl_rows_html:
-        tpl_rows_html = '<tr><td colspan="3" style="color:#AAB4C0;text-align:center;font-size:12px">All TPL posts published.</td></tr>'
-    if not pm_rows_html:
-        pm_rows_html  = '<tr><td colspan="3" style="color:#AAB4C0;text-align:center;font-size:12px">All PM posts published.</td></tr>'
-
-    s5_html = f"""
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
-
-        <div class="scoreboard-card" style="margin-bottom:0">
-            <h2 style="margin-top:0;font-size:14px">Unposted Shorts
-                <span style="font-size:11px;color:#AAB4C0;font-weight:normal;margin-left:8px">{total_unposted} in queue</span>
-            </h2>
-            <table class="scoreboard-table" style="width:100%">
-                <thead><tr>
-                    <th>Book</th>
-                    <th style="text-align:center">Rem.</th>
-                    <th style="text-align:center">Next</th>
-                </tr></thead>
-                <tbody>{short_rows_html}</tbody>
-            </table>
-        </div>
-
-        <div class="scoreboard-card" style="margin-bottom:0;border-color:#E1306C">
-            <h2 style="margin-top:0;font-size:14px;color:#E1306C">Unposted TPL Posts
-                <span style="font-size:11px;color:#AAB4C0;font-weight:normal;margin-left:8px">{tpl_count} pending</span>
-            </h2>
-            <table class="scoreboard-table" style="width:100%">
-                <thead><tr>
-                    <th style="text-align:center">#</th>
-                    <th>Pillar</th>
-                    <th>Topic</th>
-                </tr></thead>
-                <tbody>{tpl_rows_html}</tbody>
-            </table>
-        </div>
-
-        <div class="scoreboard-card" style="margin-bottom:0;border-color:#FF8C00">
-            <h2 style="margin-top:0;font-size:14px;color:#FF8C00">Unposted PM Posts
-                <span style="font-size:11px;color:#AAB4C0;font-weight:normal;margin-left:8px">{pm_count} pending</span>
-            </h2>
-            <table class="scoreboard-table" style="width:100%">
-                <thead><tr>
-                    <th style="text-align:center">#</th>
-                    <th>Pillar</th>
-                    <th>Topic</th>
-                </tr></thead>
-                <tbody>{pm_rows_html}</tbody>
-            </table>
-        </div>
-
-    </div>"""
 
     # ── SECTION 6 — Platform ROI ──────────────────────────────────
     roi_rows = ""
@@ -1514,6 +1492,8 @@ def build_intelligence_panel_html(df):
         INTELLIGENCE PANEL
     </div>"""
 
+    gumroad_section_html = build_gumroad_revenue_html(gumroad_data, posts=gumroad_posts) if gumroad_data else ""
+
     return f"""
     <div style="margin-top:32px">
         <h2 style="color:#C9A84C;margin-bottom:8px;font-size:16px">KDP Revenue Intelligence</h2>
@@ -1521,13 +1501,13 @@ def build_intelligence_panel_html(df):
         {s2_html}
         {s3_html}
         {gold_divider}
+        {trends_html}
         {s4a_html}
         {s4b_html}
         {s4c_html}
-        <h2 style="color:#C9A84C;margin:28px 0 8px;font-size:16px">Content &amp; Pipeline</h2>
-        {s5_html}
         {s6_html}
         {s7_html}
+        {gumroad_section_html}
     </div>"""
 
 
@@ -1535,8 +1515,9 @@ def build_intelligence_panel_html(df):
 # CEO Tab Builder
 # ============================================================
 
-def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
+def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html, ai_briefing_html="", trends_html="", gumroad_data=None, gumroad_posts=None):
     """CEO overview tab — five-stat hero, platform health, top posts, what's working."""
+    _trends_html = trends_html  # passed through to build_intelligence_panel_html
     total_views = safe_int(df["views"].sum())
     total_posts = len(df)
     avg_eng     = round(df["engagement_rate_percent"].mean(), 2) if total_posts else 0
@@ -1546,6 +1527,16 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
     )
 
     # ── Hero stats ────────────────────────────────────────────────
+    if gumroad_data:
+        _gumroad_stat = f"""
+        <div class="ceo-stat">
+            <div class="ceo-stat-label">Gumroad Revenue</div>
+            <div class="ceo-stat-value">${gumroad_data["total_revenue"]:.2f}</div>
+            <div class="ceo-stat-sub">{gumroad_data["total_sales"]} sales</div>
+        </div>"""
+    else:
+        _gumroad_stat = ""
+
     hero_html = f"""
     <div class="ceo-hero">
         <div class="ceo-stat">
@@ -1573,6 +1564,7 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
             <div class="ceo-stat-value">{avg_eng}%</div>
             <div class="ceo-stat-sub">across all posts</div>
         </div>
+        {_gumroad_stat}
     </div>"""
 
     # ── What's Working ────────────────────────────────────────────
@@ -1797,11 +1789,15 @@ def build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html):
     <h2 style="color:#C9A84C;margin-top:0">Top 5 Posts</h2>
     <div class="top5-grid" style="margin-bottom:30px">{top5_cards}</div>"""
 
-    intelligence_panel_html = build_intelligence_panel_html(df)
+    gumroad_card_html = build_gumroad_revenue_html(gumroad_data, posts=gumroad_posts) if gumroad_data else ""
+    intelligence_panel_html = build_intelligence_panel_html(df, trends_html=_trends_html, gumroad_data=gumroad_data, gumroad_posts=gumroad_posts)
 
     return f"""
+    {ai_briefing_html}
     {hero_html}
+    {gumroad_card_html}
     {monday_plan_html}
+
     {what_working}
     {platform_health}
     {books_silent_card}
@@ -1881,7 +1877,8 @@ def make_table_header(enriched=False):
 def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
                facebook_performance_html="", fb_image_performance_html="",
                instagram_performance_html="",
-               kdp_revenue_html="", filtered_repurpose_count=None, plan=None):
+               kdp_revenue_html="", filtered_repurpose_count=None, plan=None,
+               ai_briefing_html="", trends_html="", gumroad_data=None, gumroad_posts=None):
     html_file = OUTPUT_DIR / "index.html"
     enriched = "book_or_offer" in df.columns and df["book_or_offer"].ne("—").any()
 
@@ -1918,7 +1915,7 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         if not facebook_rows.empty else 0
     )
 
-    ceo_tab_html = build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html)
+    ceo_tab_html = build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html, ai_briefing_html, trends_html, gumroad_data=gumroad_data, gumroad_posts=gumroad_posts)
 
     winners_count = df["content_signal"].str.contains("Winner", na=False).sum()
     sticky_count = df["content_signal"].str.contains("Sticky", na=False).sum()
@@ -2610,6 +2607,13 @@ def main():
     # Build sections
     plan = generate_monday_plan(df, queue_df, ep_queue)
     monday_plan_html = build_monday_plan_html(plan)
+
+    print("Generating AI briefing...")
+    ai_briefing_html = generate_ai_briefing(df, plan)
+
+    print("Fetching trend data...")
+    trends_data = fetch_trends_data()
+    trends_html = build_trends_html(trends_data, plan.get("pillar_engagement", {}))
     scoreboard_html = build_scoreboard_html(df)
     x_performance_html = build_x_performance_html(content_map)
     facebook_performance_html = build_facebook_performance_html(df)
@@ -2618,6 +2622,10 @@ def main():
 
     # Build KDP Revenue
     kdp_revenue_html = build_kdp_revenue_html()
+
+    print("Fetching Gumroad data...")
+    gumroad_data  = fetch_gumroad_data()
+    gumroad_posts = load_gumroad_posts(df, normalize_url)
 
     # Build HTML dashboard
     build_html(
@@ -2631,6 +2639,10 @@ def main():
         kdp_revenue_html=kdp_revenue_html,
         filtered_repurpose_count=len(plan["repurpose"]),
         plan=plan,
+        ai_briefing_html=ai_briefing_html,
+        trends_html=trends_html,
+        gumroad_data=gumroad_data,
+        gumroad_posts=gumroad_posts,
     )
 
 
