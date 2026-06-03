@@ -234,7 +234,7 @@ def _build_whats_working(df, plan):
     return "\n".join(f"- {b}" for b in bullets)
 
 
-def generate_ai_briefing(df, plan=None):
+def generate_ai_briefing(df, plan=None, intel_signals=None):
     """
     Call OpenAI API with a data snapshot and return a styled HTML block.
     Returns a notice block if OPENAI_API_KEY is not set.
@@ -258,15 +258,35 @@ def generate_ai_briefing(df, plan=None):
             Run <code>pip install openai</code> to enable the AI briefing.
         </div>"""
 
-    snapshot = _build_data_snapshot(df)
+    snapshot      = _build_data_snapshot(df)
     whats_working = _build_whats_working(df, plan)
 
+    # Format pre-computed intelligence signals if provided
+    signals_block = ""
+    if intel_signals:
+        sig_lines = ["PRE-COMPUTED INTELLIGENCE SIGNALS (cross-referencing Shorts, Google Trends, KDP, Gumroad):"]
+        all_sigs = (
+            intel_signals.get("write_next", []) +
+            intel_signals.get("post_priority", []) +
+            intel_signals.get("gumroad_next", []) +
+            intel_signals.get("revenue_alerts", []) +
+            intel_signals.get("re_engage", [])
+        )
+        for sig in all_sigs:
+            ev_str = " | ".join(f"{t}: {v}" for t, v, _ in sig.get("evidence", []))
+            sig_lines.append(
+                f"  [{sig['label']} — {sig.get('confidence','')}] {sig['title']}"
+                + (f" — Evidence: {ev_str}" if ev_str else "")
+            )
+        if len(sig_lines) == 1:
+            sig_lines.append("  No strong cross-validated signals yet.")
+        signals_block = "\n".join(sig_lines)
+
     system_msg = (
-        "You are Will Byron's personal social media strategist and self-publishing advisor. "
-        "He writes health/longevity books for people over 50 (Will Power Protocols brand) and promotes them "
-        "via short-form video on Instagram, YouTube, Facebook, and X.\n\n"
-        "The dashboard already surfaces these What's Working facts — do NOT repeat them verbatim. "
-        "Instead, build on them, go deeper, or challenge them with specifics from the data:\n"
+        "You are Will's personal strategist for the Will Power Protocols self-publishing business. "
+        "He writes health/longevity books for people over 50 and promotes them via Shorts on "
+        "Instagram, YouTube, Facebook, and X.\n\n"
+        "The dashboard already surfaces these What's Working facts — do NOT repeat them verbatim:\n"
         + (whats_working if whats_working else "(no pre-computed insights available)")
     )
 
@@ -274,13 +294,18 @@ def generate_ai_briefing(df, plan=None):
 
 {snapshot}
 
-Give exactly 5 numbered action-oriented bullets. Each bullet must be 1-2 sentences max. Be specific — use actual numbers. Do not repeat what's already shown in What's Working above.
+{signals_block}
+
+Give exactly 5 numbered action-oriented bullets. Each bullet must be 1-2 sentences max.
+Be specific — use actual numbers from the data. The pre-computed signals above combine Shorts \
+engagement, Google Trends, KDP revenue, and Gumroad data — reference them where relevant \
+but go deeper or add nuance the signals don't capture.
 
 1. SITUATION: One-sentence summary of where things stand right now.
-2. TOP PRIORITY: The single most important action he should take this week.
-3. MONETIZATION: The best revenue opportunity visible in this data right now.
-4. GAP: The biggest weakness or risk he should address.
-5. HIDDEN INSIGHT: One non-obvious pattern or opportunity the data reveals that he probably hasn't noticed.
+2. TOP PRIORITY: The single most important action this week — must reference specific data.
+3. MONETIZATION: Best revenue opportunity visible right now — be specific about which book/pillar/product.
+4. GAP: The biggest weakness or blind spot in the current strategy.
+5. HIDDEN INSIGHT: One non-obvious pattern the data reveals — something he probably hasn't noticed.
 
 Respond with only the 5 numbered bullets. No intro, no outro."""
 

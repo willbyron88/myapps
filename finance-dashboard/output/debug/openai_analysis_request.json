@@ -9,10 +9,10 @@
   ],
   "system_prompt": "You are a cautious but growth-oriented portfolio analyst generating the SECOND TAB of a local HTML report for Will. The user's quarterly review prompt is the controlling specification. Treat the supplied calculated portfolio JSON as the factual source for Will's positions, percentages, look-through exposures, crypto exposure, AI exposure, theme buckets, and concentration risk. Use web search for current institutional outlooks. Cite institutional views with source names and URLs or source titles. Do not invent citations. Separate existing holdings from new-money/contribution guidance. Do not give directive personal financial advice; frame recommendations as decision-support options. The user prefers measured, contribution-first rebalancing and guardrails over drastic moves. Return Markdown-style text only; the Python script will convert it to HTML.",
   "prompt_text_found": true,
-  "prompt_text_preview": "Quarterly Big Boys Rotation Review Prompt\nReusable prompt for quarterly portfolio, institutional outlook, existing holdings, and new-money review\nI am uploading my current holdings/export from Fidelity, Schwab, my work retirement accounts, and any crypto/private investment summary I have.\nPlease act as a cautious but growth-oriented portfolio analyst. I understand this is not personal financial advice and I will make my own decisions.\nMy goals and context:\nI am around age 60.\nI am still working and contributing to retirement accounts.\nI prefer a practical, rules-based process rather than emotional market timing.\nI believe crypto/tokenization, AI, real assets, emerging markets, international markets, and small caps may be important long-term themes.\nI do not want to panic sell winners, but I also do not want my portfolio to become accidentally overconcentrated.\nI prefer adjusting new contributions before selling existing holdings.\nI am comfortable with some speculation, but I want guardrails.\nMy preference: Do not tell me to sell everything. I want a measured process. First suggest contribution changes, then possible small trims only if something is clearly oversized or the thesis has changed.\nPlease do the following:\n1. Clean up and summarize my uploaded holdings. After you full analysis please at the top of your repsose I want an executive summary that\u2019s very clear as to what to do.\nTotal estimated portfolio value.\nBrokerage value.\nRetirement plan value.\nCrypto value.\nPrivate/startup/illiquid investment value.\nLargest 10 holdings.\nTotal exposure by asset class.\nTotal exposure by major theme.\nNote any missing information or assumptions.\n2. Identify my major portfolio themes.\nExamples:\nU.S. large-cap growth.\nU.S. broad market / S&P 500.\nSmall cap.\nInternational developed.\nEmerging markets.\nCrypto / tokenization.\nAI / semiconductors / data infrastructure.\nBiotech / AI drug discovery.\nGold / precious metals / real assets.\nReal estate.\nUranium / nuclear / energy transition.\nPrivate startups / illiquid bets.\n3. Research current quarterly and annual outlooks from these firms: BlackRock, Goldman Sachs, J.P. Morgan, Morgan Stanley, Fidelity, Vanguard, Bank of America, and State Street. Do not ask me to provide URLs. Use live web sources or public PDFs you can find. For each firm, find the latest available quarterly outlook and annual outlook. Then extract: - 3 to 6 month view - 12 month view - 3 to 5 year view - overweight / neutral / underweight views - views on U.S. stocks, international stocks, emerging markets, small caps, bonds, cash, gold, crypto, AI, and real assets If a source is unavailable, say so and move on. Cite every claim with the source URL. IMPORTANT: You have web search available. Search current institutional outlooks from BlackRock, Goldman Sachs, J.P. Morgan, Morgan Stanley, Fidelity, Vanguard, Bank of America, and State Street. Use current sources only. Cite the sources. Then compare those views to my calculated portfolio x-ray below.\n4. For each institution, summarize:\nTheir short-term view for the next 3 to 6 months.\nTheir 12-month view.\nTheir long-term 3 to 5 year view.\nTheir overweight / neutral / underweight calls.\nTheir views on U.S. stocks, international stocks, emerging markets, small caps, bonds, cash, gold, crypto/digital assets, AI, and real assets.\nAny important caveats, disagreements, or valuation warnings.\n5. Create a consensus and disagreement table.\nShow:\nWhere the major institutions agree.\nWhere they disagree.\nWhat appears crowded or over-owned.\nWhat appears under-owned or early.\nWhat themes have already run hard.\nWhat themes may still have room.\nWhat themes look attractive for new money versus what should simply be held.\n6. Compare my portfolio to those institutional views.\nTell me:\nWhere I am aligned with the big-money outlook.\nWhere I may be ahead of consensus.\nWhere I may be late or chasing.\nWhere I may be overexposed.\nWhere I may be underexposed.\nWhich positions or themes are doing too much w",
+  "prompt_text_preview": "Quarterly Big Boys Rotation Review Prompt\nReusable prompt for quarterly portfolio, institutional outlook, existing holdings, and new-money review\nI am uploading my current holdings/export from Fidelity, Schwab, my work retirement accounts, and any crypto/private investment summary I have.\nPlease act as a cautious but growth-oriented portfolio analyst. I understand this is not personal financial advice and I will make my own decisions.\nMy goals and context:\nI am around age 60.\nI am still working and contributing to retirement accounts.\nI prefer a practical, rules-based process rather than emotional market timing.\nI believe crypto/tokenization, AI, real assets, emerging markets, international markets, and small caps may be important long-term themes.\nI do not want to panic sell winners, but I also do not want my portfolio to become accidentally overconcentrated.\nI prefer adjusting new contributions before selling existing holdings.\nI am comfortable with some speculation, but I want guardrails.\nMy preference: Do not tell me to sell everything. I want a measured process. First suggest contribution changes, then possible small trims only if something is clearly oversized or the thesis has changed.\nPlease do the following:\n1. Clean up and summarize my uploaded holdings. After you fully analyze my assets please at the top of your response I want an executive summary that\u2019s very clear as to what to do.\nTotal estimated portfolio value.\nBrokerage value.\nRetirement plan value.\nCrypto value.\nPrivate/startup/illiquid investment value.\nLargest 10 holdings.\nTotal exposure by asset class.\nTotal exposure by major theme.\nNote any missing information or assumptions.\n2. Identify my major portfolio themes.\nExamples:\nU.S. large-cap growth.\nU.S. broad market / S&P 500.\nSmall cap.\nInternational developed.\nEmerging markets.\nCrypto / tokenization.\nAI / semiconductors / data infrastructure.\nBiotech / AI drug discovery.\nGold / precious metals / real assets.\nReal estate.\nUranium / nuclear / energy transition.\nPrivate startups / illiquid bets.\n3. Research current quarterly and annual outlooks from these firms: BlackRock, Goldman Sachs, J.P. Morgan, Morgan Stanley, Fidelity, Vanguard, Bank of America, and State Street. Do not ask me to provide URLs. Use live web sources or public PDFs you can find. For each firm, find the latest available quarterly outlook and annual outlook. Then extract: - 3 to 6 month view - 12 month view - 3 to 5 year view - overweight / neutral / underweight views - views on U.S. stocks, international stocks, emerging markets, small caps, bonds, cash, gold, crypto, AI, and real assets If a source is unavailable, say so and move on. Cite every claim with the source URL. IMPORTANT: You have web search available. Search current institutional outlooks from BlackRock, Goldman Sachs, J.P. Morgan, Morgan Stanley, Fidelity, Vanguard, Bank of America, and State Street. Use current sources only. Cite the sources. Then compare those views to my calculated portfolio x-ray below.\n4. For each institution, summarize:\nTheir short-term view for the next 3 to 6 months.\nTheir 12-month view.\nTheir long-term 3 to 5 year view.\nTheir overweight / neutral / underweight calls.\nTheir views on U.S. stocks, international stocks, emerging markets, small caps, bonds, cash, gold, crypto/digital assets, AI, and real assets.\nAny important caveats, disagreements, or valuation warnings.\n5. Create a consensus and disagreement table.\nShow:\nWhere the major institutions agree.\nWhere they disagree.\nWhat appears crowded or over-owned.\nWhat appears under-owned or early.\nWhat themes have already run hard.\nWhat themes may still have room.\nWhat themes look attractive for new money versus what should simply be held.\n6. Compare my portfolio to those institutional views.\nTell me:\nWhere I am aligned with the big-money outlook.\nWhere I may be ahead of consensus.\nWhere I may be late or chasing.\nWhere I may be overexposed.\nWhere I may be underexposed.\nWhich positions or themes are doing",
   "portfolio_payload": {
-    "generated_at": "2026-05-30 14:13",
-    "total_value": 751791.3500000001,
+    "generated_at": "2026-06-02 14:35",
+    "total_value": 753544.7000000001,
     "portfolio_guardrails": {
       "crypto_target_max_pct": "roughly 10% to 15%",
       "private_startup_illiquid_max_pct": "roughly 2% to 3%",
@@ -21,957 +21,957 @@
       "preference": "Use future contributions before selling existing winners unless an exposure is clearly oversized or thesis has changed."
     },
     "summary_metrics": {
-      "crypto_value": 67380.55,
-      "crypto_pct": 8.962666303622674,
-      "ai_semis_compute_value": 127384.49653592575,
-      "ai_semis_compute_pct": 16.944129050690158,
-      "fund_other_unmapped_value": 393857.88179547,
-      "fund_other_unmapped_pct": 52.38925425192376
+      "crypto_value": 64602.71,
+      "crypto_pct": 8.573175552823873,
+      "ai_semis_compute_value": 129668.46772076077,
+      "ai_semis_compute_pct": 17.2078003761105,
+      "fund_other_unmapped_value": 393299.04054242966,
+      "fund_other_unmapped_pct": 52.19319312343775
     },
     "top_50_true_stock_concentrations": [
       {
         "exposure_ticker": "NVDA",
         "exposure_name": "NVIDIA Corp",
-        "value": 14088.025799601763,
-        "pct_portfolio": 1.8739276262757958
+        "value": 14069.615414405282,
+        "pct_portfolio": 1.8671241950749944
       },
       {
         "exposure_ticker": "2330.TW",
         "exposure_name": "Taiwan Semiconductor Manufacturing Co Ltd",
-        "value": 13264.823825316,
-        "pct_portfolio": 1.7644288971023674
+        "value": 13212.791286970001,
+        "pct_portfolio": 1.7534183820774
       },
       {
         "exposure_ticker": "MU",
         "exposure_name": "MICRON TECHNOLOGY INC",
-        "value": 11363.46,
-        "pct_portfolio": 1.5115177901421715
+        "value": 12651.55,
+        "pct_portfolio": 1.6789382235718728
       },
       {
         "exposure_ticker": "META",
         "exposure_name": "Meta Platforms Inc Class A",
-        "value": 11040.720551831,
-        "pct_portfolio": 1.4685883991390696
-      },
-      {
-        "exposure_ticker": "PLTR",
-        "exposure_name": "PALANTIR TECHNOLOGIES INCLASS A",
-        "value": 10191.03,
-        "pct_portfolio": 1.355566275137377
-      },
-      {
-        "exposure_ticker": "HTGC",
-        "exposure_name": "HERCULES CAP INC",
-        "value": 10058.75,
-        "pct_portfolio": 1.3379709676095632
+        "value": 11020.327145217,
+        "pct_portfolio": 1.462464953335482
       },
       {
         "exposure_ticker": "ASTS",
         "exposure_name": "AST SPACEMOBILE INC CLASS A",
-        "value": 9996.3,
-        "pct_portfolio": 1.329664141520117
+        "value": 10513.35,
+        "pct_portfolio": 1.3951859790135874
+      },
+      {
+        "exposure_ticker": "HTGC",
+        "exposure_name": "HERCULES CAP INC",
+        "value": 10104.25,
+        "pct_portfolio": 1.3408959017295192
+      },
+      {
+        "exposure_ticker": "PLTR",
+        "exposure_name": "PALANTIR TECHNOLOGIES INCLASS A",
+        "value": 9916.4,
+        "pct_portfolio": 1.3159670554381178
       },
       {
         "exposure_ticker": "CRDO",
         "exposure_name": "CREDO TECHNOLOGY GROUP F",
-        "value": 9198.8,
-        "pct_portfolio": 1.2235841766468847
+        "value": 9082.8,
+        "pct_portfolio": 1.205343226486763
       },
       {
         "exposure_ticker": "AMZN",
         "exposure_name": "Amazon.com Inc",
-        "value": 7109.7839481358815,
-        "pct_portfolio": 0.9457123905636691
+        "value": 7100.19250868364,
+        "pct_portfolio": 0.9422390614231165
       },
       {
         "exposure_ticker": "RLAY",
         "exposure_name": "RELAY THERAPEUTICS INC",
-        "value": 5999.12,
-        "pct_portfolio": 0.7979767258561832
-      },
-      {
-        "exposure_ticker": "GOOGL",
-        "exposure_name": "Alphabet Inc Class A",
-        "value": 5319.313416205,
-        "pct_portfolio": 0.7075518248786714
-      },
-      {
-        "exposure_ticker": "005930.KS",
-        "exposure_name": "Samsung Electronics Co Ltd",
-        "value": 5242.8385102354405,
-        "pct_portfolio": 0.6973794670869039
+        "value": 6930.98,
+        "pct_portfolio": 0.9197835244544881
       },
       {
         "exposure_ticker": "OKLO",
         "exposure_name": "OKLO INC CLASS A",
-        "value": 5058.38,
-        "pct_portfolio": 0.6728436021510489
+        "value": 5447.25,
+        "pct_portfolio": 0.7228834599991214
       },
       {
-        "exposure_ticker": "ARCC",
-        "exposure_name": "ARES CAP CORP EQUITY CLASS EQUIT",
-        "value": 5010.72,
-        "pct_portfolio": 0.6665040772283426
+        "exposure_ticker": "GOOGL",
+        "exposure_name": "Alphabet Inc Class A",
+        "value": 5312.575457019,
+        "pct_portfolio": 0.7050113227548412
       },
       {
-        "exposure_ticker": "MSFT",
-        "exposure_name": "Microsoft Corp",
-        "value": 4879.32772102796,
-        "pct_portfolio": 0.6490268504722699
-      },
-      {
-        "exposure_ticker": "ABSI",
-        "exposure_name": "ABSCI CORP",
-        "value": 4810.28,
-        "pct_portfolio": 0.6398424243641535
-      },
-      {
-        "exposure_ticker": "BRK.A",
-        "exposure_name": "Berkshire Hathaway Inc Class A",
-        "value": 4409.1517452319995,
-        "pct_portfolio": 0.5864860968714257
+        "exposure_ticker": "005930.KS",
+        "exposure_name": "Samsung Electronics Co Ltd",
+        "value": 5222.2696904707,
+        "pct_portfolio": 0.6930271940696682
       },
       {
         "exposure_ticker": "LWLG",
         "exposure_name": "LIGHTWAVE LOGIC INC",
-        "value": 4268.0,
-        "pct_portfolio": 0.5677107085629542
+        "value": 5102.0,
+        "pct_portfolio": 0.6770666690376828
+      },
+      {
+        "exposure_ticker": "ABSI",
+        "exposure_name": "ABSCI CORP",
+        "value": 5063.75,
+        "pct_portfolio": 0.6719906596118318
+      },
+      {
+        "exposure_ticker": "ARCC",
+        "exposure_name": "ARES CAP CORP EQUITY CLASS EQUIT",
+        "value": 5049.0,
+        "pct_portfolio": 0.6700332442123207
+      },
+      {
+        "exposure_ticker": "MSFT",
+        "exposure_name": "Microsoft Corp",
+        "value": 4876.643007767881,
+        "pct_portfolio": 0.6471604150049599
+      },
+      {
+        "exposure_ticker": "BRK.A",
+        "exposure_name": "Berkshire Hathaway Inc Class A",
+        "value": 4399.567371696,
+        "pct_portfolio": 0.583849554206406
       },
       {
         "exposure_ticker": "0700.HK",
         "exposure_name": "Tencent Holdings Ltd",
-        "value": 3890.3368084520007,
-        "pct_portfolio": 0.5174756012359014
-      },
-      {
-        "exposure_ticker": "000660.KS",
-        "exposure_name": "SK Hynix Inc",
-        "value": 3645.43590020212,
-        "pct_portfolio": 0.48489995265336844
-      },
-      {
-        "exposure_ticker": "GOOG",
-        "exposure_name": "Alphabet Inc Class C",
-        "value": 3579.839426119,
-        "pct_portfolio": 0.4761745963316816
+        "value": 3874.316444205,
+        "pct_portfolio": 0.5141455369807524
       },
       {
         "exposure_ticker": "NXE",
         "exposure_name": "NEXGEN ENERGY LTD F",
-        "value": 3460.5,
-        "pct_portfolio": 0.46030058739037094
+        "value": 3676.5,
+        "pct_portfolio": 0.4878940824611997
       },
       {
-        "exposure_ticker": "AVGO",
-        "exposure_name": "Broadcom Inc",
-        "value": 3073.355854857,
-        "pct_portfolio": 0.40880436504849377
-      },
-      {
-        "exposure_ticker": "AISP",
-        "exposure_name": "AIRSHIP AI HLDGS INC CLASS A",
-        "value": 3035.0,
-        "pct_portfolio": 0.4037024368529912
-      },
-      {
-        "exposure_ticker": "WELL",
-        "exposure_name": "Welltower Inc",
-        "value": 2880.3256055649003,
-        "pct_portfolio": 0.38312832484237813
+        "exposure_ticker": "000660.KS",
+        "exposure_name": "SK Hynix Inc",
+        "value": 3627.4196750280003,
+        "pct_portfolio": 0.4813808225348808
       },
       {
         "exposure_ticker": "PENG",
         "exposure_name": "PENGUIN SOLUTIONS INC DE",
-        "value": 2836.9,
-        "pct_portfolio": 0.37735204056285027
+        "value": 3596.0,
+        "pct_portfolio": 0.4772112390943762
+      },
+      {
+        "exposure_ticker": "GOOG",
+        "exposure_name": "Alphabet Inc Class C",
+        "value": 3575.9240191530002,
+        "pct_portfolio": 0.47454703339470106
+      },
+      {
+        "exposure_ticker": "AISP",
+        "exposure_name": "AIRSHIP AI HLDGS INC CLASS A",
+        "value": 3115.0,
+        "pct_portfolio": 0.41337959115099604
+      },
+      {
+        "exposure_ticker": "AVGO",
+        "exposure_name": "Broadcom Inc",
+        "value": 3070.904321631,
+        "pct_portfolio": 0.4075278243786998
       },
       {
         "exposure_ticker": "BRCHF",
         "exposure_name": "BRAINCHIP HLDGS LT ORDF",
-        "value": 2806.0,
-        "pct_portfolio": 0.37324185759785605
+        "value": 2927.44,
+        "pct_portfolio": 0.3884892296369412
+      },
+      {
+        "exposure_ticker": "WELL",
+        "exposure_name": "Welltower Inc",
+        "value": 2852.8218749079497,
+        "pct_portfolio": 0.37858694711912233
       },
       {
         "exposure_ticker": "PLD",
         "exposure_name": "Prologis Inc",
-        "value": 2767.9610737280004,
-        "pct_portfolio": 0.3681820858577317
+        "value": 2741.4973475560005,
+        "pct_portfolio": 0.36381350005593566
       },
       {
         "exposure_ticker": "AAPL",
         "exposure_name": "Apple Inc",
-        "value": 2452.98786250815,
-        "pct_portfolio": 0.32628572575464587
+        "value": 2458.39356560025,
+        "pct_portfolio": 0.32624389310949303
       },
       {
         "exposure_ticker": "APH",
         "exposure_name": "Amphenol Corp Class A",
-        "value": 2190.440278208,
-        "pct_portfolio": 0.29136279344102584
+        "value": 2185.678818624,
+        "pct_portfolio": 0.2900529747769442
       },
       {
         "exposure_ticker": "9988.HK",
         "exposure_name": "Alibaba Group Holding Ltd Ordinary Shares",
-        "value": 2095.62504042,
-        "pct_portfolio": 0.2787508848592099
+        "value": 2089.5365580000002,
+        "pct_portfolio": 0.27729430755733536
       },
       {
         "exposure_ticker": "RXRX",
         "exposure_name": "RECURSION PHARMACEUTICALCLASS",
-        "value": 2012.31,
-        "pct_portfolio": 0.26766868227467633
-      },
-      {
-        "exposure_ticker": "ASML.AS",
-        "exposure_name": "ASML Holding NV",
-        "value": 1873.0529717440797,
-        "pct_portfolio": 0.24914532093832678
-      },
-      {
-        "exposure_ticker": "AMT",
-        "exposure_name": "American Tower Corp",
-        "value": 1825.0562719991203,
-        "pct_portfolio": 0.24276100968694575
+        "value": 2070.83,
+        "pct_portfolio": 0.274811832662349
       },
       {
         "exposure_ticker": "CVX",
         "exposure_name": "CHEVRON CORP NEW",
-        "value": 1819.7,
-        "pct_portfolio": 0.2420485417928791
+        "value": 1880.9,
+        "pct_portfolio": 0.2496069576230846
+      },
+      {
+        "exposure_ticker": "ASML.AS",
+        "exposure_name": "ASML Holding NV",
+        "value": 1878.98028245872,
+        "pct_portfolio": 0.24935219933982944
       },
       {
         "exposure_ticker": "BBAI",
         "exposure_name": "BIGBEAR AI HLDGS INC",
-        "value": 1800.74,
-        "pct_portfolio": 0.23952656544930978
+        "value": 1807.9,
+        "pct_portfolio": 0.23991941022211422
+      },
+      {
+        "exposure_ticker": "AMT",
+        "exposure_name": "American Tower Corp",
+        "value": 1807.61200533468,
+        "pct_portfolio": 0.23988119156497015
       },
       {
         "exposure_ticker": "AEIS",
         "exposure_name": "Advanced Energy Industries Inc",
-        "value": 1731.8105132166902,
-        "pct_portfolio": 0.23035786634372554
+        "value": 1717.8131671435801,
+        "pct_portfolio": 0.22796433537965033
       },
       {
         "exposure_ticker": "EQIX",
         "exposure_name": "Equinix Inc",
-        "value": 1675.2363512706802,
-        "pct_portfolio": 0.22283261855442735
+        "value": 1659.2263106608602,
+        "pct_portfolio": 0.22018950045841473
       },
       {
         "exposure_ticker": "JOBY",
         "exposure_name": "JOBY AVIATION INC FCLASS A",
-        "value": 1654.1,
-        "pct_portfolio": 0.22002115347562853
+        "value": 1640.41,
+        "pct_portfolio": 0.21769246071268233
       },
       {
         "exposure_ticker": "FN",
         "exposure_name": "Fabrinet",
-        "value": 1651.31961073,
-        "pct_portfolio": 0.21965131824541473
+        "value": 1638.5918028280003,
+        "pct_portfolio": 0.21745117480462675
       },
       {
         "exposure_ticker": "IESC",
         "exposure_name": "IES Holdings Inc",
-        "value": 1642.23110406,
-        "pct_portfolio": 0.21844240480553542
-      },
-      {
-        "exposure_ticker": "O",
-        "exposure_name": "REALTY INCOME CORP REIT",
-        "value": 1529.0,
-        "pct_portfolio": 0.20338089817074906
-      },
-      {
-        "exposure_ticker": "KNT.TO",
-        "exposure_name": "K92 Mining Inc",
-        "value": 1452.5951952,
-        "pct_portfolio": 0.19321786493020968
-      },
-      {
-        "exposure_ticker": "DLR",
-        "exposure_name": "Digital Realty Trust Inc",
-        "value": 1431.6310935248205,
-        "pct_portfolio": 0.1904293117398624
+        "value": 1628.9577829199998,
+        "pct_portfolio": 0.21617268131804254
       },
       {
         "exposure_ticker": "TXG",
         "exposure_name": "10X GENOMICS INC CLASS A",
-        "value": 1425.0,
-        "pct_portfolio": 0.18954727265749996
+        "value": 1527.5,
+        "pct_portfolio": 0.20270861171208554
+      },
+      {
+        "exposure_ticker": "O",
+        "exposure_name": "REALTY INCOME CORP REIT",
+        "value": 1497.25,
+        "pct_portfolio": 0.19869425131647794
+      },
+      {
+        "exposure_ticker": "KNT.TO",
+        "exposure_name": "K92 Mining Inc",
+        "value": 1493.1099846,
+        "pct_portfolio": 0.19814484589965264
+      },
+      {
+        "exposure_ticker": "DLR",
+        "exposure_name": "Digital Realty Trust Inc",
+        "value": 1417.9726128679802,
+        "pct_portfolio": 0.18817365617036125
       },
       {
         "exposure_ticker": "SPG",
         "exposure_name": "Simon Property Group Inc",
-        "value": 1396.73106872,
-        "pct_portfolio": 0.18578706295569905
+        "value": 1383.361905065,
+        "pct_portfolio": 0.1835806031234776
       },
       {
         "exposure_ticker": "FCFS",
         "exposure_name": "FirstCash Holdings Inc",
-        "value": 1371.7300253320002,
-        "pct_portfolio": 0.1824615334204098
+        "value": 1360.6430272240002,
+        "pct_portfolio": 0.18056566879496333
       },
       {
         "exposure_ticker": "SRUUF",
         "exposure_name": "SPROTT PHYSICAL URANIU F",
-        "value": 1287.0,
-        "pct_portfolio": 0.17119111572645784
-      },
-      {
-        "exposure_ticker": "O",
-        "exposure_name": "Realty Income Corp",
-        "value": 1254.5007471360002,
-        "pct_portfolio": 0.16686820713433323
+        "value": 1306.5,
+        "pct_portfolio": 0.1733805572516136
       },
       {
         "exposure_ticker": "DSV.TO",
         "exposure_name": "Discovery Silver Corp",
-        "value": 1252.845614656,
-        "pct_portfolio": 0.16664804864487995
+        "value": 1287.789125688,
+        "pct_portfolio": 0.17089750955557115
+      },
+      {
+        "exposure_ticker": "O",
+        "exposure_name": "Realty Income Corp",
+        "value": 1242.492976872,
+        "pct_portfolio": 0.16488643299753816
       }
     ],
     "all_exposures_including_fund_other": [
       {
         "exposure_ticker": "FDSCX_OTHER",
         "exposure_name": "FDSCX other holdings outside top 20",
-        "value": 73762.25870978934,
-        "pct_portfolio": 9.811533307717538,
+        "value": 73166.0757819138,
+        "pct_portfolio": 9.709586675072334,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "FSPSX_OTHER",
         "exposure_name": "FSPSX other holdings outside top 20",
-        "value": 66962.35091895089,
-        "pct_portfolio": 8.907039289418652,
+        "value": 67174.2545148806,
+        "pct_portfolio": 8.91443527038019,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "FLCNX_OTHER",
         "exposure_name": "FLCNX other holdings outside top 20",
-        "value": 59869.5493841744,
-        "pct_portfolio": 7.9635858252658,
+        "value": 59739.4082237232,
+        "pct_portfolio": 7.927785601003258,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "FPADX_OTHER",
         "exposure_name": "FPADX other holdings outside top 20",
-        "value": 57885.898264556,
-        "pct_portfolio": 7.699729222018316,
+        "value": 57717.720624400004,
+        "pct_portfolio": 7.659495266093703,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "FSSNX_OTHER",
         "exposure_name": "FSSNX other holdings outside top 20",
-        "value": 38541.46832118285,
-        "pct_portfolio": 5.126617687365364,
+        "value": 38321.35053282051,
+        "pct_portfolio": 5.0854780788479435,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "YNHHSPENSION",
         "exposure_name": "Cash Account Pension Plan",
         "value": 32906.73,
-        "pct_portfolio": 4.3771094200538485,
+        "pct_portfolio": 4.366924749122381,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "FETH",
         "exposure_name": "Ethereum",
-        "value": 32633.42,
-        "pct_portfolio": 4.340754918236289,
+        "value": 30980.84,
+        "pct_portfolio": 4.111347342765465,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "FXAIX_OTHER",
         "exposure_name": "FXAIX other holdings outside top 20",
-        "value": 23421.452326804512,
-        "pct_portfolio": 3.1154192352445276,
+        "value": 23473.06669440885,
+        "pct_portfolio": 3.1150198116195162,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "USERX_OTHER",
         "exposure_name": "USERX other holdings outside top 20",
-        "value": 17947.3924093588,
-        "pct_portfolio": 2.3872837070230717,
+        "value": 18447.96877512615,
+        "pct_portfolio": 2.4481585200089855,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "FSRNX_OTHER",
         "exposure_name": "FSRNX other holdings outside top 20",
-        "value": 17450.991661136803,
-        "pct_portfolio": 2.3212546487980745,
+        "value": 17283.95509362235,
+        "pct_portfolio": 2.2936867704891757,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "FLKSX_OTHER",
         "exposure_name": "FLKSX other holdings outside top 20",
-        "value": 15134.16798060923,
-        "pct_portfolio": 2.013080887484171,
+        "value": 15151.924556456615,
+        "pct_portfolio": 2.0107532514602804,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "NVDA",
         "exposure_name": "NVIDIA Corp",
-        "value": 14088.025799601763,
-        "pct_portfolio": 1.8739276262757958,
+        "value": 14069.615414405282,
+        "pct_portfolio": 1.8671241950749944,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "2330.TW",
         "exposure_name": "Taiwan Semiconductor Manufacturing Co Ltd",
-        "value": 13264.823825316,
-        "pct_portfolio": 1.7644288971023674,
+        "value": 13212.791286970001,
+        "pct_portfolio": 1.7534183820774,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "MU",
         "exposure_name": "MICRON TECHNOLOGY INC",
-        "value": 11363.46,
-        "pct_portfolio": 1.5115177901421715,
+        "value": 12651.55,
+        "pct_portfolio": 1.6789382235718728,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "JEMWX_OTHER",
         "exposure_name": "JEMWX other holdings outside top 20",
-        "value": 11268.758728542838,
-        "pct_portfolio": 1.4989210408636435,
+        "value": 11165.84385164395,
+        "pct_portfolio": 1.481775912118279,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "META",
         "exposure_name": "Meta Platforms Inc Class A",
-        "value": 11040.720551831,
-        "pct_portfolio": 1.4685883991390696,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PLTR",
-        "exposure_name": "PALANTIR TECHNOLOGIES INCLASS A",
-        "value": 10191.03,
-        "pct_portfolio": 1.355566275137377,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "HTGC",
-        "exposure_name": "HERCULES CAP INC",
-        "value": 10058.75,
-        "pct_portfolio": 1.3379709676095632,
+        "value": 11020.327145217,
+        "pct_portfolio": 1.462464953335482,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "ASTS",
         "exposure_name": "AST SPACEMOBILE INC CLASS A",
-        "value": 9996.3,
-        "pct_portfolio": 1.329664141520117,
+        "value": 10513.35,
+        "pct_portfolio": 1.3951859790135874,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "HTGC",
+        "exposure_name": "HERCULES CAP INC",
+        "value": 10104.25,
+        "pct_portfolio": 1.3408959017295192,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "PLTR",
+        "exposure_name": "PALANTIR TECHNOLOGIES INCLASS A",
+        "value": 9916.4,
+        "pct_portfolio": 1.3159670554381178,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "CRDO",
         "exposure_name": "CREDO TECHNOLOGY GROUP F",
-        "value": 9198.8,
-        "pct_portfolio": 1.2235841766468847,
+        "value": 9082.8,
+        "pct_portfolio": 1.205343226486763,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "RENTBERRY",
         "exposure_name": "Rentberry",
         "value": 9000.0,
-        "pct_portfolio": 1.1971406694157893,
+        "pct_portfolio": 1.1943551590237447,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "FBTC",
         "exposure_name": "Bitcoin",
-        "value": 8683.6,
-        "pct_portfolio": 1.1550545241043275,
+        "value": 7951.92,
+        "pct_portfolio": 1.055268519571566,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "AASRX_OTHER",
         "exposure_name": "AASRX other holdings outside top 20",
-        "value": 7884.97781771406,
-        "pct_portfolio": 1.0488252914474285,
+        "value": 7843.10702325388,
+        "pct_portfolio": 1.0408283706665151,
         "is_remainder": 1.0
       },
       {
         "exposure_ticker": "AMZN",
         "exposure_name": "Amazon.com Inc",
-        "value": 7109.7839481358815,
-        "pct_portfolio": 0.9457123905636691,
+        "value": 7100.19250868364,
+        "pct_portfolio": 0.9422390614231165,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "RLAY",
+        "exposure_name": "RELAY THERAPEUTICS INC",
+        "value": 6930.98,
+        "pct_portfolio": 0.9197835244544881,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "XLM",
         "exposure_name": "Stellar",
         "value": 6303.81,
-        "pct_portfolio": 0.8385052581411052,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "RLAY",
-        "exposure_name": "RELAY THERAPEUTICS INC",
-        "value": 5999.12,
-        "pct_portfolio": 0.7979767258561832,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "GOOGL",
-        "exposure_name": "Alphabet Inc Class A",
-        "value": 5319.313416205,
-        "pct_portfolio": 0.7075518248786714,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "005930.KS",
-        "exposure_name": "Samsung Electronics Co Ltd",
-        "value": 5242.8385102354405,
-        "pct_portfolio": 0.6973794670869039,
+        "pct_portfolio": 0.8365542216672746,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "OKLO",
         "exposure_name": "OKLO INC CLASS A",
-        "value": 5058.38,
-        "pct_portfolio": 0.6728436021510489,
+        "value": 5447.25,
+        "pct_portfolio": 0.7228834599991214,
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "ARCC",
-        "exposure_name": "ARES CAP CORP EQUITY CLASS EQUIT",
-        "value": 5010.72,
-        "pct_portfolio": 0.6665040772283426,
+        "exposure_ticker": "GOOGL",
+        "exposure_name": "Alphabet Inc Class A",
+        "value": 5312.575457019,
+        "pct_portfolio": 0.7050113227548412,
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "MSFT",
-        "exposure_name": "Microsoft Corp",
-        "value": 4879.32772102796,
-        "pct_portfolio": 0.6490268504722699,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "ABSI",
-        "exposure_name": "ABSCI CORP",
-        "value": 4810.28,
-        "pct_portfolio": 0.6398424243641535,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "BRK.A",
-        "exposure_name": "Berkshire Hathaway Inc Class A",
-        "value": 4409.1517452319995,
-        "pct_portfolio": 0.5864860968714257,
+        "exposure_ticker": "005930.KS",
+        "exposure_name": "Samsung Electronics Co Ltd",
+        "value": 5222.2696904707,
+        "pct_portfolio": 0.6930271940696682,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "LWLG",
         "exposure_name": "LIGHTWAVE LOGIC INC",
-        "value": 4268.0,
-        "pct_portfolio": 0.5677107085629542,
+        "value": 5102.0,
+        "pct_portfolio": 0.6770666690376828,
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "IBIT",
-        "exposure_name": "Bitcoin",
-        "value": 4155.0,
-        "pct_portfolio": 0.5526799423802894,
+        "exposure_ticker": "ABSI",
+        "exposure_name": "ABSCI CORP",
+        "value": 5063.75,
+        "pct_portfolio": 0.6719906596118318,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "ARCC",
+        "exposure_name": "ARES CAP CORP EQUITY CLASS EQUIT",
+        "value": 5049.0,
+        "pct_portfolio": 0.6700332442123207,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "MSFT",
+        "exposure_name": "Microsoft Corp",
+        "value": 4876.643007767881,
+        "pct_portfolio": 0.6471604150049599,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "BRK.A",
+        "exposure_name": "Berkshire Hathaway Inc Class A",
+        "value": 4399.567371696,
+        "pct_portfolio": 0.583849554206406,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "0700.HK",
         "exposure_name": "Tencent Holdings Ltd",
-        "value": 3890.3368084520007,
-        "pct_portfolio": 0.5174756012359014,
+        "value": 3874.316444205,
+        "pct_portfolio": 0.5141455369807524,
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "000660.KS",
-        "exposure_name": "SK Hynix Inc",
-        "value": 3645.43590020212,
-        "pct_portfolio": 0.48489995265336844,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "GOOG",
-        "exposure_name": "Alphabet Inc Class C",
-        "value": 3579.839426119,
-        "pct_portfolio": 0.4761745963316816,
+        "exposure_ticker": "IBIT",
+        "exposure_name": "Bitcoin",
+        "value": 3805.0,
+        "pct_portfolio": 0.5049468200094831,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "NXE",
         "exposure_name": "NEXGEN ENERGY LTD F",
-        "value": 3460.5,
-        "pct_portfolio": 0.46030058739037094,
+        "value": 3676.5,
+        "pct_portfolio": 0.4878940824611997,
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "AVGO",
-        "exposure_name": "Broadcom Inc",
-        "value": 3073.355854857,
-        "pct_portfolio": 0.40880436504849377,
+        "exposure_ticker": "000660.KS",
+        "exposure_name": "SK Hynix Inc",
+        "value": 3627.4196750280003,
+        "pct_portfolio": 0.4813808225348808,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "PENG",
+        "exposure_name": "PENGUIN SOLUTIONS INC DE",
+        "value": 3596.0,
+        "pct_portfolio": 0.4772112390943762,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "GOOG",
+        "exposure_name": "Alphabet Inc Class C",
+        "value": 3575.9240191530002,
+        "pct_portfolio": 0.47454703339470106,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "AISP",
         "exposure_name": "AIRSHIP AI HLDGS INC CLASS A",
-        "value": 3035.0,
-        "pct_portfolio": 0.4037024368529912,
+        "value": 3115.0,
+        "pct_portfolio": 0.41337959115099604,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "AVGO",
+        "exposure_name": "Broadcom Inc",
+        "value": 3070.904321631,
+        "pct_portfolio": 0.4075278243786998,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "SOL",
         "exposure_name": "Solana",
         "value": 2987.31,
-        "pct_portfolio": 0.3973589214613868,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "WELL",
-        "exposure_name": "Welltower Inc",
-        "value": 2880.3256055649003,
-        "pct_portfolio": 0.38312832484237813,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PENG",
-        "exposure_name": "PENGUIN SOLUTIONS INC DE",
-        "value": 2836.9,
-        "pct_portfolio": 0.37735204056285027,
+        "pct_portfolio": 0.39643434556702467,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "BRCHF",
         "exposure_name": "BRAINCHIP HLDGS LT ORDF",
-        "value": 2806.0,
-        "pct_portfolio": 0.37324185759785605,
+        "value": 2927.44,
+        "pct_portfolio": 0.3884892296369412,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "WELL",
+        "exposure_name": "Welltower Inc",
+        "value": 2852.8218749079497,
+        "pct_portfolio": 0.37858694711912233,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "PLD",
         "exposure_name": "Prologis Inc",
-        "value": 2767.9610737280004,
-        "pct_portfolio": 0.3681820858577317,
+        "value": 2741.4973475560005,
+        "pct_portfolio": 0.36381350005593566,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "LINK",
         "exposure_name": "Chainlink",
         "value": 2703.43,
-        "pct_portfolio": 0.3595984444354141,
+        "pct_portfolio": 0.3587617297288402,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "AAPL",
         "exposure_name": "Apple Inc",
-        "value": 2452.98786250815,
-        "pct_portfolio": 0.32628572575464587,
+        "value": 2458.39356560025,
+        "pct_portfolio": 0.32624389310949303,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "ONDO",
         "exposure_name": "Ondo",
         "value": 2242.47,
-        "pct_portfolio": 0.29828355966053605,
+        "pct_portfolio": 0.2975895126062196,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "APH",
         "exposure_name": "Amphenol Corp Class A",
-        "value": 2190.440278208,
-        "pct_portfolio": 0.29136279344102584,
+        "value": 2185.678818624,
+        "pct_portfolio": 0.2900529747769442,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "9988.HK",
         "exposure_name": "Alibaba Group Holding Ltd Ordinary Shares",
-        "value": 2095.62504042,
-        "pct_portfolio": 0.2787508848592099,
+        "value": 2089.5365580000002,
+        "pct_portfolio": 0.27729430755733536,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "RXRX",
         "exposure_name": "RECURSION PHARMACEUTICALCLASS",
-        "value": 2012.31,
-        "pct_portfolio": 0.26766868227467633,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PUREGREEN",
-        "exposure_name": "PureGreen",
-        "value": 2000.0,
-        "pct_portfolio": 0.2660312598701754,
+        "value": 2070.83,
+        "pct_portfolio": 0.274811832662349,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "QPUX_OTHER",
         "exposure_name": "QPUX other holdings outside top 20",
-        "value": 1968.90458352,
-        "pct_portfolio": 0.26189508345899426,
+        "value": 2054.237230941,
+        "pct_portfolio": 0.27260987051478164,
         "is_remainder": 1.0
+      },
+      {
+        "exposure_ticker": "PUREGREEN",
+        "exposure_name": "PureGreen",
+        "value": 2000.0,
+        "pct_portfolio": 0.26541225756083214,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "CVX",
+        "exposure_name": "CHEVRON CORP NEW",
+        "value": 1880.9,
+        "pct_portfolio": 0.2496069576230846,
+        "is_remainder": 0.0
       },
       {
         "exposure_ticker": "ASML.AS",
         "exposure_name": "ASML Holding NV",
-        "value": 1873.0529717440797,
-        "pct_portfolio": 0.24914532093832678,
+        "value": 1878.98028245872,
+        "pct_portfolio": 0.24935219933982944,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "AKT",
         "exposure_name": "Akash Network",
         "value": 1850.12,
-        "pct_portfolio": 0.24609487725550444,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "AMT",
-        "exposure_name": "American Tower Corp",
-        "value": 1825.0562719991203,
-        "pct_portfolio": 0.24276100968694575,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "CVX",
-        "exposure_name": "CHEVRON CORP NEW",
-        "value": 1819.7,
-        "pct_portfolio": 0.2420485417928791,
+        "pct_portfolio": 0.24552226297922336,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "BBAI",
         "exposure_name": "BIGBEAR AI HLDGS INC",
-        "value": 1800.74,
-        "pct_portfolio": 0.23952656544930978,
+        "value": 1807.9,
+        "pct_portfolio": 0.23991941022211422,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "AMT",
+        "exposure_name": "American Tower Corp",
+        "value": 1807.61200533468,
+        "pct_portfolio": 0.23988119156497015,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "AEIS",
         "exposure_name": "Advanced Energy Industries Inc",
-        "value": 1731.8105132166902,
-        "pct_portfolio": 0.23035786634372554,
+        "value": 1717.8131671435801,
+        "pct_portfolio": 0.22796433537965033,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "EQIX",
         "exposure_name": "Equinix Inc",
-        "value": 1675.2363512706802,
-        "pct_portfolio": 0.22283261855442735,
+        "value": 1659.2263106608602,
+        "pct_portfolio": 0.22018950045841473,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "JOBY",
         "exposure_name": "JOBY AVIATION INC FCLASS A",
-        "value": 1654.1,
-        "pct_portfolio": 0.22002115347562853,
+        "value": 1640.41,
+        "pct_portfolio": 0.21769246071268233,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "FN",
         "exposure_name": "Fabrinet",
-        "value": 1651.31961073,
-        "pct_portfolio": 0.21965131824541473,
+        "value": 1638.5918028280003,
+        "pct_portfolio": 0.21745117480462675,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "IESC",
         "exposure_name": "IES Holdings Inc",
-        "value": 1642.23110406,
-        "pct_portfolio": 0.21844240480553542,
+        "value": 1628.9577829199998,
+        "pct_portfolio": 0.21617268131804254,
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "O",
-        "exposure_name": "REALTY INCOME CORP REIT",
-        "value": 1529.0,
-        "pct_portfolio": 0.20338089817074906,
+        "exposure_ticker": "TXG",
+        "exposure_name": "10X GENOMICS INC CLASS A",
+        "value": 1527.5,
+        "pct_portfolio": 0.20270861171208554,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "AAVE",
         "exposure_name": "Aave",
         "value": 1507.47,
-        "pct_portfolio": 0.20051707165824662,
+        "pct_portfolio": 0.20005050795261378,
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "O",
+        "exposure_name": "REALTY INCOME CORP REIT",
+        "value": 1497.25,
+        "pct_portfolio": 0.19869425131647794,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "KNT.TO",
         "exposure_name": "K92 Mining Inc",
-        "value": 1452.5951952,
-        "pct_portfolio": 0.19321786493020968,
+        "value": 1493.1099846,
+        "pct_portfolio": 0.19814484589965264,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "DLR",
         "exposure_name": "Digital Realty Trust Inc",
-        "value": 1431.6310935248205,
-        "pct_portfolio": 0.1904293117398624,
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "TXG",
-        "exposure_name": "10X GENOMICS INC CLASS A",
-        "value": 1425.0,
-        "pct_portfolio": 0.18954727265749996,
+        "value": 1417.9726128679802,
+        "pct_portfolio": 0.18817365617036125,
         "is_remainder": 0.0
       },
       {
         "exposure_ticker": "SPG",
         "exposure_name": "Simon Property Group Inc",
-        "value": 1396.73106872,
-        "pct_portfolio": 0.18578706295569905,
+        "value": 1383.361905065,
+        "pct_portfolio": 0.1835806031234776,
         "is_remainder": 0.0
       }
     ],
     "theme_buckets": [
       {
         "theme": "Small Cap",
-        "value": 112303.7270309722,
-        "pct_portfolio": 14.938150995082902
+        "value": 111487.4263147343,
+        "pct_portfolio": 14.795064753920277
       },
       {
         "theme": "Emerging Markets",
-        "value": 69154.65699309885,
-        "pct_portfolio": 9.19865026288196
-      },
-      {
-        "theme": "Crypto / Tokenization",
-        "value": 67380.55,
-        "pct_portfolio": 8.962666303622672
+        "value": 68883.56447604395,
+        "pct_portfolio": 9.141271178211982
       },
       {
         "theme": "International Developed",
-        "value": 66962.35091895089,
-        "pct_portfolio": 8.907039289418652
+        "value": 67174.2545148806,
+        "pct_portfolio": 8.91443527038019
       },
       {
         "theme": "AI / Semiconductors / Compute",
-        "value": 65445.62688908691,
-        "pct_portfolio": 8.705291287148608
+        "value": 66626.25835197925,
+        "pct_portfolio": 8.84171282101503
+      },
+      {
+        "theme": "Crypto / Tokenization",
+        "value": 64602.71,
+        "pct_portfolio": 8.573175552823873
       },
       {
         "theme": "Look-through Equity",
-        "value": 64323.747642480135,
-        "pct_portfolio": 8.556063812450107
+        "value": 64307.58242527834,
+        "pct_portfolio": 8.534010314886208
       },
       {
         "theme": "US Large-Cap Growth",
-        "value": 62322.53724668255,
-        "pct_portfolio": 8.289871551020445
+        "value": 62197.80178932345,
+        "pct_portfolio": 8.254029494112752
       },
       {
         "theme": "Pension / Retirement Plan",
         "value": 32906.73,
-        "pct_portfolio": 4.3771094200538485
+        "pct_portfolio": 4.366924749122381
       },
       {
         "theme": "US Large-Cap Growth / AI",
-        "value": 31928.985063318843,
-        "pct_portfolio": 4.247054061385362
+        "value": 31885.662137840518,
+        "pct_portfolio": 4.231422785913101
       },
       {
         "theme": "US Broad Market / S&P 500",
-        "value": 23421.452326804512,
-        "pct_portfolio": 3.1154192352445276
+        "value": 23473.06669440885,
+        "pct_portfolio": 3.1150198116195162
       },
       {
         "theme": "Real Estate / REITs",
-        "value": 20432.980570580105,
-        "pct_portfolio": 2.7179057820471204
+        "value": 20220.45496022405,
+        "pct_portfolio": 2.6833782999500952
       },
       {
         "theme": "Gold / Precious Metals",
-        "value": 17947.3924093588,
-        "pct_portfolio": 2.3872837070230717
-      },
-      {
-        "theme": "US Mid/Small Value / Low-Priced Stock",
-        "value": 15134.16798060923,
-        "pct_portfolio": 2.013080887484171
+        "value": 18447.96877512615,
+        "pct_portfolio": 2.4481585200089855
       },
       {
         "theme": "Income / BDCs",
-        "value": 15069.470000000001,
-        "pct_portfolio": 2.004475044837906
+        "value": 15153.25,
+        "pct_portfolio": 2.01092914594184
+      },
+      {
+        "theme": "US Mid/Small Value / Low-Priced Stock",
+        "value": 15151.924556456615,
+        "pct_portfolio": 2.0107532514602804
       },
       {
         "theme": "AI Software / Data Infrastructure",
-        "value": 15026.77,
-        "pct_portfolio": 1.9987952774396778
+        "value": 14839.3,
+        "pct_portfolio": 1.969266056811228
       },
       {
         "theme": "Biotech / AI Drug Discovery",
-        "value": 13014.21,
-        "pct_portfolio": 1.7310933412575173
+        "value": 14263.009999999998,
+        "pct_portfolio": 1.892788841856362
       },
       {
         "theme": "Private / Startup Investments",
         "value": 11525.0,
-        "pct_portfolio": 1.5330051350018858
+        "pct_portfolio": 1.5294381341942953
       },
       {
         "theme": "Uranium / Nuclear / Energy Transition",
-        "value": 10492.880000000001,
-        "pct_portfolio": 1.395717043033283
+        "value": 11101.35,
+        "pct_portfolio": 1.473217182736472
       },
       {
         "theme": "Space / Satellite Connectivity",
-        "value": 9996.3,
-        "pct_portfolio": 1.329664141520117
+        "value": 10513.35,
+        "pct_portfolio": 1.3951859790135874
       },
       {
         "theme": "Direct Stock / Other",
-        "value": 8644.43,
-        "pct_portfolio": 1.1498443018797702
+        "value": 10154.18,
+        "pct_portfolio": 1.347521918739525
       },
       {
         "theme": "Small Cap Value",
-        "value": 7884.97781771406,
-        "pct_portfolio": 1.0488252914474285
+        "value": 7843.10702325388,
+        "pct_portfolio": 1.0408283706665151
       },
       {
         "theme": "Fund Remainder",
-        "value": 1968.90458352,
-        "pct_portfolio": 0.26189508345899426
+        "value": 2054.237230941,
+        "pct_portfolio": 0.27260987051478164
       },
       {
         "theme": "Energy",
-        "value": 1819.7,
-        "pct_portfolio": 0.2420485417928791
+        "value": 1880.9,
+        "pct_portfolio": 0.2496069576230846
       },
       {
         "theme": "Aviation / Mobility",
-        "value": 1654.1,
-        "pct_portfolio": 0.22002115347562853
+        "value": 1640.41,
+        "pct_portfolio": 0.21769246071268233
       },
       {
         "theme": "Biotech / Tools",
-        "value": 1425.0,
-        "pct_portfolio": 0.18954727265749996
+        "value": 1527.5,
+        "pct_portfolio": 0.20270861171208554
       },
       {
         "theme": "Energy Services",
-        "value": 1098.4,
-        "pct_portfolio": 0.14610436792070033
+        "value": 1124.2,
+        "pct_portfolio": 0.14918822997494374
       },
       {
         "theme": "Bonds",
-        "value": 1063.1799999999998,
-        "pct_portfolio": 0.14141955743438653
+        "value": 1064.76,
+        "pct_portfolio": 0.1413001776802358
       },
       {
         "theme": "Cash",
-        "value": 835.64,
-        "pct_portfolio": 0.11115318099895669
+        "value": 883.5699999999999,
+        "pct_portfolio": 0.11725515420651222
       },
       {
         "theme": "US Extended Market",
-        "value": 498.04252682293196,
-        "pct_portfolio": 0.0662474404398151
+        "value": 498.6107495090539,
+        "pct_portfolio": 0.06616870233564828
       },
       {
         "theme": "Biotech / Gene Editing",
-        "value": 109.44,
-        "pct_portfolio": 0.014557230540095995
+        "value": 112.56,
+        "pct_portfolio": 0.014937401855523634
       }
     ],
     "largest_original_positions": [
@@ -979,428 +979,428 @@
         "ticker": "FLCNX",
         "name": "FID CONTRAFD K6",
         "category": "Mutual Fund",
-        "value": 105844.96,
-        "pct_portfolio": 14.07903402985416
+        "value": 105614.88,
+        "pct_portfolio": 14.01574186640819
       },
       {
         "ticker": "FDSCX",
         "name": "FID STK SEL SMCP",
         "category": "Mutual Fund",
-        "value": 84764.69,
-        "pct_portfolio": 11.275028636602428
+        "value": 84079.58,
+        "pct_portfolio": 11.157875571283295
       },
       {
         "ticker": "FPADX",
         "name": "FID E/MKT IDX IPRM",
         "category": "Mutual Fund",
-        "value": 83253.88,
-        "pct_portfolio": 11.0740672927402
+        "value": 83012.0,
+        "pct_portfolio": 11.016201162319899
       },
       {
         "ticker": "FSPSX",
         "name": "FID INTL IDX",
         "category": "Mutual Fund",
-        "value": 75626.04,
-        "pct_portfolio": 10.059445350096139
+        "value": 75865.36,
+        "pct_portfolio": 10.067798234132626
       },
       {
         "ticker": "FSSNX",
         "name": "FID SMCP IDX IPRM",
         "category": "Mutual Fund",
-        "value": 40693.77,
-        "pct_portfolio": 5.412907450983573
+        "value": 40461.36,
+        "pct_portfolio": 5.369470450790775
       },
       {
         "ticker": "FXAIX",
         "name": "FID 500 IDX",
         "category": "Mutual Fund",
-        "value": 36855.83,
-        "pct_portfolio": 4.902401444230503
+        "value": 36937.05,
+        "pct_portfolio": 4.901772914068667
       },
       {
         "ticker": "FSRNX",
         "name": "FID RL EST IDX",
         "category": "Mutual Fund",
-        "value": 33232.16,
-        "pct_portfolio": 4.420396696503624
+        "value": 32914.07,
+        "pct_portfolio": 4.367898812107629
       },
       {
         "ticker": "YNHHSPENSION",
         "name": "Cash Account Pension Plan",
         "category": "YnhhsPension",
         "value": 32906.73,
-        "pct_portfolio": 4.3771094200538485
+        "pct_portfolio": 4.366924749122381
       },
       {
         "ticker": "FETH",
         "name": "FIDELITY ETHEREUM FUND",
         "category": "ETF",
-        "value": 32633.42,
-        "pct_portfolio": 4.340754918236289
+        "value": 30980.84,
+        "pct_portfolio": 4.111347342765465
       },
       {
         "ticker": "USERX",
         "name": "USGI GOLD & PREC INVS",
         "category": "Mutual Fund",
-        "value": 27294.16,
-        "pct_portfolio": 3.6305498859490726
+        "value": 28055.43,
+        "pct_portfolio": 3.723127506569948
       },
       {
         "ticker": "JEMWX",
         "name": "JPM E/MKT EQ R6",
         "category": "Mutual Fund",
-        "value": 18902.28,
-        "pct_portfolio": 2.5142986814094095
+        "value": 18729.65,
+        "pct_portfolio": 2.48553934491212
       },
       {
         "ticker": "FLKSX",
         "name": "FID LOW PRICED STK K6",
         "category": "Mutual Fund",
-        "value": 16696.82,
-        "pct_portfolio": 2.220938030212771
+        "value": 16716.41,
+        "pct_portfolio": 2.218370058206235
       },
       {
         "ticker": "MU",
         "name": "MICRON TECHNOLOGY INC",
         "category": "Stock",
-        "value": 11363.46,
-        "pct_portfolio": 1.5115177901421715
-      },
-      {
-        "ticker": "PLTR",
-        "name": "PALANTIR TECHNOLOGIES INCLASS A",
-        "category": "Stock",
-        "value": 10191.03,
-        "pct_portfolio": 1.355566275137377
-      },
-      {
-        "ticker": "HTGC",
-        "name": "HERCULES CAP INC",
-        "category": "Stock",
-        "value": 10058.75,
-        "pct_portfolio": 1.3379709676095632
+        "value": 12651.55,
+        "pct_portfolio": 1.6789382235718728
       },
       {
         "ticker": "ASTS",
         "name": "AST SPACEMOBILE INC CLASS A",
         "category": "Stock",
-        "value": 9996.3,
-        "pct_portfolio": 1.329664141520117
+        "value": 10513.35,
+        "pct_portfolio": 1.3951859790135874
+      },
+      {
+        "ticker": "HTGC",
+        "name": "HERCULES CAP INC",
+        "category": "Stock",
+        "value": 10104.25,
+        "pct_portfolio": 1.3408959017295192
+      },
+      {
+        "ticker": "PLTR",
+        "name": "PALANTIR TECHNOLOGIES INCLASS A",
+        "category": "Stock",
+        "value": 9916.4,
+        "pct_portfolio": 1.3159670554381178
       },
       {
         "ticker": "CRDO",
         "name": "CREDO TECHNOLOGY GROUP F",
         "category": "Stock",
-        "value": 9198.8,
-        "pct_portfolio": 1.2235841766468847
+        "value": 9082.8,
+        "pct_portfolio": 1.205343226486763
       },
       {
         "ticker": "RENTBERRY",
         "name": "Rentberry",
         "category": "Republic",
         "value": 9000.0,
-        "pct_portfolio": 1.1971406694157893
-      },
-      {
-        "ticker": "FBTC",
-        "name": "FIDELITY WISE ORIGIN BITCOIN FUND",
-        "category": "ETF",
-        "value": 8683.6,
-        "pct_portfolio": 1.1550545241043275
+        "pct_portfolio": 1.1943551590237447
       },
       {
         "ticker": "AASRX",
         "name": "AMR BCN SMCP VAL R6",
         "category": "Mutual Fund",
-        "value": 8551.47,
-        "pct_portfolio": 1.1374791689210042
+        "value": 8506.06,
+        "pct_portfolio": 1.1288062937739458
+      },
+      {
+        "ticker": "FBTC",
+        "name": "FIDELITY WISE ORIGIN BITCOIN FUND",
+        "category": "ETF",
+        "value": 7951.92,
+        "pct_portfolio": 1.055268519571566
+      },
+      {
+        "ticker": "RLAY",
+        "name": "RELAY THERAPEUTICS INC",
+        "category": "Stock",
+        "value": 6930.98,
+        "pct_portfolio": 0.9197835244544881
       },
       {
         "ticker": "XLM",
         "name": "Stellar Lumens",
         "category": "Coinbase",
         "value": 6303.81,
-        "pct_portfolio": 0.8385052581411052
-      },
-      {
-        "ticker": "RLAY",
-        "name": "RELAY THERAPEUTICS INC",
-        "category": "Stock",
-        "value": 5999.12,
-        "pct_portfolio": 0.7979767258561832
+        "pct_portfolio": 0.8365542216672746
       },
       {
         "ticker": "OKLO",
         "name": "OKLO INC CLASS A",
         "category": "Stock",
-        "value": 5058.38,
-        "pct_portfolio": 0.6728436021510489
-      },
-      {
-        "ticker": "ARCC",
-        "name": "ARES CAP CORP EQUITY CLASS EQUIT",
-        "category": "Stock",
-        "value": 5010.72,
-        "pct_portfolio": 0.6665040772283426
-      },
-      {
-        "ticker": "ABSI",
-        "name": "ABSCI CORP",
-        "category": "Stock",
-        "value": 4810.28,
-        "pct_portfolio": 0.6398424243641535
+        "value": 5447.25,
+        "pct_portfolio": 0.7228834599991214
       },
       {
         "ticker": "LWLG",
         "name": "LIGHTWAVE LOGIC INC",
         "category": "Stock",
-        "value": 4268.0,
-        "pct_portfolio": 0.5677107085629542
+        "value": 5102.0,
+        "pct_portfolio": 0.6770666690376828
+      },
+      {
+        "ticker": "ABSI",
+        "name": "ABSCI CORP",
+        "category": "Stock",
+        "value": 5063.75,
+        "pct_portfolio": 0.6719906596118318
+      },
+      {
+        "ticker": "ARCC",
+        "name": "ARES CAP CORP EQUITY CLASS EQUIT",
+        "category": "Stock",
+        "value": 5049.0,
+        "pct_portfolio": 0.6700332442123207
       },
       {
         "ticker": "IBIT",
         "name": "ISHARES BITCOIN TRUST ETF",
         "category": "ETF",
-        "value": 4155.0,
-        "pct_portfolio": 0.5526799423802894
+        "value": 3805.0,
+        "pct_portfolio": 0.5049468200094831
       },
       {
         "ticker": "NXE",
         "name": "NEXGEN ENERGY LTD F",
         "category": "Stock",
-        "value": 3460.5,
-        "pct_portfolio": 0.46030058739037094
+        "value": 3676.5,
+        "pct_portfolio": 0.4878940824611997
+      },
+      {
+        "ticker": "PENG",
+        "name": "PENGUIN SOLUTIONS INC DE",
+        "category": "Stock",
+        "value": 3596.0,
+        "pct_portfolio": 0.4772112390943762
       },
       {
         "ticker": "AISP",
         "name": "AIRSHIP AI HLDGS INC CLASS A",
         "category": "Stock",
-        "value": 3035.0,
-        "pct_portfolio": 0.4037024368529912
+        "value": 3115.0,
+        "pct_portfolio": 0.41337959115099604
       },
       {
         "ticker": "SOL",
         "name": "Solana",
         "category": "Coinbase",
         "value": 2987.31,
-        "pct_portfolio": 0.3973589214613868
-      },
-      {
-        "ticker": "PENG",
-        "name": "PENGUIN SOLUTIONS INC DE",
-        "category": "Stock",
-        "value": 2836.9,
-        "pct_portfolio": 0.37735204056285027
+        "pct_portfolio": 0.39643434556702467
       },
       {
         "ticker": "BRCHF",
         "name": "BRAINCHIP HLDGS LT ORDF",
         "category": "Stock",
-        "value": 2806.0,
-        "pct_portfolio": 0.37324185759785605
+        "value": 2927.44,
+        "pct_portfolio": 0.3884892296369412
       },
       {
         "ticker": "LINK",
         "name": "Chainlink",
         "category": "Coinbase",
         "value": 2703.43,
-        "pct_portfolio": 0.3595984444354141
+        "pct_portfolio": 0.3587617297288402
       },
       {
         "ticker": "ONDO",
         "name": "Ondo",
         "category": "Coinbase",
         "value": 2242.47,
-        "pct_portfolio": 0.29828355966053605
+        "pct_portfolio": 0.2975895126062196
       },
       {
         "ticker": "QPUX",
         "name": "DEFIANCE 2X DAILY LONG PURE QUANT",
         "category": "ETF",
-        "value": 2049.6,
-        "pct_portfolio": 0.2726288351149557
+        "value": 2138.43,
+        "pct_portfolio": 0.2837827669679051
       },
       {
         "ticker": "RXRX",
         "name": "RECURSION PHARMACEUTICALCLASS",
         "category": "Stock",
-        "value": 2012.31,
-        "pct_portfolio": 0.26766868227467633
+        "value": 2070.83,
+        "pct_portfolio": 0.274811832662349
       },
       {
         "ticker": "PUREGREEN",
         "name": "PureGreen",
         "category": "Republic",
         "value": 2000.0,
-        "pct_portfolio": 0.2660312598701754
+        "pct_portfolio": 0.26541225756083214
+      },
+      {
+        "ticker": "CVX",
+        "name": "CHEVRON CORP NEW",
+        "category": "Stock",
+        "value": 1880.9,
+        "pct_portfolio": 0.2496069576230846
       },
       {
         "ticker": "AKT",
         "name": "Akash Network",
         "category": "Coinbase",
         "value": 1850.12,
-        "pct_portfolio": 0.24609487725550444
-      },
-      {
-        "ticker": "CVX",
-        "name": "CHEVRON CORP NEW",
-        "category": "Stock",
-        "value": 1819.7,
-        "pct_portfolio": 0.2420485417928791
+        "pct_portfolio": 0.24552226297922336
       },
       {
         "ticker": "BBAI",
         "name": "BIGBEAR AI HLDGS INC",
         "category": "Stock",
-        "value": 1800.74,
-        "pct_portfolio": 0.23952656544930978
+        "value": 1807.9,
+        "pct_portfolio": 0.23991941022211422
       },
       {
         "ticker": "JOBY",
         "name": "JOBY AVIATION INC FCLASS A",
         "category": "Stock",
-        "value": 1654.1,
-        "pct_portfolio": 0.22002115347562853
+        "value": 1640.41,
+        "pct_portfolio": 0.21769246071268233
       },
       {
-        "ticker": "O",
-        "name": "REALTY INCOME CORP REIT",
+        "ticker": "TXG",
+        "name": "10X GENOMICS INC CLASS A",
         "category": "Stock",
-        "value": 1529.0,
-        "pct_portfolio": 0.20338089817074906
+        "value": 1527.5,
+        "pct_portfolio": 0.20270861171208554
       },
       {
         "ticker": "AAVE",
         "name": "Aave",
         "category": "Coinbase",
         "value": 1507.47,
-        "pct_portfolio": 0.20051707165824662
+        "pct_portfolio": 0.20005050795261378
       },
       {
-        "ticker": "TXG",
-        "name": "10X GENOMICS INC CLASS A",
+        "ticker": "O",
+        "name": "REALTY INCOME CORP REIT",
         "category": "Stock",
-        "value": 1425.0,
-        "pct_portfolio": 0.18954727265749996
+        "value": 1497.25,
+        "pct_portfolio": 0.19869425131647794
       },
       {
         "ticker": "SRUUF",
         "name": "SPROTT PHYSICAL URANIU F",
         "category": "Stock",
-        "value": 1287.0,
-        "pct_portfolio": 0.17119111572645784
-      },
-      {
-        "ticker": "LPTH",
-        "name": "LIGHTPATH TECHNOLOGIES ICLASS A",
-        "category": "Stock",
-        "value": 1212.4,
-        "pct_portfolio": 0.16126814973330034
+        "value": 1306.5,
+        "pct_portfolio": 0.1733805572516136
       },
       {
         "ticker": "SLB",
         "name": "SLB LIMITED F",
         "category": "Stock",
-        "value": 1098.4,
-        "pct_portfolio": 0.14610436792070033
+        "value": 1124.2,
+        "pct_portfolio": 0.14918822997494374
+      },
+      {
+        "ticker": "LPTH",
+        "name": "LIGHTPATH TECHNOLOGIES ICLASS A",
+        "category": "Stock",
+        "value": 1123.5,
+        "pct_portfolio": 0.14909533568479744
       },
       {
         "ticker": "FXNAX",
         "name": "FID US BD IDX",
         "category": "Mutual Fund",
-        "value": 889.55,
-        "pct_portfolio": 0.11832405360875725
+        "value": 890.69,
+        "pct_portfolio": 0.11820002184342879
       },
       {
         "ticker": "TAO",
         "name": "Bittensor",
         "category": "Coinbase",
         "value": 788.07,
-        "pct_portfolio": 0.10482562748294456
+        "pct_portfolio": 0.1045817189079825
       },
       {
         "ticker": "SYRUP",
         "name": "Maple Finance",
         "category": "Coinbase",
         "value": 749.64,
-        "pct_portfolio": 0.09971383682453913
+        "pct_portfolio": 0.09948182237895109
       },
       {
         "ticker": "PGEZF",
         "name": "STILLWATER CRITICAL MI F",
         "category": "Stock",
-        "value": 687.0,
-        "pct_portfolio": 0.09138173776540524
+        "value": 671.1,
+        "pct_portfolio": 0.08905908302453723
       },
       {
         "ticker": "FET",
         "name": "Artificial Super Intelligence",
         "category": "Coinbase",
         "value": 544.37,
-        "pct_portfolio": 0.07240971846776369
+        "pct_portfolio": 0.0722412353241951
       },
       {
         "ticker": "FSMAX",
         "name": "FID EXT MKT IDX",
         "category": "Mutual Fund",
-        "value": 534.66,
-        "pct_portfolio": 0.07111813670109399
+        "value": 535.27,
+        "pct_portfolio": 0.0710336095522933
       },
       {
         "ticker": "XRP",
         "name": "XRP",
         "category": "Coinbase",
         "value": 532.65,
-        "pct_portfolio": 0.07085077528492446
+        "pct_portfolio": 0.07068591949488862
       },
       {
         "ticker": "CSJZX",
         "name": "C&S RLTY Z",
         "category": "Mutual Fund",
-        "value": 531.97,
-        "pct_portfolio": 0.0707603246565686
+        "value": 527.33,
+        "pct_portfolio": 0.06997992288977681
       },
       {
         "ticker": "AERO",
         "name": "Aerodrome Finance",
         "category": "Coinbase",
         "value": 523.11,
-        "pct_portfolio": 0.06958180617534372
+        "pct_portfolio": 0.06941990302632345
       },
       {
         "ticker": "FDRXX",
         "name": "FID GOV CSH RSRV",
         "category": "Cash",
-        "value": 444.51,
-        "pct_portfolio": 0.059126777662445826
+        "value": 445.77,
+        "pct_portfolio": 0.05915641102644607
       },
       {
         "ticker": "CASH",
         "name": "Cash & Cash Investments",
         "category": "Cash",
-        "value": 391.13,
-        "pct_portfolio": 0.05202640333651085
+        "value": 437.8,
+        "pct_portfolio": 0.05809874318006616
       },
       {
         "ticker": "BTC",
         "name": "Bitcoin",
         "category": "Coinbase",
         "value": 348.16,
-        "pct_portfolio": 0.04631072171820013
+        "pct_portfolio": 0.04620296579618966
       },
       {
         "ticker": "OTHER",
         "name": "Other holdings",
         "category": "Other",
-        "value": 326.84,
-        "pct_portfolio": 0.043474828487984056
+        "value": 327.34,
+        "pct_portfolio": 0.04344002419498139
       }
     ],
     "fund_lookthrough_coverage": [
       {
         "fund": "QPUX",
         "fund_name": "DEFIANCE 2X DAILY LONG PURE QUANT",
-        "fund_value": 2049.6,
+        "fund_value": 2138.43,
         "looked_through_pct": 3.93713,
         "remainder_pct": 96.06287,
         "source": "holdings_cache/yfinance"
@@ -1408,7 +1408,7 @@
       {
         "fund": "FDSCX",
         "fund_name": "FID STK SEL SMCP",
-        "fund_value": 84764.69,
+        "fund_value": 84079.58,
         "looked_through_pct": 12.979969950000001,
         "remainder_pct": 87.02003005,
         "source": "holdings_cache/yfinance"
@@ -1416,7 +1416,7 @@
       {
         "fund": "USERX",
         "fund_name": "USGI GOLD & PREC INVS",
-        "fund_value": 27294.16,
+        "fund_value": 28055.43,
         "looked_through_pct": 34.2445695,
         "remainder_pct": 65.7554305,
         "source": "holdings_cache/yfinance"
@@ -1424,7 +1424,7 @@
       {
         "fund": "AASRX",
         "fund_name": "AMR BCN SMCP VAL R6",
-        "fund_value": 8551.47,
+        "fund_value": 8506.06,
         "looked_through_pct": 7.7938902,
         "remainder_pct": 92.20610980000001,
         "source": "holdings_cache/yfinance"
@@ -1432,7 +1432,7 @@
       {
         "fund": "CSJZX",
         "fund_name": "C&S RLTY Z",
-        "fund_value": 531.97,
+        "fund_value": 527.33,
         "looked_through_pct": 62.688091,
         "remainder_pct": 37.311909,
         "source": "holdings_cache/yfinance"
@@ -1440,7 +1440,7 @@
       {
         "fund": "FXAIX",
         "fund_name": "FID 500 IDX",
-        "fund_value": 36855.83,
+        "fund_value": 36937.05,
         "looked_through_pct": 36.451160300000005,
         "remainder_pct": 63.548839699999995,
         "source": "holdings_cache/yfinance"
@@ -1448,7 +1448,7 @@
       {
         "fund": "FLCNX",
         "fund_name": "FID CONTRAFD K6",
-        "fund_value": 105844.96,
+        "fund_value": 105614.88,
         "looked_through_pct": 43.436561,
         "remainder_pct": 56.563439,
         "source": "holdings_cache/yfinance"
@@ -1456,7 +1456,7 @@
       {
         "fund": "FPADX",
         "fund_name": "FID E/MKT IDX IPRM",
-        "fund_value": 83253.88,
+        "fund_value": 83012.0,
         "looked_through_pct": 30.47063,
         "remainder_pct": 69.52937,
         "source": "holdings_cache/yfinance"
@@ -1464,7 +1464,7 @@
       {
         "fund": "FSMAX",
         "fund_name": "FID EXT MKT IDX",
-        "fund_value": 534.66,
+        "fund_value": 535.27,
         "looked_through_pct": 6.8487399799999995,
         "remainder_pct": 93.15126002,
         "source": "holdings_cache/yfinance"
@@ -1472,7 +1472,7 @@
       {
         "fund": "FSPSX",
         "fund_name": "FID INTL IDX",
-        "fund_value": 75626.04,
+        "fund_value": 75865.36,
         "looked_through_pct": 11.45596025,
         "remainder_pct": 88.54403975,
         "source": "holdings_cache/yfinance"
@@ -1480,7 +1480,7 @@
       {
         "fund": "FLKSX",
         "fund_name": "FID LOW PRICED STK K6",
-        "fund_value": 16696.82,
+        "fund_value": 16716.41,
         "looked_through_pct": 9.35897985,
         "remainder_pct": 90.64102015,
         "source": "holdings_cache/yfinance"
@@ -1488,7 +1488,7 @@
       {
         "fund": "FSRNX",
         "fund_name": "FID RL EST IDX",
-        "fund_value": 33232.16,
+        "fund_value": 32914.07,
         "looked_through_pct": 47.4876395,
         "remainder_pct": 52.5123605,
         "source": "holdings_cache/yfinance"
@@ -1496,7 +1496,7 @@
       {
         "fund": "FSSNX",
         "fund_name": "FID SMCP IDX IPRM",
-        "fund_value": 40693.77,
+        "fund_value": 40461.36,
         "looked_through_pct": 5.28902011,
         "remainder_pct": 94.71097989,
         "source": "holdings_cache/yfinance"
@@ -1504,7 +1504,7 @@
       {
         "fund": "FTKFX",
         "fund_name": "FID TTL BD K6",
-        "fund_value": 173.63,
+        "fund_value": 174.07,
         "looked_through_pct": 0.0,
         "remainder_pct": 100.0,
         "source": "not available"
@@ -1512,7 +1512,7 @@
       {
         "fund": "FXNAX",
         "fund_name": "FID US BD IDX",
-        "fund_value": 889.55,
+        "fund_value": 890.69,
         "looked_through_pct": 0.0,
         "remainder_pct": 100.0,
         "source": "not available"
@@ -1520,7 +1520,7 @@
       {
         "fund": "JEMWX",
         "fund_name": "JPM E/MKT EQ R6",
-        "fund_value": 18902.28,
+        "fund_value": 18729.65,
         "looked_through_pct": 40.3841297,
         "remainder_pct": 59.6158703,
         "source": "holdings_cache/yfinance"
@@ -1533,8 +1533,8 @@
         "source": "FDSCX",
         "source_name": "FID STK SEL SMCP",
         "source_weight_pct": 87.02003005,
-        "value": 73762.25870978934,
-        "pct_portfolio": 9.811533307717538,
+        "value": 73166.0757819138,
+        "pct_portfolio": 9.709586675072334,
         "theme": "Small Cap",
         "is_remainder": 1.0
       },
@@ -1544,8 +1544,8 @@
         "source": "FSPSX",
         "source_name": "FID INTL IDX",
         "source_weight_pct": 88.54403975,
-        "value": 66962.35091895089,
-        "pct_portfolio": 8.907039289418652,
+        "value": 67174.2545148806,
+        "pct_portfolio": 8.91443527038019,
         "theme": "International Developed",
         "is_remainder": 1.0
       },
@@ -1555,8 +1555,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 56.563439,
-        "value": 59869.5493841744,
-        "pct_portfolio": 7.9635858252658,
+        "value": 59739.4082237232,
+        "pct_portfolio": 7.927785601003258,
         "theme": "US Large-Cap Growth",
         "is_remainder": 1.0
       },
@@ -1566,8 +1566,8 @@
         "source": "FPADX",
         "source_name": "FID E/MKT IDX IPRM",
         "source_weight_pct": 69.52937,
-        "value": 57885.898264556,
-        "pct_portfolio": 7.699729222018316,
+        "value": 57717.720624400004,
+        "pct_portfolio": 7.659495266093703,
         "theme": "Emerging Markets",
         "is_remainder": 1.0
       },
@@ -1577,8 +1577,8 @@
         "source": "FSSNX",
         "source_name": "FID SMCP IDX IPRM",
         "source_weight_pct": 94.71097989,
-        "value": 38541.46832118285,
-        "pct_portfolio": 5.126617687365364,
+        "value": 38321.35053282051,
+        "pct_portfolio": 5.0854780788479435,
         "theme": "Small Cap",
         "is_remainder": 1.0
       },
@@ -1589,7 +1589,7 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 32906.73,
-        "pct_portfolio": 4.3771094200538485,
+        "pct_portfolio": 4.366924749122381,
         "theme": "Pension / Retirement Plan",
         "is_remainder": 0.0
       },
@@ -1599,8 +1599,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 32633.42,
-        "pct_portfolio": 4.340754918236289,
+        "value": 30980.84,
+        "pct_portfolio": 4.111347342765465,
         "theme": "Crypto / Tokenization",
         "is_remainder": 0.0
       },
@@ -1610,8 +1610,8 @@
         "source": "FXAIX",
         "source_name": "FID 500 IDX",
         "source_weight_pct": 63.548839699999995,
-        "value": 23421.452326804512,
-        "pct_portfolio": 3.1154192352445276,
+        "value": 23473.06669440885,
+        "pct_portfolio": 3.1150198116195162,
         "theme": "US Broad Market / S&P 500",
         "is_remainder": 1.0
       },
@@ -1621,8 +1621,8 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 65.7554305,
-        "value": 17947.3924093588,
-        "pct_portfolio": 2.3872837070230717,
+        "value": 18447.96877512615,
+        "pct_portfolio": 2.4481585200089855,
         "theme": "Gold / Precious Metals",
         "is_remainder": 1.0
       },
@@ -1632,8 +1632,8 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 52.5123605,
-        "value": 17450.991661136803,
-        "pct_portfolio": 2.3212546487980745,
+        "value": 17283.95509362235,
+        "pct_portfolio": 2.2936867704891757,
         "theme": "Real Estate / REITs",
         "is_remainder": 1.0
       },
@@ -1643,8 +1643,8 @@
         "source": "FLKSX",
         "source_name": "FID LOW PRICED STK K6",
         "source_weight_pct": 90.64102015,
-        "value": 15134.16798060923,
-        "pct_portfolio": 2.013080887484171,
+        "value": 15151.924556456615,
+        "pct_portfolio": 2.0107532514602804,
         "theme": "US Mid/Small Value / Low-Priced Stock",
         "is_remainder": 1.0
       },
@@ -1654,8 +1654,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 11363.46,
-        "pct_portfolio": 1.5115177901421715,
+        "value": 12651.55,
+        "pct_portfolio": 1.6789382235718728,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -1665,8 +1665,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 10.6740706,
-        "value": 11297.965756941761,
-        "pct_portfolio": 1.5028060321446581,
+        "value": 11273.406855305282,
+        "pct_portfolio": 1.496050181934168,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -1676,8 +1676,8 @@
         "source": "JEMWX",
         "source_name": "JPM E/MKT EQ R6",
         "source_weight_pct": 59.6158703,
-        "value": 11268.758728542838,
-        "pct_portfolio": 1.4989210408636435,
+        "value": 11165.84385164395,
+        "pct_portfolio": 1.481775912118279,
         "theme": "Emerging Markets",
         "is_remainder": 1.0
       },
@@ -1687,42 +1687,9 @@
         "source": "FPADX",
         "source_name": "FID E/MKT IDX IPRM",
         "source_weight_pct": 13.33029,
-        "value": 11097.983640252,
-        "pct_portfolio": 1.4762052849174174,
+        "value": 11065.7403348,
+        "pct_portfolio": 1.4684915619206131,
         "theme": "AI / Semiconductors / Compute",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "META",
-        "exposure_name": "Meta Platforms Inc Class A",
-        "source": "FLCNX",
-        "source_name": "FID CONTRAFD K6",
-        "source_weight_pct": 9.65269,
-        "value": 10216.885869424,
-        "pct_portfolio": 1.3590055098963296,
-        "theme": "US Large-Cap Growth / AI",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PLTR",
-        "exposure_name": "PALANTIR TECHNOLOGIES INCLASS A",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 10191.03,
-        "pct_portfolio": 1.355566275137377,
-        "theme": "AI Software / Data Infrastructure",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "HTGC",
-        "exposure_name": "HERCULES CAP INC",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 10058.75,
-        "pct_portfolio": 1.3379709676095632,
-        "theme": "Income / BDCs",
         "is_remainder": 0.0
       },
       {
@@ -1731,9 +1698,42 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 9996.3,
-        "pct_portfolio": 1.329664141520117,
+        "value": 10513.35,
+        "pct_portfolio": 1.3951859790135874,
         "theme": "Space / Satellite Connectivity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "META",
+        "exposure_name": "Meta Platforms Inc Class A",
+        "source": "FLCNX",
+        "source_name": "FID CONTRAFD K6",
+        "source_weight_pct": 9.65269,
+        "value": 10194.676960272,
+        "pct_portfolio": 1.3528961135645965,
+        "theme": "US Large-Cap Growth / AI",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "HTGC",
+        "exposure_name": "HERCULES CAP INC",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 10104.25,
+        "pct_portfolio": 1.3408959017295192,
+        "theme": "Income / BDCs",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "PLTR",
+        "exposure_name": "PALANTIR TECHNOLOGIES INCLASS A",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 9916.4,
+        "pct_portfolio": 1.3159670554381178,
+        "theme": "AI Software / Data Infrastructure",
         "is_remainder": 0.0
       },
       {
@@ -1742,8 +1742,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 9198.8,
-        "pct_portfolio": 1.2235841766468847,
+        "value": 9082.8,
+        "pct_portfolio": 1.205343226486763,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -1754,7 +1754,7 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 9000.0,
-        "pct_portfolio": 1.1971406694157893,
+        "pct_portfolio": 1.1943551590237447,
         "theme": "Private / Startup Investments",
         "is_remainder": 0.0
       },
@@ -1764,8 +1764,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 8683.6,
-        "pct_portfolio": 1.1550545241043275,
+        "value": 7951.92,
+        "pct_portfolio": 1.055268519571566,
         "theme": "Crypto / Tokenization",
         "is_remainder": 0.0
       },
@@ -1775,10 +1775,21 @@
         "source": "AASRX",
         "source_name": "AMR BCN SMCP VAL R6",
         "source_weight_pct": 92.20610980000001,
-        "value": 7884.97781771406,
-        "pct_portfolio": 1.0488252914474285,
+        "value": 7843.10702325388,
+        "pct_portfolio": 1.0408283706665151,
         "theme": "Small Cap Value",
         "is_remainder": 1.0
+      },
+      {
+        "exposure_ticker": "RLAY",
+        "exposure_name": "RELAY THERAPEUTICS INC",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 6930.98,
+        "pct_portfolio": 0.9197835244544881,
+        "theme": "Biotech / AI Drug Discovery",
+        "is_remainder": 0.0
       },
       {
         "exposure_ticker": "XLM",
@@ -1787,19 +1798,8 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 6303.81,
-        "pct_portfolio": 0.8385052581411052,
+        "pct_portfolio": 0.8365542216672746,
         "theme": "Crypto / Tokenization",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "RLAY",
-        "exposure_name": "RELAY THERAPEUTICS INC",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 5999.12,
-        "pct_portfolio": 0.7979767258561832,
-        "theme": "Biotech / AI Drug Discovery",
         "is_remainder": 0.0
       },
       {
@@ -1808,8 +1808,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 5.4516803000000005,
-        "value": 5770.328832862881,
-        "pct_portfolio": 0.7675439246358555,
+        "value": 5757.78560682864,
+        "pct_portfolio": 0.7640934382298276,
         "theme": "US Large-Cap Growth / AI",
         "is_remainder": 0.0
       },
@@ -1819,20 +1819,20 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 5058.38,
-        "pct_portfolio": 0.6728436021510489,
+        "value": 5447.25,
+        "pct_portfolio": 0.7228834599991214,
         "theme": "Uranium / Nuclear / Energy Transition",
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "ARCC",
-        "exposure_name": "ARES CAP CORP EQUITY CLASS EQUIT",
+        "exposure_ticker": "LWLG",
+        "exposure_name": "LIGHTWAVE LOGIC INC",
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 5010.72,
-        "pct_portfolio": 0.6665040772283426,
-        "theme": "Income / BDCs",
+        "value": 5102.0,
+        "pct_portfolio": 0.6770666690376828,
+        "theme": "Direct Stock / Other",
         "is_remainder": 0.0
       },
       {
@@ -1841,9 +1841,20 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 4810.28,
-        "pct_portfolio": 0.6398424243641535,
+        "value": 5063.75,
+        "pct_portfolio": 0.6719906596118318,
         "theme": "Biotech / AI Drug Discovery",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "ARCC",
+        "exposure_name": "ARES CAP CORP EQUITY CLASS EQUIT",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 5049.0,
+        "pct_portfolio": 0.6700332442123207,
+        "theme": "Income / BDCs",
         "is_remainder": 0.0
       },
       {
@@ -1852,8 +1863,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 4.1656699999999995,
-        "value": 4409.1517452319995,
-        "pct_portfolio": 0.5864860968714257,
+        "value": 4399.567371696,
+        "pct_portfolio": 0.583849554206406,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -1863,20 +1874,9 @@
         "source": "FPADX",
         "source_name": "FID E/MKT IDX IPRM",
         "source_weight_pct": 5.26808,
-        "value": 4385.881001504001,
-        "pct_portfolio": 0.583390724235388,
+        "value": 4373.1385696,
+        "pct_portfolio": 0.5803422901919421,
         "theme": "AI / Semiconductors / Compute",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "LWLG",
-        "exposure_name": "LIGHTWAVE LOGIC INC",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 4268.0,
-        "pct_portfolio": 0.5677107085629542,
-        "theme": "Direct Stock / Other",
         "is_remainder": 0.0
       },
       {
@@ -1885,8 +1885,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 3.9842299999999997,
-        "value": 4217.106649808,
-        "pct_portfolio": 0.5609410975276584,
+        "value": 4207.939733424,
+        "pct_portfolio": 0.558419392163995,
         "theme": "US Large-Cap Growth / AI",
         "is_remainder": 0.0
       },
@@ -1896,8 +1896,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 4155.0,
-        "pct_portfolio": 0.5526799423802894,
+        "value": 3805.0,
+        "pct_portfolio": 0.5049468200094831,
         "theme": "Crypto / Tokenization",
         "is_remainder": 0.0
       },
@@ -1907,9 +1907,20 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 3460.5,
-        "pct_portfolio": 0.46030058739037094,
+        "value": 3676.5,
+        "pct_portfolio": 0.4878940824611997,
         "theme": "Uranium / Nuclear / Energy Transition",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "PENG",
+        "exposure_name": "PENGUIN SOLUTIONS INC DE",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 3596.0,
+        "pct_portfolio": 0.4772112390943762,
+        "theme": "Direct Stock / Other",
         "is_remainder": 0.0
       },
       {
@@ -1918,20 +1929,9 @@
         "source": "FPADX",
         "source_name": "FID E/MKT IDX IPRM",
         "source_weight_pct": 3.7629200000000003,
-        "value": 3132.7769012960007,
-        "pct_portfolio": 0.4167082929719796,
+        "value": 3123.6751504000003,
+        "pct_portfolio": 0.41453083677716795,
         "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "MSFT",
-        "exposure_name": "Microsoft Corp",
-        "source": "FLCNX",
-        "source_name": "FID CONTRAFD K6",
-        "source_weight_pct": 2.9001601,
-        "value": 3069.67329778096,
-        "pct_portfolio": 0.40831452739925245,
-        "theme": "US Large-Cap Growth / AI",
         "is_remainder": 0.0
       },
       {
@@ -1940,9 +1940,20 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 3035.0,
-        "pct_portfolio": 0.4037024368529912,
+        "value": 3115.0,
+        "pct_portfolio": 0.41337959115099604,
         "theme": "AI Software / Data Infrastructure",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "MSFT",
+        "exposure_name": "Microsoft Corp",
+        "source": "FLCNX",
+        "source_name": "FID CONTRAFD K6",
+        "source_weight_pct": 2.9001601,
+        "value": 3063.00060942288,
+        "pct_portfolio": 0.4064789533285656,
+        "theme": "US Large-Cap Growth / AI",
         "is_remainder": 0.0
       },
       {
@@ -1952,19 +1963,8 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 2987.31,
-        "pct_portfolio": 0.3973589214613868,
+        "pct_portfolio": 0.39643434556702467,
         "theme": "Crypto / Tokenization",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PENG",
-        "exposure_name": "PENGUIN SOLUTIONS INC DE",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 2836.9,
-        "pct_portfolio": 0.37735204056285027,
-        "theme": "Direct Stock / Other",
         "is_remainder": 0.0
       },
       {
@@ -1973,8 +1973,19 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 2806.0,
-        "pct_portfolio": 0.37324185759785605,
+        "value": 2927.44,
+        "pct_portfolio": 0.3884892296369412,
+        "theme": "AI / Semiconductors / Compute",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "NVDA",
+        "exposure_name": "NVIDIA Corp",
+        "source": "FXAIX",
+        "source_name": "FID 500 IDX",
+        "source_weight_pct": 7.570200000000001,
+        "value": 2796.2085591000005,
+        "pct_portfolio": 0.37107401314082633,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -1984,20 +1995,9 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 8.4333695,
-        "value": 2802.5908456312004,
-        "pct_portfolio": 0.3727883867819442,
+        "value": 2775.7651405886495,
+        "pct_portfolio": 0.368361046211147,
         "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "NVDA",
-        "exposure_name": "NVIDIA Corp",
-        "source": "FXAIX",
-        "source_name": "FID 500 IDX",
-        "source_weight_pct": 7.570200000000001,
-        "value": 2790.060042660001,
-        "pct_portfolio": 0.37112159413113766,
-        "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
       {
@@ -2006,8 +2006,8 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 8.22108,
-        "value": 2732.0424593280004,
-        "pct_portfolio": 0.3634043487369202,
+        "value": 2705.8920259560005,
+        "pct_portfolio": 0.3590884556624179,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2018,7 +2018,7 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 2703.43,
-        "pct_portfolio": 0.3595984444354141,
+        "pct_portfolio": 0.3587617297288402,
         "theme": "Crypto / Tokenization",
         "is_remainder": 0.0
       },
@@ -2028,20 +2028,9 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 2.54771,
-        "value": 2696.622630416,
-        "pct_portfolio": 0.3586929578819974,
+        "value": 2690.760859248,
+        "pct_portfolio": 0.35708045710466807,
         "theme": "US Large-Cap Growth / AI",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "000660.KS",
-        "exposure_name": "SK Hynix Inc",
-        "source": "FPADX",
-        "source_name": "FID E/MKT IDX IPRM",
-        "source_weight_pct": 2.9465599,
-        "value": 2453.1254432741202,
-        "pct_portfolio": 0.3263040261468983,
-        "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
       {
@@ -2050,9 +2039,20 @@
         "source": "FXAIX",
         "source_name": "FID 500 IDX",
         "source_weight_pct": 6.6556305,
-        "value": 2452.98786250815,
-        "pct_portfolio": 0.32628572575464587,
+        "value": 2458.39356560025,
+        "pct_portfolio": 0.32624389310949303,
         "theme": "US Large-Cap Growth",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "000660.KS",
+        "exposure_name": "SK Hynix Inc",
+        "source": "FPADX",
+        "source_name": "FID E/MKT IDX IPRM",
+        "source_weight_pct": 2.9465599,
+        "value": 2445.998304188,
+        "pct_portfolio": 0.324598965952252,
+        "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
       {
@@ -2062,7 +2062,7 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 2242.47,
-        "pct_portfolio": 0.29828355966053605,
+        "pct_portfolio": 0.2975895126062196,
         "theme": "Crypto / Tokenization",
         "is_remainder": 0.0
       },
@@ -2072,8 +2072,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 2.06948,
-        "value": 2190.440278208,
-        "pct_portfolio": 0.29136279344102584,
+        "value": 2185.678818624,
+        "pct_portfolio": 0.2900529747769442,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2083,8 +2083,8 @@
         "source": "JEMWX",
         "source_name": "JPM E/MKT EQ R6",
         "source_weight_pct": 11.463379999999999,
-        "value": 2166.840185064,
-        "pct_portfolio": 0.2882236121849499,
+        "value": 2147.05095217,
+        "pct_portfolio": 0.28492682015678694,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -2094,8 +2094,8 @@
         "source": "FLCNX",
         "source_name": "FID CONTRAFD K6",
         "source_weight_pct": 1.9908700000000001,
-        "value": 2107.235555152,
-        "pct_portfolio": 0.2802952647901575,
+        "value": 2102.6549614560004,
+        "pct_portfolio": 0.27903520009576077,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -2105,8 +2105,8 @@
         "source": "FPADX",
         "source_name": "FID E/MKT IDX IPRM",
         "source_weight_pct": 2.51715,
-        "value": 2095.62504042,
-        "pct_portfolio": 0.2787508848592099,
+        "value": 2089.5365580000002,
+        "pct_portfolio": 0.27729430755733536,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2116,20 +2116,9 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 2012.31,
-        "pct_portfolio": 0.26766868227467633,
+        "value": 2070.83,
+        "pct_portfolio": 0.274811832662349,
         "theme": "Biotech / AI Drug Discovery",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PUREGREEN",
-        "exposure_name": "PureGreen",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 2000.0,
-        "pct_portfolio": 0.2660312598701754,
-        "theme": "Private / Startup Investments",
         "is_remainder": 0.0
       },
       {
@@ -2138,10 +2127,32 @@
         "source": "QPUX",
         "source_name": "DEFIANCE 2X DAILY LONG PURE QUANT",
         "source_weight_pct": 96.06287,
-        "value": 1968.90458352,
-        "pct_portfolio": 0.26189508345899426,
+        "value": 2054.237230941,
+        "pct_portfolio": 0.27260987051478164,
         "theme": "Fund Remainder",
         "is_remainder": 1.0
+      },
+      {
+        "exposure_ticker": "PUREGREEN",
+        "exposure_name": "PureGreen",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 2000.0,
+        "pct_portfolio": 0.26541225756083214,
+        "theme": "Private / Startup Investments",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "CVX",
+        "exposure_name": "CHEVRON CORP NEW",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 1880.9,
+        "pct_portfolio": 0.2496069576230846,
+        "theme": "Energy",
+        "is_remainder": 0.0
       },
       {
         "exposure_ticker": "ASML.AS",
@@ -2149,8 +2160,8 @@
         "source": "FSPSX",
         "source_name": "FID INTL IDX",
         "source_weight_pct": 2.4767302,
-        "value": 1873.0529717440797,
-        "pct_portfolio": 0.24914532093832678,
+        "value": 1878.98028245872,
+        "pct_portfolio": 0.24935219933982944,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -2161,19 +2172,8 @@
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
         "value": 1850.12,
-        "pct_portfolio": 0.24609487725550444,
+        "pct_portfolio": 0.24552226297922336,
         "theme": "Crypto / Tokenization",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "CVX",
-        "exposure_name": "CHEVRON CORP NEW",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 1819.7,
-        "pct_portfolio": 0.2420485417928791,
-        "theme": "Energy",
         "is_remainder": 0.0
       },
       {
@@ -2182,8 +2182,8 @@
         "source": "FXAIX",
         "source_name": "FID 500 IDX",
         "source_weight_pct": 4.91009,
-        "value": 1809.654423247,
-        "pct_portfolio": 0.24071232307301751,
+        "value": 1813.6423983450002,
+        "pct_portfolio": 0.24068146167639426,
         "theme": "US Large-Cap Growth / AI",
         "is_remainder": 0.0
       },
@@ -2193,8 +2193,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 1800.74,
-        "pct_portfolio": 0.23952656544930978,
+        "value": 1807.9,
+        "pct_portfolio": 0.23991941022211422,
         "theme": "AI Software / Data Infrastructure",
         "is_remainder": 0.0
       },
@@ -2204,8 +2204,8 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 5.40427,
-        "value": 1795.9556532320003,
-        "pct_portfolio": 0.23889017255013645,
+        "value": 1778.7652107889999,
+        "pct_portfolio": 0.23605304513308895,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2215,8 +2215,8 @@
         "source": "FDSCX",
         "source_name": "FID STK SEL SMCP",
         "source_weight_pct": 2.0430801,
-        "value": 1731.8105132166902,
-        "pct_portfolio": 0.23035786634372554,
+        "value": 1717.8131671435801,
+        "pct_portfolio": 0.22796433537965033,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2226,8 +2226,8 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 1654.1,
-        "pct_portfolio": 0.22002115347562853,
+        "value": 1640.41,
+        "pct_portfolio": 0.21769246071268233,
         "theme": "Aviation / Mobility",
         "is_remainder": 0.0
       },
@@ -2237,8 +2237,8 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 4.9527798,
-        "value": 1645.9157075836802,
-        "pct_portfolio": 0.21893251466429878,
+        "value": 1630.1614103178601,
+        "pct_portfolio": 0.21633241005050663,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2248,41 +2248,8 @@
         "source": "FDSCX",
         "source_name": "FID STK SEL SMCP",
         "source_weight_pct": 1.9373999999999998,
-        "value": 1642.23110406,
-        "pct_portfolio": 0.21844240480553542,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "O",
-        "exposure_name": "REALTY INCOME CORP REIT",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 1529.0,
-        "pct_portfolio": 0.20338089817074906,
-        "theme": "Real Estate / REITs",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "AAVE",
-        "exposure_name": "Aave",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 1507.47,
-        "pct_portfolio": 0.20051707165824662,
-        "theme": "Crypto / Tokenization",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "KNT.TO",
-        "exposure_name": "K92 Mining Inc",
-        "source": "USERX",
-        "source_name": "USGI GOLD & PREC INVS",
-        "source_weight_pct": 5.322,
-        "value": 1452.5951952,
-        "pct_portfolio": 0.19321786493020968,
+        "value": 1628.9577829199998,
+        "pct_portfolio": 0.21617268131804254,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2292,9 +2259,42 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 1425.0,
-        "pct_portfolio": 0.18954727265749996,
+        "value": 1527.5,
+        "pct_portfolio": 0.20270861171208554,
         "theme": "Biotech / Tools",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "AAVE",
+        "exposure_name": "Aave",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 1507.47,
+        "pct_portfolio": 0.20005050795261378,
+        "theme": "Crypto / Tokenization",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "O",
+        "exposure_name": "REALTY INCOME CORP REIT",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 1497.25,
+        "pct_portfolio": 0.19869425131647794,
+        "theme": "Real Estate / REITs",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "KNT.TO",
+        "exposure_name": "K92 Mining Inc",
+        "source": "USERX",
+        "source_name": "USGI GOLD & PREC INVS",
+        "source_weight_pct": 5.322,
+        "value": 1493.1099846,
+        "pct_portfolio": 0.19814484589965264,
+        "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
       {
@@ -2303,8 +2303,8 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 4.2029499999999995,
-        "value": 1396.73106872,
-        "pct_portfolio": 0.18578706295569905,
+        "value": 1383.361905065,
+        "pct_portfolio": 0.1835806031234776,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2314,8 +2314,8 @@
         "source": "FDSCX",
         "source_name": "FID STK SEL SMCP",
         "source_weight_pct": 1.6401800000000002,
-        "value": 1390.2934924420001,
-        "pct_portfolio": 0.1849307646918257,
+        "value": 1379.0564552440003,
+        "pct_portfolio": 0.1830092435450744,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2325,8 +2325,8 @@
         "source": "FSRNX",
         "source_name": "FID RL EST IDX",
         "source_weight_pct": 4.14949,
-        "value": 1378.9651559840004,
-        "pct_portfolio": 0.18342391888174825,
+        "value": 1365.7660432430002,
+        "pct_portfolio": 0.1812455244185249,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2336,8 +2336,8 @@
         "source": "FDSCX",
         "source_name": "FID STK SEL SMCP",
         "source_weight_pct": 1.6182800000000002,
-        "value": 1371.7300253320002,
-        "pct_portfolio": 0.1824615334204098,
+        "value": 1360.6430272240002,
+        "pct_portfolio": 0.18056566879496333,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2347,8 +2347,8 @@
         "source": "FXAIX",
         "source_name": "FID 500 IDX",
         "source_weight_pct": 3.63431,
-        "value": 1339.455115273,
-        "pct_portfolio": 0.1781684659278136,
+        "value": 1342.4069018550001,
+        "pct_portfolio": 0.178145623193289,
         "theme": "US Large-Cap Growth / AI",
         "is_remainder": 0.0
       },
@@ -2358,20 +2358,9 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 1287.0,
-        "pct_portfolio": 0.17119111572645784,
+        "value": 1306.5,
+        "pct_portfolio": 0.1733805572516136,
         "theme": "Uranium / Nuclear / Energy Transition",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "O",
-        "exposure_name": "Realty Income Corp",
-        "source": "FSRNX",
-        "source_name": "FID RL EST IDX",
-        "source_weight_pct": 3.77496,
-        "value": 1254.5007471360002,
-        "pct_portfolio": 0.16686820713433323,
-        "theme": "Real Estate / REITs",
         "is_remainder": 0.0
       },
       {
@@ -2380,20 +2369,20 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 4.59016,
-        "value": 1252.845614656,
-        "pct_portfolio": 0.16664804864487995,
+        "value": 1287.789125688,
+        "pct_portfolio": 0.17089750955557115,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "LPTH",
-        "exposure_name": "LIGHTPATH TECHNOLOGIES ICLASS A",
-        "source": "direct",
-        "source_name": "Direct holding",
-        "source_weight_pct": 100.0,
-        "value": 1212.4,
-        "pct_portfolio": 0.16126814973330034,
-        "theme": "Direct Stock / Other",
+        "exposure_ticker": "O",
+        "exposure_name": "Realty Income Corp",
+        "source": "FSRNX",
+        "source_name": "FID RL EST IDX",
+        "source_weight_pct": 3.77496,
+        "value": 1242.492976872,
+        "pct_portfolio": 0.16488643299753816,
+        "theme": "Real Estate / REITs",
         "is_remainder": 0.0
       },
       {
@@ -2402,8 +2391,8 @@
         "source": "JEMWX",
         "source_name": "JPM E/MKT EQ R6",
         "source_weight_pct": 6.30776,
-        "value": 1192.310456928,
-        "pct_portfolio": 0.15859592650647014,
+        "value": 1181.4213708400002,
+        "pct_portfolio": 0.15678185658262878,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -2413,30 +2402,8 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 4.118919699999999,
-        "value": 1124.22453318952,
-        "pct_portfolio": 0.1495394344706839,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "GOOGL",
-        "exposure_name": "Alphabet Inc Class A",
-        "source": "FXAIX",
-        "source_name": "FID 500 IDX",
-        "source_weight_pct": 2.99059,
-        "value": 1102.2067663970001,
-        "pct_portfolio": 0.14661072735101302,
-        "theme": "US Large-Cap Growth / AI",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "AZN.L",
-        "exposure_name": "AstraZeneca PLC",
-        "source": "FSPSX",
-        "source_name": "FID INTL IDX",
-        "source_weight_pct": 1.45524,
-        "value": 1100.5403844960001,
-        "pct_portfolio": 0.14638907251273905,
+        "value": 1155.5806331897097,
+        "pct_portfolio": 0.15335263232422836,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2446,30 +2413,41 @@
         "source": "direct",
         "source_name": "Direct holding",
         "source_weight_pct": 100.0,
-        "value": 1098.4,
-        "pct_portfolio": 0.14610436792070033,
+        "value": 1124.2,
+        "pct_portfolio": 0.14918822997494374,
         "theme": "Energy Services",
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "TEX",
-        "exposure_name": "Terex Corp",
-        "source": "FDSCX",
-        "source_name": "FID STK SEL SMCP",
-        "source_weight_pct": 1.25916,
-        "value": 1067.3230706040001,
-        "pct_portfolio": 0.14197065058064315,
-        "theme": "Look-through Equity",
+        "exposure_ticker": "LPTH",
+        "exposure_name": "LIGHTPATH TECHNOLOGIES ICLASS A",
+        "source": "direct",
+        "source_name": "Direct holding",
+        "source_weight_pct": 100.0,
+        "value": 1123.5,
+        "pct_portfolio": 0.14909533568479744,
+        "theme": "Direct Stock / Other",
         "is_remainder": 0.0
       },
       {
-        "exposure_ticker": "SANM",
-        "exposure_name": "Sanmina Corp",
-        "source": "FDSCX",
-        "source_name": "FID STK SEL SMCP",
-        "source_weight_pct": 1.25095,
-        "value": 1060.363889555,
-        "pct_portfolio": 0.14104497072957808,
+        "exposure_ticker": "GOOGL",
+        "exposure_name": "Alphabet Inc Class A",
+        "source": "FXAIX",
+        "source_name": "FID 500 IDX",
+        "source_weight_pct": 2.99059,
+        "value": 1104.6357235950002,
+        "pct_portfolio": 0.1465919305908462,
+        "theme": "US Large-Cap Growth / AI",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "AZN.L",
+        "exposure_name": "AstraZeneca PLC",
+        "source": "FSPSX",
+        "source_name": "FID INTL IDX",
+        "source_weight_pct": 1.45524,
+        "value": 1104.023064864,
+        "pct_portfolio": 0.14651062702239162,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2479,8 +2457,19 @@
         "source": "FSPSX",
         "source_name": "FID INTL IDX",
         "source_weight_pct": 1.4002999999999999,
-        "value": 1058.9914381199999,
-        "pct_portfolio": 0.14086241323739623,
+        "value": 1062.34263608,
+        "pct_portfolio": 0.14097937867255914,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "TEX",
+        "exposure_name": "Terex Corp",
+        "source": "FDSCX",
+        "source_name": "FID STK SEL SMCP",
+        "source_weight_pct": 1.25916,
+        "value": 1058.6964395280002,
+        "pct_portfolio": 0.14049550604337074,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2490,8 +2479,19 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 3.7703599999999997,
-        "value": 1029.0880909759999,
-        "pct_portfolio": 0.13688480067986947,
+        "value": 1057.7907105479999,
+        "pct_portfolio": 0.14037531025671068,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "SANM",
+        "exposure_name": "Sanmina Corp",
+        "source": "FDSCX",
+        "source_name": "FID STK SEL SMCP",
+        "source_weight_pct": 1.25095,
+        "value": 1051.7935060099999,
+        "pct_portfolio": 0.13957944445896836,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2501,8 +2501,8 @@
         "source": "FSPSX",
         "source_name": "FID INTL IDX",
         "source_weight_pct": 1.35349,
-        "value": 1023.590888796,
-        "pct_portfolio": 0.1361535868690162,
+        "value": 1026.8300610640001,
+        "pct_portfolio": 0.1362666423191617,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2512,19 +2512,8 @@
         "source": "FSPSX",
         "source_name": "FID INTL IDX",
         "source_weight_pct": 1.3455499,
-        "value": 1017.5861055939599,
-        "pct_portfolio": 0.13535485684877324,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "PSA",
-        "exposure_name": "Public Storage",
-        "source": "FSRNX",
-        "source_name": "FID RL EST IDX",
-        "source_weight_pct": 2.98283,
-        "value": 991.2588381280001,
-        "pct_portfolio": 0.13185291878231906,
+        "value": 1020.8062756146401,
+        "pct_portfolio": 0.13546724907157331,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2534,8 +2523,19 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 3.60661,
-        "value": 984.393903976,
-        "pct_portfolio": 0.13093977524162786,
+        "value": 1011.849943923,
+        "pct_portfolio": 0.1342786889647024,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "PSA",
+        "exposure_name": "Public Storage",
+        "source": "FSRNX",
+        "source_name": "FID RL EST IDX",
+        "source_weight_pct": 2.98283,
+        "value": 981.7707541809999,
+        "pct_portfolio": 0.13028699613718997,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2545,8 +2545,8 @@
         "source": "FXAIX",
         "source_name": "FID 500 IDX",
         "source_weight_pct": 2.62135,
-        "value": 966.1202997050001,
-        "pct_portfolio": 0.12850910025833628,
+        "value": 968.249360175,
+        "pct_portfolio": 0.128492624282939,
         "theme": "AI / Semiconductors / Compute",
         "is_remainder": 0.0
       },
@@ -2556,52 +2556,8 @@
         "source": "FSPSX",
         "source_name": "FID INTL IDX",
         "source_weight_pct": 1.2666101,
-        "value": 957.88706087004,
-        "pct_portfolio": 0.12741395080829807,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "WFRD",
-        "exposure_name": "Weatherford International PLC Ordinary Shares - New",
-        "source": "FDSCX",
-        "source_name": "FID STK SEL SMCP",
-        "source_weight_pct": 1.10321995,
-        "value": 935.140970635655,
-        "pct_portfolio": 0.124388365287211,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "CBRE",
-        "exposure_name": "CBRE Group Inc Class A",
-        "source": "FSRNX",
-        "source_name": "FID RL EST IDX",
-        "source_weight_pct": 2.79807,
-        "value": 929.8590993120001,
-        "pct_portfolio": 0.12368579384585895,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "NESN.SW",
-        "exposure_name": "Nestle SA",
-        "source": "FSPSX",
-        "source_name": "FID INTL IDX",
-        "source_weight_pct": 1.2127100499999999,
-        "value": 917.1245874970198,
-        "pct_portfolio": 0.12199190473487352,
-        "theme": "Look-through Equity",
-        "is_remainder": 0.0
-      },
-      {
-        "exposure_ticker": "SPXC",
-        "exposure_name": "SPX Technologies Inc",
-        "source": "FDSCX",
-        "source_name": "FID STK SEL SMCP",
-        "source_weight_pct": 1.0787999,
-        "value": 914.4413909553099,
-        "pct_portfolio": 0.12163499765663834,
+        "value": 960.9183121613601,
+        "pct_portfolio": 0.12751974928114548,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2611,8 +2567,41 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 3.31222,
-        "value": 904.042626352,
-        "pct_portfolio": 0.12025179943238237,
+        "value": 929.257563546,
+        "pct_portfolio": 0.12331817389811114,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "WFRD",
+        "exposure_name": "Weatherford International PLC Ordinary Shares - New",
+        "source": "FDSCX",
+        "source_name": "FID STK SEL SMCP",
+        "source_weight_pct": 1.10321995,
+        "value": 927.58270043621,
+        "pct_portfolio": 0.12309590929857378,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "CBRE",
+        "exposure_name": "CBRE Group Inc Class A",
+        "source": "FSRNX",
+        "source_name": "FID RL EST IDX",
+        "source_weight_pct": 2.79807,
+        "value": 920.958718449,
+        "pct_portfolio": 0.12221686629193994,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "NESN.SW",
+        "exposure_name": "Nestle SA",
+        "source": "FSPSX",
+        "source_name": "FID INTL IDX",
+        "source_weight_pct": 1.2127100499999999,
+        "value": 920.0268451886799,
+        "pct_portfolio": 0.12209320099904888,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       },
@@ -2622,8 +2611,19 @@
         "source": "USERX",
         "source_name": "USGI GOLD & PREC INVS",
         "source_weight_pct": 3.273,
-        "value": 893.3378568,
-        "pct_portfolio": 0.11882789776711317,
+        "value": 918.2542239,
+        "pct_portfolio": 0.12185796329003441,
+        "theme": "Look-through Equity",
+        "is_remainder": 0.0
+      },
+      {
+        "exposure_ticker": "SPXC",
+        "exposure_name": "SPX Technologies Inc",
+        "source": "FDSCX",
+        "source_name": "FID STK SEL SMCP",
+        "source_weight_pct": 1.0787999,
+        "value": 907.05042496042,
+        "pct_portfolio": 0.1203711505051286,
         "theme": "Look-through Equity",
         "is_remainder": 0.0
       }

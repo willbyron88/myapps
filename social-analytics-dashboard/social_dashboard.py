@@ -39,6 +39,42 @@ MIN_ENGAGEMENT_VIEWS = 5
 WPP_DB_FILE = "wpp.db"
 POST_DAYS = ["Monday", "Tuesday", "Thursday", "Saturday", "Sunday"]
 
+# Tables beyond `content` that contain posted URLs for enrichment matching.
+# Add a new entry here whenever a new table with content URLs is created.
+# Fields:
+#   table      — table name in wpp.db
+#   url_col    — column holding the post URL
+#   label_col  — column to use as book_or_offer (None → use `label`)
+#   label      — static book_or_offer fallback when label_col is None
+#   pillar_col — column holding the content pillar (None → empty string)
+#   filter     — extra WHERE clause fragment (no leading AND)
+EXTRA_URL_TABLES = [
+    {
+        "table":      "pm_posts",
+        "url_col":    "instagram_url",
+        "label_col":  None,
+        "label":      "Prehistoric Memories",
+        "pillar_col": "pillar",
+        "filter":     "posted = 'Y'",
+    },
+    {
+        "table":      "tpl_posts",
+        "url_col":    "instagram_url",
+        "label_col":  None,
+        "label":      "The Protocol Lab",
+        "pillar_col": "pillar",
+        "filter":     "posted = 'Y'",
+    },
+    {
+        "table":      "gumroad_posts",
+        "url_col":    "post_url",
+        "label_col":  "product_name",
+        "label":      "Gumroad",
+        "pillar_col": None,
+        "filter":     "posted = 'Y'",
+    },
+]
+
 # Human-readable display names for every platform key.
 # Used in table cells, filter dropdowns, and cards throughout the dashboard.
 PLATFORM_LABELS = {
@@ -52,6 +88,349 @@ PLATFORM_LABELS = {
     "FB-Image-WillByron":           "Facebook Images (Will Byron)",
     "X":                            "X",
 }
+
+
+# ============================================================
+# Platform Follower Fetcher
+# ============================================================
+
+def gather_intelligence_signals(df, plan, gumroad_data, trends_data):
+    """
+    Aggregate all intelligence signals into a single ranked structure.
+    Consumed by both Key Decisions (CEO tab) and the AI briefing prompt.
+
+    Sources cross-referenced:
+      - Shorts engagement per pillar      (from plan.pillar_engagement)
+      - Google Trends direction + score   (from trends_data)
+      - KDP revenue per book              (from wpp.db kdp_snapshots)
+      - Winner posts per book             (from df content_signal)
+      - Publishing queue + pillar map     (from wpp.db config)
+      - Gumroad products + guides         (from gumroad_data + config)
+
+    Returns dict with keys:
+      write_next, post_priority, gumroad_next, revenue_alerts, re_engage,
+      pillar_intel, kdp_by_book
+    """
+    import sqlite3 as _sq
+    import json as _j
+
+    def _sf(v):
+        try: return float(v or 0)
+        except: return 0.0
+
+    def _si(v):
+        try: return int(float(v or 0))
+        except: return 0
+
+    # Pillar name → trends key mapping
+    PILLAR_TREND_MAP = {
+        "Sleep":                    "Sleep",
+        "Sleep Architecture":       "Sleep",
+        "Training":                 "Training",
+        "Muscle & Strength":        "Muscle",
+        "Muscle":                   "Muscle",
+        "Cardiovascular & Zone 2":  "Zone 2",
+        "Zone 2":                   "Zone 2",
+        "Nutrition":                "Nutrition",
+        "Fueling":                  "Fueling",
+        "Hormone & Metabolism":     "Hormones",
+        "Hormones":                 "Hormones",
+        "Cortisol":                 "Cortisol",
+        "Brain & Cognition":        "Cognition",
+        "Cognition":                "Cognition",
+        "Bloodwork":                "Bloodwork",
+        "Biomarkers":               "Bloodwork",
+        "Recovery":                 "Recovery",
+        "Joints":                   "Joints",
+        "Bone":                     "Bone",
+        "Mindset":                  "Mindset",
+        "Cholesterol":              "Cholesterol",
+    }
+
+    pillar_eng = plan.get("pillar_engagement", {}) if plan else {}
+    td         = trends_data or {}
+
+    # ── Load DB config ────────────────────────────────────────────
+    try:
+        conn = _sq.connect(WPP_DB_FILE)
+        cur  = conn.cursor()
+        def _cfg(key):
+            cur.execute("SELECT value FROM config WHERE key=?", (key,))
+            r = cur.fetchone()
+            return _j.loads(r[0]) if r else []
+        pub_queue       = _cfg("publishing_queue")
+        pillar_book_map = _cfg("pillar_book_map")
+        gumroad_guides  = _cfg("gumroad_guides")
+        kdp_by_book = {}
+        for _, title, rev in cur.execute("""
+            SELECT k.book_key, b.title, SUM(k.royalties_usd)
+            FROM kdp_snapshots k JOIN books b ON k.book_key = b.book_key
+            GROUP BY k.book_key
+        """).fetchall():
+            kdp_by_book[title] = _sf(rev)
+        conn.close()
+    except Exception:
+        pub_queue = []; pillar_book_map = []; gumroad_guides = []; kdp_by_book = {}
+
+    slot_to_book   = {b.get("slot"): b for b in pub_queue}
+    pillar_to_slots = {}
+    for entry in pillar_book_map:
+        for slot in entry.get("maps_to_slots", []):
+            pillar_to_slots.setdefault(entry["pillar"], []).append(slot)
+
+    # ── Build pillar intelligence ─────────────────────────────────
+    # Each pillar gets a combined score from Shorts engagement + Google Trends
+    pillar_intel = {}
+    for pillar, eng in sorted(pillar_eng.items(), key=lambda x: x[1], reverse=True):
+        trend_key = PILLAR_TREND_MAP.get(pillar)
+        t = td.get(trend_key, {}) if trend_key else {}
+        trend_dir   = t.get("direction", "—")
+        trend_score = _si(t.get("score", 0))
+
+        # Weighted score
+        score = 0
+        if eng >= 20:  score += 40
+        elif eng >= 10: score += 25
+        elif eng >= 5:  score += 10
+        if trend_dir == "rising":  score += 30
+        elif trend_dir == "flat":  score += 10
+        if trend_score >= 70:  score += 20
+        elif trend_score >= 40: score += 10
+
+        # Evidence list (tag, value, color)
+        ev = []
+        if eng >= 20:
+            ev.append(("Shorts", f"{eng}% eng", "#FF6B6B"))
+        elif eng >= 10:
+            ev.append(("Shorts", f"{eng}% eng", "#C9A84C"))
+        else:
+            ev.append(("Shorts", f"{eng}% eng", "#6B7A8D"))
+        if trend_dir == "rising":
+            ev.append(("Google", "Rising ↑", "#5CFF7E"))
+        elif trend_dir == "falling":
+            ev.append(("Google", "Falling ↓", "#FF6B6B"))
+        elif trend_dir == "flat":
+            ev.append(("Google", "Flat →", "#AAB4C0"))
+
+        if score >= 55:   confidence = "HIGH"
+        elif score >= 30: confidence = "MEDIUM"
+        else:             confidence = "LOW"
+
+        pillar_intel[pillar] = {
+            "eng": eng, "trend_dir": trend_dir, "trend_score": trend_score,
+            "score": score, "confidence": confidence, "evidence": ev,
+        }
+
+    # ── Winner books from df ──────────────────────────────────────
+    winner_books = set()
+    if "content_signal" in df.columns and "book_or_offer" in df.columns:
+        winner_books = set(
+            df[df["content_signal"].str.contains("Winner", na=False)]["book_or_offer"]
+            .dropna().unique()
+        )
+
+    # ── SIGNAL 1: Write Next ──────────────────────────────────────
+    write_next = []
+    seen_slots = set()
+    for pillar, intel in sorted(pillar_intel.items(), key=lambda x: x[1]["score"], reverse=True):
+        if intel["score"] < 15 or len(write_next) >= 2:
+            break
+        for slot in pillar_to_slots.get(pillar, []):
+            if slot in seen_slots:
+                continue
+            book = slot_to_book.get(slot, {})
+            if book.get("status") not in ("planned", "idea"):
+                continue
+            seen_slots.add(slot)
+            eng, tdir, conf = intel["eng"], intel["trend_dir"], intel["confidence"]
+            if conf == "HIGH":
+                trend_str = " + Google search rising" if tdir == "rising" else ""
+                action = (f"{eng}% Shorts engagement{trend_str} — strong signal. "
+                          f"Run Publisher Rocket to validate keywords, then write.")
+            elif tdir == "rising":
+                action = (f"Google search rising for this topic. Shorts at {eng}% eng. "
+                          f"Run Rocket to confirm demand before writing.")
+            else:
+                action = (f"Shorts engagement at {eng}%. "
+                          f"Run Rocket to validate search demand before committing.")
+
+            ev = list(intel["evidence"])
+            book_rev = kdp_by_book.get(book.get("title",""), 0)
+            ev.append(("KDP", f"${book_rev:.0f} earned" if book_rev > 0 else "No book yet", "#6B7A8D"))
+
+            write_next.append({
+                "label": "Write Next", "color": "#C9A84C",
+                "title": book.get("title", f"Slot {slot}"),
+                "action": action, "evidence": ev,
+                "confidence": conf, "score": intel["score"], "url": "",
+            })
+            break
+
+    # ── SIGNAL 2: Post Priority ────────────────────────────────────
+    post_priority = []
+    if plan and plan.get("schedule"):
+        for s in plan["schedule"][:3]:
+            book   = s["book"]
+            pillar = s.get("pillar", "")
+            intel  = pillar_intel.get(pillar, {})
+            ev = []
+            if book in winner_books:
+                ev.append(("Content", "Winner posts", "#5CFF7E"))
+            rev = kdp_by_book.get(book, 0)
+            if rev > 0:
+                ev.append(("KDP", f"${rev:.0f} earned", "#C9A84C"))
+            if intel.get("trend_dir") == "rising":
+                ev.append(("Google", "Rising ↑", "#5CFF7E"))
+            peng = intel.get("eng", 0)
+            if peng >= 10:
+                ev.append(("Pillar", f"{peng}% eng", "#C9A84C"))
+            if ev:
+                post_priority.append({
+                    "label": "Post Now", "color": "#5CFF7E",
+                    "title": f"{book} — Short #{s['short_num']}",
+                    "action": s.get("topic", ""),
+                    "evidence": ev,
+                    "confidence": "HIGH" if len(ev) >= 3 else "MEDIUM",
+                    "url": "",
+                })
+
+    # ── SIGNAL 3: Gumroad Next ────────────────────────────────────
+    gumroad_next = []
+    for g in gumroad_guides:
+        if g.get("status") != "planned" or gumroad_next:
+            continue
+        title_lower = g.get("title", "").lower()
+        best_pillar, best_score = None, 0
+        for pillar, intel in pillar_intel.items():
+            words = [w for w in pillar.lower().split() if len(w) > 3]
+            if any(w in title_lower for w in words) and intel["score"] > best_score:
+                best_score = intel["score"]
+                best_pillar = pillar
+        if best_pillar and best_score >= 20:
+            intel = pillar_intel[best_pillar]
+            ev = list(intel["evidence"])
+            ev.append(("Price", g.get("price", ""), "#AAB4C0"))
+            gumroad_next.append({
+                "label": "Gumroad Next", "color": "#E8D5A3",
+                "title": g.get("title", ""),
+                "action": (f'Pillar "{best_pillar}" has signal — '
+                           f'activate this product at {g.get("price","")}'),
+                "evidence": ev, "confidence": intel["confidence"],
+                "score": best_score, "url": "",
+            })
+
+    # ── SIGNAL 4: Revenue Alerts ──────────────────────────────────
+    revenue_alerts = []
+    total_kdp = sum(kdp_by_book.values())
+    if total_kdp > 0:
+        top_b, top_rev = max(kdp_by_book.items(), key=lambda x: x[1])
+        pct = top_rev / total_kdp * 100
+        if pct > 65:
+            revenue_alerts.append({
+                "label": "Risk", "color": "#FF6B6B",
+                "title": f"{top_b} = {pct:.0f}% of KDP revenue",
+                "action": "High concentration — spread content effort across other books",
+                "evidence": [("KDP", f"${top_rev:.0f} of ${total_kdp:.0f}", "#FF6B6B")],
+                "confidence": "HIGH", "url": "",
+            })
+
+    # ── SIGNAL 5: Re-engage ───────────────────────────────────────
+    re_engage = []
+    if plan and plan.get("books_no_recent"):
+        for b in plan["books_no_recent"]:
+            rev = kdp_by_book.get(b, 0)
+            if rev > 0:
+                re_engage.append({
+                    "label": "Re-engage", "color": "#FFB347",
+                    "title": b,
+                    "action": "Silent 30+ days but earning KDP revenue — schedule content now",
+                    "evidence": [
+                        ("KDP", f"${rev:.0f} earned", "#C9A84C"),
+                        ("Status", "Silent 30d+", "#FFB347"),
+                    ],
+                    "confidence": "HIGH", "url": "",
+                })
+
+    print(f"Intelligence signals: {len(write_next)} write-next, "
+          f"{len(post_priority)} post-priority, "
+          f"{len(gumroad_next)} gumroad, "
+          f"{len(re_engage)} re-engage.")
+
+    return {
+        "write_next":     write_next,
+        "post_priority":  post_priority,
+        "gumroad_next":   gumroad_next,
+        "revenue_alerts": revenue_alerts,
+        "re_engage":      re_engage,
+        "pillar_intel":   pillar_intel,
+        "kdp_by_book":    kdp_by_book,
+    }
+
+
+def format_signals_for_ai(intel):
+    """Format intelligence signals as plain text for the AI briefing prompt."""
+    lines = ["RANKED INTELLIGENCE SIGNALS (pre-computed — reference these):"]
+    for sig in (intel.get("write_next", []) +
+                intel.get("post_priority", []) +
+                intel.get("gumroad_next", []) +
+                intel.get("revenue_alerts", []) +
+                intel.get("re_engage", [])):
+        ev_str = " | ".join(f"{t}: {v}" for t, v, _ in sig.get("evidence", []))
+        lines.append(
+            f"  [{sig['label']} — {sig['confidence']}] {sig['title']}"
+            + (f"\n    Evidence: {ev_str}" if ev_str else "")
+            + (f"\n    Action: {sig['action']}" if sig.get("action") else "")
+        )
+    if len(lines) == 1:
+        lines.append("  No strong signals yet — more data needed.")
+    return "\n".join(lines)
+
+
+def fetch_platform_followers():
+    """Lightweight fetch of current follower/subscriber counts.
+    Returns dict: {platform_key: count}
+    Fails silently per platform — never blocks the dashboard.
+    """
+    import requests as _req
+    followers = {}
+
+    # YouTube subscriber count
+    try:
+        yt_key = os.getenv("YOUTUBE_API_KEY")
+        yt_ch  = os.getenv("YOUTUBE_CHANNEL_ID")
+        if yt_key and yt_ch:
+            r = _req.get("https://www.googleapis.com/youtube/v3/channels",
+                params={"part": "statistics", "id": yt_ch, "key": yt_key}, timeout=8)
+            items = r.json().get("items", [])
+            if items:
+                followers["YouTube"] = int(items[0].get("statistics", {}).get("subscriberCount", 0))
+    except Exception:
+        pass
+
+    # Facebook page followers
+    fb_pages = [
+        ("FB_PAGE_ID_WPP", "FB_PAGE_ACCESS_TOKEN_WPP", "Facebook"),
+        ("FB_PAGE_ID_TPL", "FB_PAGE_ACCESS_TOKEN_TPL", "FB-Image-TheProtocolLab"),
+        ("FB_PAGE_ID_PM",  "FB_PAGE_ACCESS_TOKEN_PM",  "FB-Image-PrehistoricMemories"),
+        ("FB_PAGE_ID_WB",  "FB_PAGE_ACCESS_TOKEN_WB",  "Facebook-WB"),
+    ]
+    for id_env, tok_env, plat_key in fb_pages:
+        try:
+            pid = os.getenv(id_env)
+            tok = os.getenv(tok_env)
+            if not pid or not tok:
+                continue
+            r = _req.get(f"https://graph.facebook.com/v25.0/{pid}",
+                params={"fields": "followers_count", "access_token": tok}, timeout=8)
+            data = r.json()
+            if "followers_count" in data:
+                followers[plat_key] = int(data["followers_count"])
+        except Exception:
+            pass
+
+    total = sum(followers.values())
+    print(f"Platform followers fetched: {len(followers)} platforms, {total:,} total.")
+    return followers
 
 
 # ============================================================
@@ -250,48 +629,69 @@ def load_wpp_content():
                     "on_x":              bool(x_url),
                 })
 
-    # Also load PM and TPL instagram_urls so cross-posted images get pillar enrichment.
-    # PM posts to @will.byron88, TPL posts to @willpowerprotocols — tokens already in .env.
+    # Load URLs from all EXTRA_URL_TABLES for enrichment matching.
+    # To add a new table, add an entry to EXTRA_URL_TABLES at the top of this file.
     try:
         import sqlite3 as _sqlite3
         _conn = _sqlite3.connect(db_path)
-        _brand_map = [
-            ("pm_posts",  "Prehistoric Memories", "@will.byron88"),
-            ("tpl_posts", "The Protocol Lab",     "@willpowerprotocols"),
-        ]
-        for _table, _brand, _ig_acct in _brand_map:
+        for _cfg in EXTRA_URL_TABLES:
+            _table     = _cfg["table"]
+            _url_col   = _cfg["url_col"]
+            _label_col = _cfg.get("label_col")
+            _label     = _cfg.get("label", "")
+            _pillar_col = _cfg.get("pillar_col")
+            _filter    = _cfg.get("filter", "1=1")
+
             _cols = [r[1] for r in _conn.execute(f"PRAGMA table_info({_table})").fetchall()]
-            if "instagram_url" not in _cols:
+            if _url_col not in _cols:
                 continue
-            _ig_rows = _conn.execute(
-                f"SELECT instagram_url, pillar FROM {_table} "
-                f"WHERE instagram_url IS NOT NULL AND instagram_url != '' AND posted='Y'"
+
+            _select_cols = [_url_col]
+            if _label_col and _label_col in _cols:
+                _select_cols.append(_label_col)
+            else:
+                _label_col = None
+            if _pillar_col and _pillar_col in _cols:
+                _select_cols.append(_pillar_col)
+            else:
+                _pillar_col = None
+
+            _sel = ", ".join(_select_cols)
+            _rows = _conn.execute(
+                f"SELECT {_sel} FROM {_table} "
+                f"WHERE {_url_col} IS NOT NULL AND {_url_col} != '' AND {_filter}"
             ).fetchall()
+
             _added = 0
-            for _ig_url, _pillar in _ig_rows:
-                _ig_url = str(_ig_url).strip()
-                if not _ig_url:
+            for _row in _rows:
+                _url_val = str(_row[0]).strip()
+                if not _url_val:
                     continue
+                _idx = 1
+                _book = str(_row[_idx]).strip() if _label_col else _label
+                if _label_col:
+                    _idx += 1
+                _pillar = str(_row[_idx]).strip() if _pillar_col else ""
                 enrich_rows.append({
-                    "url":               _ig_url,
-                    "url_normalized":    normalize_url(_ig_url),
-                    "book_or_offer":     _brand,
-                    "content_type":      "Image",
-                    "content_pillar":    str(_pillar or ""),
+                    "url":               _url_val,
+                    "url_normalized":    normalize_url(_url_val),
+                    "book_or_offer":     _book or _label,
+                    "content_type":      "",
+                    "content_pillar":    _pillar,
                     "campaign":          "",
                     "short_num":         "",
                     "episode_num":       "",
-                    "account":           _ig_acct,
+                    "account":           "",
                     "x_account":         "",
-                    "already_crossposted": True,
+                    "already_crossposted": False,
                     "on_x":              False,
                 })
                 _added += 1
             if _added:
-                print(f"  -> {_brand} IG cross-posts: {_added} enrichment URLs added")
+                print(f"  -> {_table}: {_added} enrichment URLs added")
         _conn.close()
     except Exception as _e:
-        print(f"Could not load PM/TPL instagram_urls: {_e}")
+        print(f"Could not load extra URL tables: {_e}")
 
     content_map = pd.DataFrame(enrich_rows) if enrich_rows else pd.DataFrame()
     print(f"  -> Enrichment URLs: {len(content_map)}")
@@ -461,7 +861,7 @@ def add_content_intelligence(df):
 # Monday Action Plan Builder
 # ============================================================
 
-def generate_monday_plan(df, queue_df, ep_queue=None):
+def generate_monday_plan(df, queue_df, ep_queue=None, gumroad_data=None):
     has_content_map = (
         "book_or_offer" in df.columns
         and df["book_or_offer"].ne("—").any()
@@ -546,6 +946,49 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
             winners = df[df["content_signal"].str.contains("Winner", na=False)]
             winner_books = set(winners["book_or_offer"].dropna().unique())
 
+        # KDP revenue per book title (for scoring)
+        kdp_by_book = {}
+        try:
+            import sqlite3 as _sq2
+            _c2 = _sq2.connect(WPP_DB_FILE)
+            for bk, title, rev in _c2.execute("""
+                SELECT k.book_key, b.title, SUM(k.royalties_usd)
+                FROM kdp_snapshots k JOIN books b ON k.book_key = b.book_key
+                GROUP BY k.book_key
+            """).fetchall():
+                kdp_by_book[title] = float(rev or 0)
+            _c2.close()
+        except Exception:
+            pass
+
+        # Live Gumroad product titles (for scoring — posting drives sales)
+        gumroad_live_titles = set()
+        if gumroad_data:
+            for p in gumroad_data.get("products", []):
+                gumroad_live_titles.add(p.get("name", "").lower())
+
+        # Book → avg pillar engagement (for scoring)
+        book_pillar_eng = {}
+        if has_content_map and "book_or_offer" in df.columns:
+            for _, row in df[df["book_or_offer"].ne("—")].iterrows():
+                pillar = str(row.get("content_pillar", ""))
+                eng    = pillar_engagement.get(pillar, 0)
+                book   = str(row.get("book_or_offer", ""))
+                if book and eng > book_pillar_eng.get(book, 0):
+                    book_pillar_eng[book] = eng
+
+        def _priority_score(book_name):
+            score = 0
+            if book_name in winner_books:                           score += 30
+            if kdp_by_book.get(book_name, 0) > 5:                  score += 20
+            elif kdp_by_book.get(book_name, 0) > 0:                score += 10
+            if any(book_name.lower() in t or t in book_name.lower()
+                   for t in gumroad_live_titles):                   score += 15
+            peng = book_pillar_eng.get(book_name, 0)
+            if peng >= 20:   score += 15
+            elif peng >= 10: score += 8
+            return score
+
         book_groups = {}
         for _, row in unposted.iterrows():
             book = str(row.get("book_or_offer", "Unknown"))
@@ -555,7 +998,7 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
 
         sorted_books = sorted(
             book_groups.keys(),
-            key=lambda b: (0 if b in winner_books else 1, b),
+            key=lambda b: (-_priority_score(b), b),
         )
 
         last_book = None
@@ -581,11 +1024,26 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
                 break
 
             item = book_groups[chosen_book].pop(0)
-            note = "⭐ Winner book" if chosen_book in winner_books else ""
-            account = str(item.get("account", "@willpowerprotocols"))
+            account   = str(item.get("account", "@willpowerprotocols"))
             x_account = str(item.get("x_account", "@wpprotocols"))
-            pillar = str(item.get("content_pillar", ""))
+            pillar    = str(item.get("content_pillar", ""))
             pillar_eng = pillar_engagement.get(pillar)
+
+            # Build signal tags for this item
+            signals = []
+            if chosen_book in winner_books:
+                signals.append(("Winner posts", "#5CFF7E"))
+            kdp_rev = kdp_by_book.get(chosen_book, 0)
+            if kdp_rev > 0:
+                signals.append((f"${kdp_rev:.0f} KDP", "#C9A84C"))
+            if any(chosen_book.lower() in t or t in chosen_book.lower()
+                   for t in gumroad_live_titles):
+                signals.append(("Gumroad live", "#E8D5A3"))
+            peng = book_pillar_eng.get(chosen_book, 0)
+            if peng >= 20:
+                signals.append((f"Pillar {peng}% eng", "#FF6B6B"))
+            elif peng >= 10:
+                signals.append((f"Pillar {peng}% eng", "#FFB347"))
 
             schedule.append({
                 "day": day,
@@ -596,7 +1054,8 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
                 "pillar_eng": pillar_eng,
                 "account": account,
                 "x_account": x_account,
-                "note": note,
+                "note": "",
+                "signals": signals,
             })
 
             last_book = chosen_book
@@ -657,21 +1116,116 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
             ("pm_posts",  "Prehistoric Memories", pm_pillar_eng),
         ]:
             _cur.execute(
-                f"SELECT post_id, pillar, topic, post_type FROM {_table} WHERE posted='N' ORDER BY post_id"
+                f"SELECT post_id, pillar, topic, post_type, post_date FROM {_table} WHERE posted='N' ORDER BY post_id"
             )
-            for pid, pillar, topic, ptype in _cur.fetchall():
-                pillar = pillar or "—"
+            for pid, pillar, topic, ptype, pdate in _cur.fetchall():
+                pillar    = pillar or "—"
+                pdata     = _peng.get(pillar)
+                img_eng   = pdata["eng"]   if pdata else 0.0
+                img_reach = pdata["reach"] if pdata else 0
+                img_posts = pdata["posts"] if pdata else 0
+
+                # Cross-signal: does this pillar also win in Shorts?
+                shorts_eng = pillar_engagement.get(pillar, 0.0)
+
+                # Build signal badges
+                img_signals = []
+                if img_eng >= 1.5 and img_reach >= 100:
+                    img_signals.append(("Hot pillar", "#5CFF7E"))
+                elif img_eng >= 0.8:
+                    img_signals.append((f"{img_eng}% eng", "#C9A84C"))
+                if img_reach >= 150:
+                    img_signals.append((f"{img_reach} avg reach", "#C9A84C"))
+                elif img_reach >= 50:
+                    img_signals.append((f"{img_reach} reach", "#AAB4C0"))
+                if shorts_eng >= 20:
+                    img_signals.append((f"Shorts EXCEPTIONAL {shorts_eng}%", "#FF6B6B"))
+                elif shorts_eng >= 10:
+                    img_signals.append((f"Shorts HOT {shorts_eng}%", "#FFB347"))
+                if img_posts == 0 and shorts_eng >= 10:
+                    img_signals.append(("Build data now", "#60A5FA"))
+                elif img_posts == 0:
+                    img_signals.append(("No data yet", "#6B7A8D"))
+
+                # Priority score
+                score = 0
+                if img_eng >= 1.5:   score += 30
+                elif img_eng >= 0.8: score += 15
+                if img_reach >= 150: score += 20
+                elif img_reach >= 50: score += 10
+                if shorts_eng >= 20: score += 25
+                elif shorts_eng >= 10: score += 15
+
                 unposted_images.append({
-                    "brand":     _brand,
-                    "post_id":   pid,
-                    "pillar":    pillar,
-                    "topic":     topic or "—",
-                    "type":      ptype or "image",
-                    "pillar_eng": _peng.get(pillar),
+                    "content_type": "Image",
+                    "brand":        _brand,
+                    "post_id":      pid,
+                    "pillar":       pillar,
+                    "topic":        topic or "—",
+                    "type":         ptype or "image",
+                    "post_date":    pdate or "",
+                    "pillar_eng":   pdata,
+                    "img_eng":      img_eng,
+                    "img_reach":    img_reach,
+                    "img_posts":    img_posts,
+                    "shorts_eng":   shorts_eng,
+                    "img_signals":  img_signals,
+                    "score":        score,
                 })
+
         _conn.close()
     except Exception:
         pass
+
+    # ── Build unified priority-sorted list across all content types ───
+    all_unposted = []
+
+    # Shorts — iterate all unposted rows (not just the 5-day schedule)
+    if has_queue:
+        for _, row in unposted.iterrows():
+            book   = str(row.get("book_or_offer", "Unknown"))
+            score  = _priority_score(book)
+            pillar = str(row.get("content_pillar", ""))
+            signals = []
+            if book in winner_books:
+                signals.append(("Winner posts", "#5CFF7E"))
+            kdp_rev = kdp_by_book.get(book, 0)
+            if kdp_rev > 0:
+                signals.append((f"${kdp_rev:.0f} KDP", "#C9A84C"))
+            if any(book.lower() in t or t in book.lower() for t in gumroad_live_titles):
+                signals.append(("Gumroad live", "#E8D5A3"))
+            peng = book_pillar_eng.get(book, 0)
+            if peng >= 20:
+                signals.append((f"Pillar {peng}% eng", "#FF6B6B"))
+            elif peng >= 10:
+                signals.append((f"Pillar {peng}% eng", "#FFB347"))
+            all_unposted.append({
+                "content_type": "Short",
+                "score":        score,
+                "book":         book,
+                "short_num":    str(row.get("short_num", "?")),
+                "topic":        str(row.get("script_topic", "")),
+                "pillar":       pillar,
+                "pillar_eng":   pillar_engagement.get(pillar),
+                "account":      str(row.get("account", "@willpowerprotocols")),
+                "x_account":    str(row.get("x_account", "@wpprotocols")),
+                "signals":      signals,
+            })
+
+    # Episodes
+    for ep in episode_items:
+        ep_score = _priority_score(ep["book"]) if has_queue else 0
+        all_unposted.append({**ep, "content_type": "Episode", "score": ep_score})
+
+    # Images
+    all_unposted.extend(unposted_images)
+
+    # Sort by score desc, then stable secondary keys
+    all_unposted.sort(key=lambda x: (
+        -x["score"],
+        x.get("brand", x.get("book", "")),
+        x.get("post_id", x.get("short_num", 0)),
+    ))
 
     return {
         "schedule": schedule,
@@ -686,6 +1240,7 @@ def generate_monday_plan(df, queue_df, ep_queue=None):
         "books_no_recent": books_no_recent,
         "episode_items": episode_items,
         "unposted_images": unposted_images,
+        "all_unposted": all_unposted,
         "tpl_pillar_eng": tpl_pillar_eng,
         "pm_pillar_eng":  pm_pillar_eng,
     }
@@ -699,7 +1254,14 @@ def build_monday_plan_html(plan):
         for i, s in enumerate(plan["schedule"], 1):
             note_html = (
                 f' <span style="color:#C9A84C;font-size:11px;font-weight:bold">{s["note"]}</span>'
-                if s["note"] else ""
+                if s.get("note") else ""
+            )
+            signal_badges = "".join(
+                f'<span style="background:rgba(255,255,255,.08);border:1px solid {clr};'
+                f'color:{clr};font-size:11px;font-weight:bold;border-radius:4px;'
+                f'padding:2px 8px;margin-left:6px;white-space:nowrap">'
+                f'{tag}</span>'
+                for tag, clr in s.get("signals", [])
             )
             account   = s.get("account", "@willpowerprotocols")
             x_account = s.get("x_account", "@wpprotocols")
@@ -722,10 +1284,13 @@ def build_monday_plan_html(plan):
             items_html += f"""
             <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
                 <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:14px;padding-top:1px">{i}.</div>
-                <div style="font-size:13px;color:#D7DEE8;line-height:1.5">
-                    <strong style="color:#FFFFFF">{s["book"]}</strong>
-                    &nbsp;&middot;&nbsp; Short #{s["short_num"]}
-                    &nbsp;&middot;&nbsp; {s["topic"]}{note_html}
+                <div style="font-size:13px;color:#D7DEE8;line-height:1.5;flex:1">
+                    <div>
+                        <strong style="color:#FFFFFF">{s["book"]}</strong>
+                        &nbsp;&middot;&nbsp; Short #{s["short_num"]}
+                        &nbsp;&middot;&nbsp; {s["topic"]}{note_html}
+                        {signal_badges}
+                    </div>
                     <div style="color:#AAB4C0;font-size:12px;margin-top:2px">
                         {s["pillar"]}{psig} &nbsp;&middot;&nbsp;
                         <span style="color:{acct_color}">{account}</span>
@@ -819,78 +1384,129 @@ def build_monday_plan_html(plan):
     else:
         test_html = ""
 
-    # ── Unposted long-form video episodes ────────────────────────
-    episode_items   = plan.get("episode_items", [])
-    unposted_images = plan.get("unposted_images", [])
+    # ── Unified priority-sorted queue — all content types ────────
+    all_unposted = plan.get("all_unposted", [])
 
-    if episode_items:
-        ep_rows = ""
-        for ep in episode_items:
-            ep_rows += f"""
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
-                <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:13px;padding-top:1px">&#9654;</div>
-                <div style="font-size:13px;color:#D7DEE8;line-height:1.5">
-                    <strong style="color:#FFFFFF">{ep["book"]}</strong>
-                    &nbsp;&middot;&nbsp; Episode #{ep["ep_num"]}
-                    &nbsp;&middot;&nbsp; {ep["topic"]}
-                    <div style="color:#AAB4C0;font-size:11px;margin-top:2px">{ep["pillar"]}</div>
-                </div>
-            </div>"""
-        episodes_html = f"""
-        <div class="action-section">
-            <h3>Unposted Long-Form Videos ({len(episode_items)})</h3>
-            {ep_rows}
-        </div>"""
-    else:
-        episodes_html = ""
+    if all_unposted:
+        all_rows = ""
+        for i, item in enumerate(all_unposted, 1):
+            ctype = item.get("content_type", "Short")
 
-    if unposted_images:
-        img_rows = ""
-        for img in unposted_images:
-            brand_color = "#E1306C" if "Protocol Lab" in img["brand"] else "#C9A84C"
-            pdata = img.get("pillar_eng")
-            if pdata is not None:
-                eng   = pdata["eng"]
-                reach = pdata["reach"]
-                posts = pdata["posts"]
-                if eng >= 1.5:
-                    psig = f'<span style="color:#5CFF7E;font-size:10px;font-weight:bold;margin-left:6px">HOT {eng}% eng &middot; {reach} avg reach</span>'
-                elif eng >= 0.5:
-                    psig = f'<span style="color:#C9A84C;font-size:10px;margin-left:6px">{eng}% eng &middot; {reach} avg reach</span>'
-                elif reach >= 150:
-                    psig = f'<span style="color:#C9A84C;font-size:10px;margin-left:6px">{reach} avg reach</span>'
-                elif reach >= 50:
-                    psig = f'<span style="color:#AAB4C0;font-size:10px;margin-left:6px">{reach} avg reach</span>'
+            if ctype == "Short":
+                account   = item.get("account", "@willpowerprotocols")
+                x_account = item.get("x_account", "@wpprotocols")
+                wb        = account == "@will.byron88"
+                acct_color = "#C9894C" if wb else "#AAB4C0"
+                x_color    = "#C9894C" if wb else "#1DA1F2"
+                x_handle   = "@willbyron" if wb else x_account
+                pillar_eng = item.get("pillar_eng")
+                if pillar_eng is not None:
+                    if pillar_eng >= 20:
+                        psig = f'<span style="color:#FF6B6B;font-size:10px;font-weight:bold;margin-left:6px">EXCEPTIONAL {pillar_eng}%</span>'
+                    elif pillar_eng >= 10:
+                        psig = f'<span style="color:#5CFF7E;font-size:10px;font-weight:bold;margin-left:6px">HOT {pillar_eng}%</span>'
+                    elif pillar_eng >= 5:
+                        psig = f'<span style="color:#AAB4C0;font-size:10px;margin-left:6px">{pillar_eng}% eng</span>'
+                    else:
+                        psig = f'<span style="color:#6B7A8D;font-size:10px;margin-left:6px">{pillar_eng}% eng</span>'
                 else:
-                    psig = f'<span style="color:#6B7A8D;font-size:10px;margin-left:6px">low reach so far ({posts} posted)</span>'
-            else:
-                psig = '<span style="color:#6B7A8D;font-size:10px;margin-left:6px">no posts yet</span>'
-            img_rows += f"""
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
-                <div style="min-width:22px;color:{brand_color};font-weight:bold;font-size:11px;padding-top:2px">IMG</div>
-                <div style="font-size:13px;color:#D7DEE8;line-height:1.5">
-                    <span style="color:{brand_color};font-size:11px">{img["brand"]}</span>
-                    &nbsp;&middot;&nbsp; #{img["post_id"]}
-                    &nbsp;&middot;&nbsp; {img["topic"]}
-                    <div style="color:#AAB4C0;font-size:11px;margin-top:2px">{img["pillar"]}{psig} &nbsp;&middot;&nbsp; {img["type"]}</div>
-                </div>
-            </div>"""
-        images_html = f"""
+                    psig = '<span style="color:#6B7A8D;font-size:10px;margin-left:6px">no data</span>'
+                signal_badges = "".join(
+                    f'<span style="background:rgba(255,255,255,.08);border:1px solid {clr};'
+                    f'color:{clr};font-size:11px;font-weight:bold;border-radius:4px;'
+                    f'padding:2px 8px;margin-left:6px;white-space:nowrap">{tag}</span>'
+                    for tag, clr in item.get("signals", [])
+                )
+                type_badge = '<span style="color:#60A5FA;font-size:10px;font-weight:bold;letter-spacing:.5px">SHORT</span>'
+                all_rows += f"""
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                    <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:14px;padding-top:1px">{i}.</div>
+                    <div style="font-size:13px;color:#D7DEE8;line-height:1.5;flex:1">
+                        <div>
+                            {type_badge}
+                            &nbsp;&middot;&nbsp; <strong style="color:#FFFFFF">{item["book"]}</strong>
+                            &nbsp;&middot;&nbsp; Short #{item["short_num"]}
+                            &nbsp;&middot;&nbsp; {item["topic"]}
+                            {signal_badges}
+                        </div>
+                        <div style="color:#AAB4C0;font-size:12px;margin-top:2px">
+                            {item["pillar"]}{psig} &nbsp;&middot;&nbsp;
+                            <span style="color:{acct_color}">{account}</span>
+                            &nbsp;&middot;&nbsp;
+                            <span style="color:{x_color}">{x_handle}</span>
+                        </div>
+                    </div>
+                </div>"""
+
+            elif ctype == "Episode":
+                type_badge = '<span style="color:#A78BFA;font-size:10px;font-weight:bold;letter-spacing:.5px">EPISODE</span>'
+                all_rows += f"""
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                    <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:14px;padding-top:1px">{i}.</div>
+                    <div style="font-size:13px;color:#D7DEE8;line-height:1.5;flex:1">
+                        <div>
+                            {type_badge}
+                            &nbsp;&middot;&nbsp; <strong style="color:#FFFFFF">{item["book"]}</strong>
+                            &nbsp;&middot;&nbsp; Episode #{item["ep_num"]}
+                            &nbsp;&middot;&nbsp; {item["topic"]}
+                        </div>
+                        <div style="color:#AAB4C0;font-size:12px;margin-top:2px">{item["pillar"]}</div>
+                    </div>
+                </div>"""
+
+            else:  # Image
+                brand_color = "#2E86AB" if "Protocol Lab" in item.get("brand", "") else "#C9A84C"
+                type_badge  = f'<span style="color:{brand_color};font-size:10px;font-weight:bold;letter-spacing:.5px">IMG</span>'
+                badges_html = "".join(
+                    f'<span style="border:1px solid {clr};color:{clr};font-size:10px;'
+                    f'font-weight:bold;border-radius:4px;padding:2px 7px;'
+                    f'margin-left:6px;white-space:nowrap">{tag}</span>'
+                    for tag, clr in item.get("img_signals", [])
+                )
+                img_eng   = item.get("img_eng", 0.0)
+                img_reach = item.get("img_reach", 0)
+                img_posts = item.get("img_posts", 0)
+                shorts_eng = item.get("shorts_eng", 0.0)
+                pdate     = item.get("post_date", "")
+                if img_posts > 0:
+                    stats_str = (f'{img_eng}% eng &nbsp;&middot;&nbsp; {img_reach} avg reach'
+                                 f' &nbsp;&middot;&nbsp; {img_posts} posts in pillar')
+                else:
+                    stats_str = "no pillar data yet"
+                if shorts_eng > 0:
+                    stats_str += f' &nbsp;&middot;&nbsp; {shorts_eng}% shorts eng'
+                date_str = f' &nbsp;&middot;&nbsp; {pdate}' if pdate else ""
+                all_rows += f"""
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                    <div style="min-width:22px;color:#C9A84C;font-weight:bold;font-size:14px;padding-top:1px">{i}.</div>
+                    <div style="font-size:13px;color:#D7DEE8;line-height:1.5;flex:1">
+                        <div>
+                            {type_badge}
+                            &nbsp;&middot;&nbsp; <span style="color:{brand_color};font-weight:bold">{item["brand"]}</span>
+                            &nbsp;&middot;&nbsp; #{item["post_id"]}
+                            &nbsp;&middot;&nbsp; {item["topic"]}
+                            {badges_html}
+                        </div>
+                        <div style="color:#6B7A8D;font-size:11px;margin-top:2px">
+                            {item["pillar"]} &nbsp;&middot;&nbsp; {item["type"]}
+                            &nbsp;&middot;&nbsp; {stats_str}{date_str}
+                        </div>
+                    </div>
+                </div>"""
+
+        all_unposted_html = f"""
         <div class="action-section">
-            <h3>Unposted Image Posts — TPL &amp; PM ({len(unposted_images)})</h3>
-            {img_rows}
+            <h3>All Unposted Content — Priority Order ({len(all_unposted)})</h3>
+            {all_rows}
         </div>"""
     else:
-        images_html = ""
+        all_unposted_html = ""
 
     return f"""
     <div class="action-plan">
-        <h2>Monday Action Plan — {today_str}</h2>
+        <h2>Content Posting Plan — {today_str}</h2>
         {schedule_html}
-        {episodes_html}
-        {images_html}
-        {repurpose_html}
-        {pillar_html}
+        {all_unposted_html}
         {test_html}
     </div>"""
 
@@ -1511,6 +2127,62 @@ def build_intelligence_panel_html(df, trends_html="", gumroad_data=None, gumroad
     </div>"""
 
 
+def build_intelligence_tab_html(df, plan, gumroad_data, gumroad_posts,
+                                kdp_total_revenue, trends_html=""):
+    """Intelligence tab — total revenue header + strategic deep-dive sections only.
+    Pillar performance and Gumroad live card live on the CEO tab — not duplicated here.
+    """
+    import sqlite3 as _sq
+    import json as _j
+
+    def _sf(v):
+        try: return float(v or 0)
+        except: return 0.0
+
+    def _si(v):
+        try: return int(float(v or 0))
+        except: return 0
+
+    gr_rev   = gumroad_data["total_revenue"] if gumroad_data else 0.0
+    gr_sales = gumroad_data["total_sales"]   if gumroad_data else 0
+    combined = kdp_total_revenue + gr_rev
+
+    # ── Total revenue header ───────────────────────────────────────
+    revenue_header = f"""
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px">
+        <div class="scoreboard-card" style="margin-bottom:0;text-align:center">
+            <div class="ceo-stat-label">KDP All-Time</div>
+            <div class="ceo-stat-value">${kdp_total_revenue:.2f}</div>
+            <div class="ceo-stat-sub">Kindle + paperback + KU</div>
+        </div>
+        <div class="scoreboard-card" style="margin-bottom:0;text-align:center">
+            <div class="ceo-stat-label">Gumroad All-Time</div>
+            <div class="ceo-stat-value">${gr_rev:.2f}</div>
+            <div class="ceo-stat-sub">{gr_sales} sales</div>
+        </div>
+        <div class="scoreboard-card" style="margin-bottom:0;text-align:center;
+              border-color:rgba(201,168,76,.4)">
+            <div class="ceo-stat-label">Total Revenue</div>
+            <div class="ceo-stat-value" style="color:#5CFF7E">${combined:.2f}</div>
+            <div class="ceo-stat-sub">all streams combined</div>
+        </div>
+    </div>"""
+
+    # ── Pull sections from build_intelligence_panel_html ──────────
+    # We reuse the full panel but skip pillar (4a) and live Gumroad card
+    # which already live on the CEO tab. Pass slim=True equivalent via
+    # calling panel and stripping those sections from the return.
+    full_panel = build_intelligence_panel_html(
+        df, trends_html=trends_html,
+        gumroad_data=gumroad_data,
+        gumroad_posts=gumroad_posts,
+    )
+
+    return f"""
+    {revenue_header}
+    {full_panel}"""
+
+
 # ============================================================
 # CEO Tab Builder
 # ============================================================
@@ -1874,11 +2546,528 @@ def make_table_header(enriched=False):
     </tr>"""
 
 
+def build_ceo_v2_html(df, plan, gumroad_data, gumroad_posts, monday_plan_html,
+                      ai_briefing_html="", kdp_total_revenue=0.0, platform_followers=None,
+                      intel_signals=None):
+    """Streamlined CEO tab — revenue, intelligence, decisions, signals."""
+    import sqlite3 as _sq
+
+    today = date.today()
+
+    def _si(v):
+        try: return int(float(v or 0))
+        except: return 0
+
+    def _sf(v):
+        try: return float(v or 0)
+        except: return 0.0
+
+    # ── KDP data ──────────────────────────────────────────────────
+    try:
+        conn = _sq.connect(WPP_DB_FILE)
+        cur  = conn.cursor()
+        cur.execute("""
+            SELECT snapshot_year, snapshot_month, SUM(royalties_usd), SUM(ku_pages)
+            FROM kdp_snapshots
+            GROUP BY snapshot_year, snapshot_month
+            ORDER BY snapshot_year DESC, snapshot_month DESC LIMIT 4
+        """)
+        kdp_monthly = cur.fetchall()
+        cur.execute("""
+            SELECT k.book_key, b.title, SUM(k.royalties_usd)
+            FROM kdp_snapshots k JOIN books b ON k.book_key = b.book_key
+            GROUP BY k.book_key
+        """)
+        kdp_by_book = {title: _sf(rev) for _, title, rev in cur.fetchall()}
+        cur.execute("SELECT value FROM config WHERE key='business_triggers'")
+        r = cur.fetchone()
+        triggers = json.loads(r[0]) if r else []
+        conn.close()
+    except Exception as e:
+        kdp_monthly = []
+        kdp_by_book = {}
+        triggers = []
+
+    # ── KDP calcs ─────────────────────────────────────────────────
+    cur_month_str = today.strftime("%Y-%m")
+    days_elapsed  = today.day
+    cur_kdp  = 0.0
+    prev_kdp = 0.0
+    past_months = []
+    for yr, mo, rev, ku in kdp_monthly:
+        if mo == cur_month_str:
+            cur_kdp = _sf(rev)
+        else:
+            past_months.append((_sf(rev), mo))
+    if past_months:
+        prev_kdp = past_months[0][0]
+
+    run_rate    = (cur_kdp / days_elapsed * 30) if days_elapsed > 0 else 0.0
+    progress_pct = min(run_rate / 500 * 100, 100)
+    bar_color   = "#5CFF7E" if run_rate >= 500 else "#C9A84C" if run_rate >= 250 else "#FFB347"
+
+    if prev_kdp > 0:
+        mom_pct   = (cur_kdp - prev_kdp) / prev_kdp * 100
+        mom_color = "#5CFF7E" if mom_pct >= 0 else "#FF6B6B"
+        mom_sign  = "+" if mom_pct >= 0 else ""
+        mom_str   = f'<span style="color:{mom_color}">{mom_sign}{mom_pct:.1f}% vs last month</span>'
+    else:
+        mom_str = '<span style="color:#6B7A8D">first month</span>'
+
+    gr_rev   = gumroad_data["total_revenue"] if gumroad_data else 0.0
+    gr_sales = gumroad_data["total_sales"]   if gumroad_data else 0
+
+    # ── Revenue + activity strips ──────────────────────────────────
+    total_likes   = safe_int(df["likes"].sum())
+    yt_minutes    = safe_int(df["estimated_minutes_watched"].sum())
+    total_views   = safe_int(df["views"].sum())
+    combined_rev  = kdp_total_revenue + gr_rev
+    queue_count   = plan["unposted_count"] if plan else 0
+
+    revenue_html = f"""
+    <div style="margin-bottom:6px">
+        <div style="font-size:10px;color:#6B7A8D;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Revenue</div>
+        <div class="ceo-hero" style="margin-bottom:10px">
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">KDP This Month</div>
+                <div class="ceo-stat-value">${cur_kdp:.2f}</div>
+                <div class="ceo-stat-sub">{mom_str}</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">KDP All-Time</div>
+                <div class="ceo-stat-value">${kdp_total_revenue:.2f}</div>
+                <div class="ceo-stat-sub">Kindle + print + KU</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">Monthly Run Rate</div>
+                <div class="ceo-stat-value" style="color:{bar_color}">${run_rate:.2f}</div>
+                <div class="ceo-stat-sub">{progress_pct:.0f}% of $500 goal</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">Gumroad Revenue</div>
+                <div class="ceo-stat-value">${gr_rev:.2f}</div>
+                <div class="ceo-stat-sub">{gr_sales} sales</div>
+            </div>
+            <div class="ceo-stat" style="border-color:rgba(201,168,76,.3)">
+                <div class="ceo-stat-label">Total Revenue</div>
+                <div class="ceo-stat-value" style="color:#5CFF7E">${combined_rev:.2f}</div>
+                <div class="ceo-stat-sub">all streams</div>
+            </div>
+        </div>
+        <div style="background:#1A2A3A;border-radius:6px;height:8px;overflow:hidden;margin-bottom:12px">
+            <div style="width:{progress_pct:.1f}%;height:100%;background:{bar_color};border-radius:6px"></div>
+        </div>
+        <div style="font-size:10px;color:#6B7A8D;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Content Performance</div>
+        <div class="ceo-hero" style="margin-bottom:20px">
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">Total Views</div>
+                <div class="ceo-stat-value">{total_views:,}</div>
+                <div class="ceo-stat-sub">all platforms</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">Total Likes</div>
+                <div class="ceo-stat-value">{total_likes:,}</div>
+                <div class="ceo-stat-sub">all platforms</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">YT Watch Minutes</div>
+                <div class="ceo-stat-value">{yt_minutes:,}</div>
+                <div class="ceo-stat-sub">YouTube only</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">Content Queue</div>
+                <div class="ceo-stat-value">{queue_count}</div>
+                <div class="ceo-stat-sub">shorts ready to post</div>
+            </div>
+        </div>
+    </div>"""
+
+    # ── Platform health chips ──────────────────────────────────────
+    PLAT_DISPLAY = [
+        ("Instagram",                    "Instagram @willpowerprotocols"),
+        ("Instagram-WB",                 "Instagram @will.byron88"),
+        ("YouTube",                      "YouTube"),
+        ("Facebook",                     "Facebook Reels (WPP)"),
+        ("Facebook-WB",                  "Facebook Reels (WB)"),
+        ("FB-Image-WillPowerProtocols",  "FB Images (WPP)"),
+        ("FB-Image-TheProtocolLab",      "The Protocol Lab"),
+        ("FB-Image-PrehistoricMemories", "Prehistoric Memories"),
+        ("FB-Image-WillByron",           "FB Images (Will Byron)"),
+        ("X",                            "X @wpprotocols"),
+    ]
+    pf = platform_followers or {}
+
+    # X stats come from x_analytics table, not df
+    _x_stats = {"views": 0, "posts": 0, "last": ""}
+    try:
+        import sqlite3 as _sq_x
+        _cx = _sq_x.connect(WPP_DB_FILE)
+        _xr = _cx.execute(
+            "SELECT COUNT(*), SUM(impressions), MAX(snapshot_date) FROM x_analytics"
+        ).fetchone()
+        _cx.close()
+        if _xr and _xr[0]:
+            _x_stats = {"views": _si(_xr[1]), "posts": _si(_xr[0]), "last": str(_xr[2] or "")[:10]}
+    except Exception:
+        pass
+
+    chips = ""
+    for plat_key, plat_label in PLAT_DISPLAY:
+        followers_count = pf.get(plat_key)
+        followers_str   = (
+            f' &middot; <strong style="color:#C9A84C">{followers_count:,}</strong> followers'
+            if followers_count is not None else ""
+        )
+
+        # X uses x_analytics table, not df
+        if plat_key == "X":
+            if _x_stats["posts"] == 0:
+                chip_bg = "rgba(255,255,255,.02)"
+                sc      = "#6B7A8D"
+                status  = "No imports yet"
+                metric  = "—"
+                last    = "—"
+            else:
+                last = _x_stats["last"]
+                try:
+                    days_ago = (today - date.fromisoformat(last)).days if last else 99
+                except Exception:
+                    days_ago = 99
+                if days_ago <= 7:
+                    chip_bg = "rgba(74,222,128,0.06)"; sc = "#5CFF7E"; status = "Active"
+                elif days_ago <= 14:
+                    chip_bg = "rgba(255,179,71,0.06)"; sc = "#FFB347"; status = f"Import {days_ago}d ago"
+                else:
+                    chip_bg = "rgba(255,107,107,0.06)"; sc = "#FF6B6B"; status = f"Import {days_ago}d ago"
+                metric = f"{_x_stats['views']:,} impressions &middot; {_x_stats['posts']} posts{followers_str}"
+        else:
+            p = df[df["platform"] == plat_key]
+            if p.empty:
+                chip_bg = "rgba(255,255,255,.02)"
+                sc      = "#6B7A8D"
+                status  = "No data"
+                metric  = "—"
+                last    = "—"
+            else:
+                views    = safe_int(p["views"].sum())
+                posts    = len(p)
+                last_pub = p["published_at"].dropna().max() or ""
+                try:
+                    days_ago = (today - date.fromisoformat(str(last_pub)[:10])).days
+                    if days_ago <= 7:
+                        chip_bg = "rgba(74,222,128,0.06)"; sc = "#5CFF7E"; status = "Active"
+                    elif days_ago <= 14:
+                        chip_bg = "rgba(255,179,71,0.06)"; sc = "#FFB347"; status = f"Silent {days_ago}d"
+                    else:
+                        chip_bg = "rgba(255,107,107,0.06)"; sc = "#FF6B6B"; status = f"Silent {days_ago}d"
+                except Exception:
+                    chip_bg = "rgba(74,222,128,0.06)"; sc = "#5CFF7E"; status = "Active"
+                metric = f"{views:,} views &middot; {posts} posts{followers_str}"
+                last   = str(last_pub)[:10]
+        chips += f"""
+        <div style="background:{chip_bg};border:1px solid rgba(255,255,255,.06);
+                    border-radius:10px;padding:11px 14px;display:flex;
+                    justify-content:space-between;align-items:center">
+            <div>
+                <div style="font-size:12px;font-weight:600;color:#FFFFFF">{plat_label}</div>
+                <div style="font-size:11px;color:#AAB4C0;margin-top:2px">{metric}</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-size:12px;font-weight:bold;color:{sc}">{status}</div>
+                <div style="font-size:10px;color:#6B7A8D;margin-top:1px">{last}</div>
+            </div>
+        </div>"""
+
+    platform_card = f"""
+    <div class="scoreboard-card" style="margin-bottom:0">
+        <h2 style="margin-top:0;font-size:15px">Platform Health</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">{chips}</div>
+    </div>"""
+
+    # ── Top 3 posts ────────────────────────────────────────────────
+    top3      = df.sort_values("views", ascending=False).head(3)
+    top_cards = ""
+    for _, row in top3.iterrows():
+        plat  = safe_text(row.get("platform"))
+        title = truncate_text(safe_text(row.get("title_or_caption")), 75)
+        views = safe_int(row.get("views"))
+        eng   = round(float(row.get("engagement_rate_percent", 0)), 1)
+        sig   = safe_text(row.get("content_signal"))
+        url   = safe_text(row.get("url"))
+        pub   = safe_text(row.get("published_at"))
+        book  = safe_text(row.get("book_or_offer", "—"))
+        sc    = "#C9A84C" if "Winner" in sig else "#AAB4C0"
+        book_line = (
+            f'<div style="font-size:11px;color:#C9A84C;margin-bottom:4px">{book}</div>'
+            if book and book != "—" else ""
+        )
+        top_cards += f"""
+        <div class="top5-card">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <span class="platform-badge">{PLATFORM_LABELS.get(plat, plat)}</span>
+                <span style="color:#AAB4C0;font-size:11px">{pub}</span>
+            </div>
+            <div style="font-size:13px;line-height:1.4;margin-bottom:5px">{title}</div>
+            {book_line}
+            <div style="font-size:12px;color:#AAB4C0">
+                <strong style="color:#C9A84C">{views:,}</strong> views &middot;
+                <strong style="color:#C9A84C">{eng}%</strong> eng &middot;
+                <span style="color:{sc}">{sig}</span> &middot;
+                <a href="{url}" target="_blank" style="color:#C9A84C">Open</a>
+            </div>
+        </div>"""
+
+    top_posts_card = f"""
+    <div class="scoreboard-card" style="margin-bottom:0">
+        <h2 style="margin-top:0;font-size:15px">Top Posts</h2>
+        <div style="display:flex;flex-direction:column;gap:10px">{top_cards}</div>
+    </div>"""
+
+    # ── By Book — social + revenue ─────────────────────────────────
+    book_rows = ""
+    if "book_or_offer" in df.columns and df["book_or_offer"].ne("—").any():
+        known    = df[df["book_or_offer"].ne("—")]
+        book_agg = (
+            known.groupby("book_or_offer")
+            .agg(posts=("views","count"), views=("views","sum"),
+                 avg_eng=("engagement_rate_percent","mean"))
+            .reset_index()
+        )
+        winner_map = (
+            df[df["content_signal"].str.contains("Winner", na=False)]
+            .groupby("book_or_offer").size()
+        )
+        book_agg["winners"] = book_agg["book_or_offer"].map(winner_map).fillna(0).astype(int)
+        book_agg = book_agg.sort_values("views", ascending=False)
+
+        for _, r in book_agg.iterrows():
+            title   = r["book_or_offer"]
+            kdp_rev = kdp_by_book.get(title, 0.0)
+            winners = _si(r["winners"])
+            avg_e   = round(float(r["avg_eng"]), 1)
+            star    = "&#11088; " if winners > 0 else ""
+
+            if avg_e >= 20:
+                sig_html = '<span style="color:#FF6B6B;font-size:10px;font-weight:bold">EXCEPTIONAL</span>'
+            elif avg_e >= 10:
+                sig_html = '<span style="color:#C9A84C;font-size:10px;font-weight:bold">HIGH SIGNAL</span>'
+            elif winners > 0:
+                sig_html = '<span style="color:#5CFF7E;font-size:10px">Winner posts</span>'
+            else:
+                sig_html = '<span style="color:#6B7A8D;font-size:10px">Watch</span>'
+
+            rev_cell = (
+                f'<strong style="color:#C9A84C">${kdp_rev:.2f}</strong>'
+                if kdp_rev > 0 else '<span style="color:#6B7A8D">—</span>'
+            )
+            book_rows += f"""
+            <tr>
+                <td style="font-size:12px">{star}{title}</td>
+                <td style="text-align:center">{_si(r["posts"])}</td>
+                <td style="text-align:right"><strong>{_si(r["views"]):,}</strong></td>
+                <td style="text-align:center">{avg_e}%</td>
+                <td style="text-align:center">{winners}</td>
+                <td style="text-align:right">{rev_cell}</td>
+                <td>{sig_html}</td>
+            </tr>"""
+
+    if not book_rows:
+        book_rows = '<tr><td colspan="7" style="color:#AAB4C0;text-align:center">No matched content yet</td></tr>'
+
+    book_table = f"""
+    <div class="scoreboard-card" style="margin-bottom:24px">
+        <h2 style="margin-top:0;font-size:15px">By Book &mdash; Social + Revenue</h2>
+        <div class="table-wrap" style="margin-bottom:0">
+        <table style="min-width:680px">
+            <thead><tr>
+                <th>Book / Offer</th>
+                <th style="text-align:center">Posts</th>
+                <th style="text-align:right">Views</th>
+                <th style="text-align:center">Avg Eng</th>
+                <th style="text-align:center">Winners</th>
+                <th style="text-align:right">KDP Revenue</th>
+                <th>Signal</th>
+            </tr></thead>
+            <tbody>{book_rows}</tbody>
+        </table>
+        </div>
+    </div>"""
+
+    # ── By Pillar ──────────────────────────────────────────────────
+    pillar_rows = ""
+    if "content_pillar" in df.columns:
+        known_p = df[
+            df["content_pillar"].ne("—") &
+            df["content_pillar"].notna() &
+            df["content_pillar"].ne("")
+        ]
+        if not known_p.empty:
+            p_agg = (
+                known_p.groupby("content_pillar")
+                .agg(posts=("views","count"), views=("views","sum"),
+                     avg_eng=("engagement_rate_percent","mean"))
+                .reset_index()
+                .sort_values("avg_eng", ascending=False)
+            )
+            for _, r in p_agg.iterrows():
+                avg_e = round(float(r["avg_eng"]), 1)
+                posts = _si(r["posts"])
+                if avg_e >= 20:
+                    badge = '<span style="color:#FF6B6B;font-size:10px;font-weight:bold">EXCEPTIONAL &#128293;</span>'
+                elif avg_e >= 10:
+                    badge = '<span style="color:#C9A84C;font-size:10px;font-weight:bold">HIGH SIGNAL &#11088;</span>'
+                elif posts >= 3:
+                    badge = '<span style="color:#AAB4C0;font-size:10px">Collecting data</span>'
+                else:
+                    badge = '<span style="color:#6B7A8D;font-size:10px">Too few posts</span>'
+                pillar_rows += f"""
+                <tr>
+                    <td style="font-size:12px"><strong style="color:#FFFFFF">{r["content_pillar"]}</strong></td>
+                    <td style="text-align:center">{posts}</td>
+                    <td style="text-align:right">{_si(r["views"]):,}</td>
+                    <td style="text-align:center"><strong style="color:#C9A84C">{avg_e}%</strong></td>
+                    <td>{badge}</td>
+                </tr>"""
+
+    if not pillar_rows:
+        pillar_rows = '<tr><td colspan="5" style="color:#AAB4C0;text-align:center">No pillar data yet</td></tr>'
+
+    pillar_table = f"""
+    <div class="scoreboard-card" style="margin-bottom:24px">
+        <h2 style="margin-top:0;font-size:15px">By Pillar &mdash; Engagement Signal</h2>
+        <table class="scoreboard-table" style="width:100%">
+            <thead><tr>
+                <th>Pillar</th><th style="text-align:center">Posts</th>
+                <th style="text-align:right">Views</th>
+                <th style="text-align:center">Avg Eng %</th>
+                <th>Signal</th>
+            </tr></thead>
+            <tbody>{pillar_rows}</tbody>
+        </table>
+        <p style="color:#6B7A8D;font-size:11px;margin:8px 0 0">
+            HIGH SIGNAL = &gt;10% avg engagement &middot; EXCEPTIONAL = &gt;20% &middot; Min 3 posts for reliable signal
+        </p>
+    </div>"""
+
+    # ── Key Decisions — from unified intelligence signals ──────────
+    # intel_signals is pre-computed in main() combining Shorts, Trends, KDP, Gumroad
+    all_signals = []
+    if intel_signals:
+        all_signals = (
+            intel_signals.get("write_next", []) +
+            intel_signals.get("post_priority", []) +
+            intel_signals.get("gumroad_next", []) +
+            intel_signals.get("revenue_alerts", []) +
+            intel_signals.get("re_engage", [])
+        )
+
+    # Add unposted Gumroad promo posts (not in intel_signals)
+    if gumroad_posts:
+        unposted = [p for p in gumroad_posts if p["posted"] == "N"]
+        if unposted:
+            by_prod = {}
+            for p in unposted:
+                by_prod.setdefault(p["product_name"], []).append(p["platform_label"])
+            for prod, plats in by_prod.items():
+                all_signals.append({
+                    "label": "Gumroad Post", "color": "#E8D5A3",
+                    "title": prod,
+                    "action": f'Still needs promotion on: {", ".join(plats)}',
+                    "evidence": [], "confidence": "", "url": "",
+                })
+
+    def _render_signal(sig):
+        ev_badges = "".join(
+            f'<span style="border:1px solid {clr};color:{clr};font-size:10px;'
+            f'font-weight:bold;border-radius:4px;padding:1px 7px;margin-right:5px;'
+            f'white-space:nowrap">{tag}: {val}</span>'
+            for tag, val, clr in sig.get("evidence", [])
+        )
+        conf = sig.get("confidence", "")
+        conf_clr = {"HIGH": "#5CFF7E", "MEDIUM": "#C9A84C", "LOW": "#6B7A8D"}.get(conf, "#6B7A8D")
+        conf_badge = (
+            f'<span style="color:{conf_clr};font-size:10px;font-weight:bold;'
+            f'margin-left:8px">{conf}</span>'
+            if conf else ""
+        )
+        link = (
+            f' &nbsp;<a href="{sig["url"]}" target="_blank" '
+            f'style="color:{sig["color"]};font-size:11px">Open &rarr;</a>'
+            if sig.get("url") else ""
+        )
+        return f"""
+        <div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:5px">
+                <span style="background:rgba(255,255,255,.05);border:1px solid {sig["color"]};
+                             color:{sig["color"]};font-size:10px;font-weight:bold;letter-spacing:.5px;
+                             border-radius:4px;padding:2px 8px;white-space:nowrap;flex-shrink:0">
+                    {sig["label"]}</span>
+                <div style="font-size:13px;color:#FFFFFF;font-weight:600;flex:1">
+                    {sig["title"]}{conf_badge}
+                </div>
+            </div>
+            {('<div style="margin-bottom:6px;padding-left:2px">' + ev_badges + '</div>') if ev_badges else ''}
+            <div style="font-size:12px;color:#AAB4C0;padding-left:2px">{sig.get("action","")}{link}</div>
+        </div>"""
+
+    dec_items = "".join(_render_signal(s) for s in all_signals)
+
+    decisions_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:24px">
+        <h2 style="margin-top:0;font-size:15px">Key Decisions
+            <span style="font-size:11px;color:#6B7A8D;font-weight:normal;margin-left:8px">
+                Shorts + Google Trends + KDP + Gumroad combined
+            </span>
+        </h2>
+        {dec_items if dec_items else '<p style="color:#6B7A8D;font-size:13px;margin:0">No strong signals yet — keep posting.</p>'}
+    </div>"""
+
+    # ── Trigger Tracker compact ────────────────────────────────────
+    trig_items = ""
+    for t in triggers:
+        status = t.get("status", "pending")
+        clr    = "#5CFF7E" if status == "complete" else "#AAB4C0"
+        dot    = "&#9679;" if status == "complete" else "&#9675;"
+        trig_items += f"""
+        <div style="display:flex;justify-content:space-between;align-items:baseline;
+                    padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px">
+            <span style="color:{clr}">{dot}&nbsp; {t.get("trigger","")}</span>
+            <span style="color:#6B7A8D;font-size:11px">{t.get("unlocks","")}</span>
+        </div>"""
+
+    triggers_html = f"""
+    <div class="scoreboard-card" style="margin-bottom:24px">
+        <h2 style="margin-top:0;font-size:15px">$500/Month Trigger Tracker
+            <span style="font-size:12px;color:#AAB4C0;font-weight:normal;margin-left:10px">
+                Run rate: <strong style="color:{bar_color}">${run_rate:.2f}/mo</strong>
+            </span>
+        </h2>
+        <div style="background:#1A2A3A;border-radius:6px;height:8px;overflow:hidden;margin-bottom:14px">
+            <div style="width:{progress_pct:.1f}%;height:100%;background:{bar_color};border-radius:6px"></div>
+        </div>
+        {trig_items}
+    </div>"""
+
+    return f"""
+    {ai_briefing_html}
+    {revenue_html}
+    {monday_plan_html}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+        {platform_card}
+        {top_posts_card}
+    </div>
+    {book_table}
+    {pillar_table}
+    {decisions_html}
+    {triggers_html}"""
+
+
 def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
                facebook_performance_html="", fb_image_performance_html="",
                instagram_performance_html="",
                kdp_revenue_html="", filtered_repurpose_count=None, plan=None,
-               ai_briefing_html="", trends_html="", gumroad_data=None, gumroad_posts=None):
+               ai_briefing_html="", trends_html="", gumroad_data=None, gumroad_posts=None,
+               platform_followers=None, intel_signals=None):
     html_file = OUTPUT_DIR / "index.html"
     enriched = "book_or_offer" in df.columns and df["book_or_offer"].ne("—").any()
 
@@ -1915,7 +3104,13 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         if not facebook_rows.empty else 0
     )
 
-    ceo_tab_html = build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html, ai_briefing_html, trends_html, gumroad_data=gumroad_data, gumroad_posts=gumroad_posts)
+    ceo_tab_html        = build_ceo_tab_html(df, plan, kdp_total_revenue, monday_plan_html, ai_briefing_html, trends_html, gumroad_data=gumroad_data, gumroad_posts=gumroad_posts)
+    ceo_v2_html         = build_ceo_v2_html(df, plan, gumroad_data, gumroad_posts, monday_plan_html,
+                                             ai_briefing_html=ai_briefing_html,
+                                             kdp_total_revenue=kdp_total_revenue,
+                                             platform_followers=platform_followers,
+                                             intel_signals=intel_signals)
+    intelligence_html   = build_intelligence_tab_html(df, plan, gumroad_data, gumroad_posts, kdp_total_revenue, trends_html=trends_html)
 
     winners_count = df["content_signal"].str.contains("Winner", na=False).sum()
     sticky_count = df["content_signal"].str.contains("Sticky", na=False).sum()
@@ -2400,12 +3595,17 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         <div class="subtitle">Instagram · YouTube · Facebook · X · Book &amp; Pillar Tracking · Monday Action Plan</div>
 
         <div class="tab-bar">
-            <button class="tab-btn active" data-tab="tab-ceo" onclick="showTab('tab-ceo')">CEO View</button>
+            <button class="tab-btn active" data-tab="tab-ceo-v2" onclick="showTab('tab-ceo-v2')">CEO</button>
+            <button class="tab-btn" data-tab="tab-ceo" onclick="showTab('tab-ceo')">Intelligence</button>
             <button class="tab-btn" data-tab="tab-analyst" onclick="showTab('tab-analyst')">Full Analytics</button>
         </div>
 
-        <div id="tab-ceo" class="tab-pane active">
-            {ceo_tab_html}
+        <div id="tab-ceo-v2" class="tab-pane active">
+            {ceo_v2_html}
+        </div>
+
+        <div id="tab-ceo" class="tab-pane">
+            {intelligence_html}
         </div>
 
         <div id="tab-analyst" class="tab-pane">
@@ -2474,8 +3674,6 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             <strong>Promising</strong> = engagement high relative to your baseline.
             <strong>Repurpose Candidate</strong> = worth turning into a Short, Reel, or follow-up.
         </div>
-
-        {monday_plan_html}
 
         {scoreboard_html}
 
@@ -2604,16 +3802,26 @@ def main():
     df.to_csv(csv_file, index=False)
     print(f"Saved {csv_file}")
 
-    # Build sections
-    plan = generate_monday_plan(df, queue_df, ep_queue)
-    monday_plan_html = build_monday_plan_html(plan)
+    # Build sections — Gumroad must be fetched first (plan uses it for scoring)
+    print("Fetching Gumroad data...")
+    gumroad_data  = fetch_gumroad_data()
+    gumroad_posts = load_gumroad_posts(df, normalize_url)
 
-    print("Generating AI briefing...")
-    ai_briefing_html = generate_ai_briefing(df, plan)
+    print("Fetching platform followers...")
+    platform_followers = fetch_platform_followers()
+
+    plan = generate_monday_plan(df, queue_df, ep_queue, gumroad_data=gumroad_data)
+    monday_plan_html = build_monday_plan_html(plan)
 
     print("Fetching trend data...")
     trends_data = fetch_trends_data()
     trends_html = build_trends_html(trends_data, plan.get("pillar_engagement", {}))
+
+    print("Building intelligence signals...")
+    intel_signals = gather_intelligence_signals(df, plan, gumroad_data, trends_data)
+
+    print("Generating AI briefing...")
+    ai_briefing_html = generate_ai_briefing(df, plan, intel_signals=intel_signals)
     scoreboard_html = build_scoreboard_html(df)
     x_performance_html = build_x_performance_html(content_map)
     facebook_performance_html = build_facebook_performance_html(df)
@@ -2622,10 +3830,6 @@ def main():
 
     # Build KDP Revenue
     kdp_revenue_html = build_kdp_revenue_html()
-
-    print("Fetching Gumroad data...")
-    gumroad_data  = fetch_gumroad_data()
-    gumroad_posts = load_gumroad_posts(df, normalize_url)
 
     # Build HTML dashboard
     build_html(
@@ -2643,6 +3847,8 @@ def main():
         trends_html=trends_html,
         gumroad_data=gumroad_data,
         gumroad_posts=gumroad_posts,
+        platform_followers=platform_followers,
+        intel_signals=intel_signals,
     )
 
 

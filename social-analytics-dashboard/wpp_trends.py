@@ -250,9 +250,9 @@ def build_trends_html(trends_data, pillar_engagement):
     rows.sort(key=lambda r: (order.get(r["signal"], 9), -r["score"]))
 
     dir_icon  = {"rising": "&#8679; Rising", "falling": "&#8681; Falling",
-                 "flat": "&#8680; Flat", "—": "—", "error": "?"}
+                 "flat": "&#8680; Flat", "—": "—", "error": "rate limited"}
     dir_color = {"rising": "#5CFF7E", "falling": "#FF6B6B", "flat": "#AAB4C0",
-                 "—": "#6B7A8D", "error": "#FF6B6B"}
+                 "—": "#6B7A8D", "error": "#6B7A8D"}
 
     table_rows = ""
     for r in rows:

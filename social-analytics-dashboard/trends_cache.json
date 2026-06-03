@@ -3,25 +3,25 @@
     "Sleep": {
       "score": 3,
       "direction": "falling",
-      "peak": 17,
+      "peak": 15,
       "keyword": "sleep optimization"
     },
     "Muscle": {
       "score": 1,
-      "direction": "\u2014",
-      "peak": 6,
+      "direction": "flat",
+      "peak": 8,
       "keyword": "muscle after 50"
     },
     "Bone": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 0,
+      "peak": 4,
       "keyword": "bone density after 50"
     },
     "Cholesterol": {
       "score": 3,
       "direction": "falling",
-      "peak": 17,
+      "peak": 16,
       "keyword": "cholesterol management"
     },
     "Cortisol": {
@@ -31,27 +31,27 @@
       "keyword": "cortisol levels"
     },
     "Hormones": {
-      "score": 4,
+      "score": 3,
       "direction": "rising",
-      "peak": 44,
+      "peak": 38,
       "keyword": "hormone optimization"
     },
     "Zone 2": {
-      "score": 12,
+      "score": 11,
       "direction": "falling",
-      "peak": 42,
+      "peak": 46,
       "keyword": "Zone 2 training"
     },
     "Mindset": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 10,
+      "peak": 0,
       "keyword": "mindset over 50"
     },
     "Nutrition": {
       "score": 1,
-      "direction": "\u2014",
-      "peak": 17,
+      "direction": "flat",
+      "peak": 16,
       "keyword": "nutrition after 50"
     },
     "Recovery": {
@@ -63,13 +63,13 @@
     "Training": {
       "score": 1,
       "direction": "\u2014",
-      "peak": 4,
+      "peak": 3,
       "keyword": "strength training over 50"
     },
     "Bloodwork": {
-      "score": 2,
+      "score": 1,
       "direction": "falling",
-      "peak": 10,
+      "peak": 7,
       "keyword": "blood biomarkers"
     },
     "Cognition": {
@@ -79,7 +79,7 @@
       "keyword": "brain health after 50"
     },
     "Joints": {
-      "score": 29,
+      "score": 28,
       "direction": "falling",
       "peak": 100,
       "keyword": "joint health"
@@ -97,13 +97,13 @@
       "keyword": "sweat rate training"
     },
     "Heat": {
-      "score": 5,
+      "score": 4,
       "direction": "falling",
       "peak": 23,
       "keyword": "heat training"
     },
     "Financial": {
-      "score": 26,
+      "score": 23,
       "direction": "falling",
       "peak": 100,
       "keyword": "financial health"
@@ -115,5 +115,5 @@
       "keyword": "health system protocol"
     }
   },
-  "fetched_at": "2026-06-02T13:27:04.075139"
+  "fetched_at": "2026-06-03T13:24:47.879484"
 }
