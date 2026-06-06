@@ -1,6 +1,6 @@
 {
-  "id": "resp_04fe820a2e0d9d29006a1f22772124819080b368e0ffbe6dfb",
-  "created_at": 1780425335.0,
+  "id": "resp_00d6d1a76f7460cc006a206f286e7c819c8a225167a4f6d607",
+  "created_at": 1780510504.0,
   "error": null,
   "incomplete_details": null,
   "instructions": null,
@@ -9,23 +9,23 @@
   "object": "response",
   "output": [
     {
-      "id": "rs_04fe820a2e0d9d29006a1f2278282c81908f413f2d2218c501",
+      "id": "rs_00d6d1a76f7460cc006a206f29bffc819c90cd96f9fbc40756",
       "summary": [],
       "type": "reasoning",
-      "content": null,
+      "content": [],
       "encrypted_content": null,
       "status": null
     },
     {
-      "id": "ws_04fe820a2e0d9d29006a1f227c1008819098dec1c8fe21177c",
+      "id": "ws_00d6d1a76f7460cc006a206f2c155c819cb41a1b35e31be60a",
       "action": {
-        "query": "Goldman Sachs 2026 outlook June 2026 market outlook 2026 midyear",
+        "query": "Goldman Sachs 2026 outlook 2026 midyear outlook 2026 quarterly outlook Goldman Sachs Global Investment Research 2026 outlook",
         "type": "search",
         "queries": [
-          "Goldman Sachs 2026 outlook June 2026 market outlook 2026 midyear",
-          "J.P. Morgan 2026 outlook June 2026 market outlook 2026 quarterly outlook",
-          "Morgan Stanley 2026 outlook midyear 2026 market outlook '2026 outlook' 'midyear' 'quarterly'",
-          "BlackRock 2026 outlook midyear 2026 'Global Outlook' '2026'"
+          "Goldman Sachs 2026 outlook 2026 midyear outlook 2026 quarterly outlook Goldman Sachs Global Investment Research 2026 outlook",
+          "J.P. Morgan 2026 outlook 2026 guide 3-6 month outlook J.P. Morgan Asset Management 2026 outlook",
+          "Morgan Stanley 2026 outlook 2026 midyear outlook Morgan Stanley Investment Management outlook 2026",
+          "BlackRock 2026 outlook 2026 midyear outlook BlackRock Investment Institute 2026 outlook"
         ],
         "sources": null
       },
@@ -33,313 +33,144 @@
       "type": "web_search_call"
     },
     {
-      "id": "rs_04fe820a2e0d9d29006a1f227ee91c819085d3396758edc186",
+      "id": "rs_00d6d1a76f7460cc006a206f2f7110819ca19619b84a3ba621",
       "summary": [],
       "type": "reasoning",
-      "content": null,
+      "content": [],
       "encrypted_content": null,
       "status": null
     },
     {
-      "id": "ws_04fe820a2e0d9d29006a1f2280d2988190bd051ee7c75c33d7",
-      "action": {
-        "query": "Morgan Stanley 2026 outlook '2026 outlook' Morgan Stanley Investment Management 2026 outlook",
-        "type": "search",
-        "queries": [
-          "Morgan Stanley 2026 outlook '2026 outlook' Morgan Stanley Investment Management 2026 outlook",
-          "Morgan Stanley 'Market Outlook 2026' 'Midyear' '2026' 'Outlook' Morgan Stanley Investment Management 2026 outlook"
-        ],
-        "sources": null
-      },
-      "status": "completed",
-      "type": "web_search_call"
-    },
-    {
-      "id": "rs_04fe820a2e0d9d29006a1f228387b08190803aa25f6d00e470",
-      "summary": [],
-      "type": "reasoning",
-      "content": null,
-      "encrypted_content": null,
-      "status": null
-    },
-    {
-      "id": "ws_04fe820a2e0d9d29006a1f22841ba08190ae3bcd622c878a91",
+      "id": "ws_00d6d1a76f7460cc006a206f3189bc819c80ac3e9b430cda6f",
       "action": {
         "type": "open_page",
-        "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
+        "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/outlook?cid=synd%3ASA%3A2024MidyearGlobalOutlookWavesOfTransformation"
       },
       "status": "completed",
       "type": "web_search_call"
     },
     {
-      "id": "rs_04fe820a2e0d9d29006a1f22886ba08190b1ee43a822a0a47a",
+      "id": "rs_00d6d1a76f7460cc006a206f330c7c819cbab4ff49c73cb1a6",
       "summary": [],
       "type": "reasoning",
-      "content": null,
+      "content": [],
       "encrypted_content": null,
       "status": null
     },
     {
-      "id": "ws_04fe820a2e0d9d29006a1f22898cc481909957e100b799c5b9",
+      "id": "ws_00d6d1a76f7460cc006a206f34cdb8819c9282d200f5375b50",
       "action": {
-        "pattern": "3-6",
-        "type": "find_in_page",
-        "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
+        "type": "open_page",
+        "url": "https://www.morganstanley.com/insights/articles/stock-market-investment-outlook-2026"
       },
       "status": "completed",
       "type": "web_search_call"
     },
     {
-      "id": "rs_04fe820a2e0d9d29006a1f228bf99881909c2b3f45caec6f59",
+      "id": "rs_00d6d1a76f7460cc006a206f36645c819c8c4ee55bf0459587",
       "summary": [],
       "type": "reasoning",
-      "content": null,
+      "content": [],
       "encrypted_content": null,
       "status": null
     },
     {
-      "id": "ws_04fe820a2e0d9d29006a1f228f55048190895039f82297480a",
+      "id": "ws_00d6d1a76f7460cc006a206f36c8ec819c8004c64837b4a152",
       "action": {
-        "pattern": "3-6",
-        "type": "find_in_page",
+        "type": "open_page",
         "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
       },
       "status": "completed",
       "type": "web_search_call"
     },
     {
-      "id": "rs_04fe820a2e0d9d29006a1f2292a8a48190a4b6c9c5153937ec",
+      "id": "rs_00d6d1a76f7460cc006a206f38faf4819c9a42831e67aa7289",
       "summary": [],
       "type": "reasoning",
-      "content": null,
+      "content": [],
       "encrypted_content": null,
       "status": null
     },
     {
-      "id": "ws_04fe820a2e0d9d29006a1f2294e05c8190a772c143fc37a2f7",
+      "id": "ws_00d6d1a76f7460cc006a206f3a1d84819c93c18a1c081de3f2",
       "action": {
-        "pattern": "12 months",
-        "type": "find_in_page",
-        "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
+        "type": "open_page",
+        "url": "https://am.jpmorgan.com/us/en/asset-management/adv/insights/market-insights/investment-outlook/"
       },
       "status": "completed",
       "type": "web_search_call"
     },
     {
-      "id": "rs_04fe820a2e0d9d29006a1f2297590481908f6812ea117672e1",
+      "id": "rs_00d6d1a76f7460cc006a206f3b66a4819c8f5edf31978ddbaf",
       "summary": [],
       "type": "reasoning",
-      "content": null,
+      "content": [],
       "encrypted_content": null,
       "status": null
     },
     {
-      "id": "ws_04fe820a2e0d9d29006a1f229cc9b481909927e82cd850d658",
-      "action": {
-        "pattern": "six to 12",
-        "type": "find_in_page",
-        "url": "https://www.morganstanley.com/im/publication/insights/flash-reports/flashreport_thebeatoutlook2026_en.pdf"
-      },
-      "status": "completed",
-      "type": "web_search_call"
-    },
-    {
-      "id": "rs_04fe820a2e0d9d29006a1f22a063fc81909978f488bd6d2a24",
-      "summary": [],
-      "type": "reasoning",
-      "content": null,
-      "encrypted_content": null,
-      "status": null
-    },
-    {
-      "id": "msg_04fe820a2e0d9d29006a1f22c3daa08190b55783c061b2a21e",
+      "id": "msg_00d6d1a76f7460cc006a206f62b6cc819c9a3e163f728bbf4d",
       "content": [
         {
           "annotations": [
             {
-              "end_index": 583,
-              "start_index": 501,
+              "end_index": 468,
+              "start_index": 386,
               "title": "2026 Outlooks | Goldman Sachs",
               "type": "url_citation",
               "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
             },
             {
-              "end_index": 1185,
-              "start_index": 1063,
-              "title": "",
+              "end_index": 938,
+              "start_index": 822,
+              "title": "\n        \n        \n        \n        2026 Year-Ahead Investment Outlook\n        \n        \n         | J.P. Morgan Asset Management\n    ",
               "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
+              "url": "https://am.jpmorgan.com/us/en/asset-management/adv/insights/market-insights/investment-outlook/"
             },
             {
-              "end_index": 1768,
-              "start_index": 1640,
-              "title": "PowerPoint Presentation",
+              "end_index": 1297,
+              "start_index": 1229,
+              "title": "2026 Outlooks: Market and Economic Forecasts | Morgan Stanley",
               "type": "url_citation",
-              "url": "https://www.morganstanley.com/im/publication/insights/flash-reports/flashreport_thebeatoutlook2026_en.pdf"
+              "url": "https://www.morganstanley.com/Themes/outlooks"
             },
             {
-              "end_index": 2419,
-              "start_index": 2303,
-              "title": "BII Global outlook",
+              "end_index": 1887,
+              "start_index": 1719,
+              "title": "Q2 2026 Investment Outlook",
               "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
+              "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/outlook?cid=synd%3ASA%3A2024MidyearGlobalOutlookWavesOfTransformation"
             },
             {
-              "end_index": 2896,
-              "start_index": 2780,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
-            },
-            {
-              "end_index": 3604,
-              "start_index": 3482,
-              "title": "",
-              "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 4251,
-              "start_index": 4169,
+              "end_index": 8107,
+              "start_index": 8025,
               "title": "2026 Outlooks | Goldman Sachs",
               "type": "url_citation",
               "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
             },
             {
-              "end_index": 4654,
-              "start_index": 4572,
-              "title": "2026 Outlooks | Goldman Sachs",
+              "end_index": 8317,
+              "start_index": 8201,
+              "title": "\n        \n        \n        \n        2026 Year-Ahead Investment Outlook\n        \n        \n         | J.P. Morgan Asset Management\n    ",
               "type": "url_citation",
-              "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
+              "url": "https://am.jpmorgan.com/us/en/asset-management/adv/insights/market-insights/investment-outlook/"
             },
             {
-              "end_index": 5058,
-              "start_index": 4936,
-              "title": "",
+              "end_index": 8469,
+              "start_index": 8401,
+              "title": "2026 Outlooks: Market and Economic Forecasts | Morgan Stanley",
               "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
+              "url": "https://www.morganstanley.com/Themes/outlooks"
             },
             {
-              "end_index": 6104,
-              "start_index": 5982,
-              "title": "",
+              "end_index": 8734,
+              "start_index": 8566,
+              "title": "Q2 2026 Investment Outlook",
               "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 6392,
-              "start_index": 6270,
-              "title": "",
-              "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 6906,
-              "start_index": 6790,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
-            },
-            {
-              "end_index": 7451,
-              "start_index": 7335,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
-            },
-            {
-              "end_index": 8235,
-              "start_index": 8153,
-              "title": "2026 Outlooks | Goldman Sachs",
-              "type": "url_citation",
-              "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
-            },
-            {
-              "end_index": 8943,
-              "start_index": 8861,
-              "title": "2026 Outlooks | Goldman Sachs",
-              "type": "url_citation",
-              "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
-            },
-            {
-              "end_index": 9205,
-              "start_index": 9083,
-              "title": "",
-              "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 9472,
-              "start_index": 9350,
-              "title": "",
-              "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 9741,
-              "start_index": 9625,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
-            },
-            {
-              "end_index": 10034,
-              "start_index": 9918,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
-            },
-            {
-              "end_index": 10759,
-              "start_index": 10637,
-              "title": "",
-              "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 11159,
-              "start_index": 11077,
-              "title": "2026 Outlooks | Goldman Sachs",
-              "type": "url_citation",
-              "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
-            },
-            {
-              "end_index": 11479,
-              "start_index": 11363,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
-            },
-            {
-              "end_index": 11715,
-              "start_index": 11633,
-              "title": "2026 Outlooks | Goldman Sachs",
-              "type": "url_citation",
-              "url": "https://www.goldmansachs.com/insights/outlooks/2026-outlooks"
-            },
-            {
-              "end_index": 11917,
-              "start_index": 11795,
-              "title": "",
-              "type": "url_citation",
-              "url": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf"
-            },
-            {
-              "end_index": 12136,
-              "start_index": 12008,
-              "title": "PowerPoint Presentation",
-              "type": "url_citation",
-              "url": "https://www.morganstanley.com/im/publication/insights/flash-reports/flashreport_thebeatoutlook2026_en.pdf"
-            },
-            {
-              "end_index": 12336,
-              "start_index": 12220,
-              "title": "BII Global outlook",
-              "type": "url_citation",
-              "url": "https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf"
+              "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/outlook?cid=synd%3ASA%3A2024MidyearGlobalOutlookWavesOfTransformation"
             }
           ],
-          "text": "1) What the Big Boys Are saying (3\u20136 month and 12\u2011month views)\n- Goldman Sachs \u2014 View (3\u20136 mo): constructive on equities into the near term as tariff headwinds fade and a non\u2011recessionary Fed easing cycle supports risk assets. (12\u2011mo): projects positive 12\u2011month returns for equities (Goldman projects ~11% for global stocks / ~12% for the S&P over the next 12 months) while warning valuations are \u201chot\u201d and selectivity matters. Source: Goldman Sachs 2026 Outlooks (Markets & Global Equity Strategy). ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))\n\n- J.P. Morgan Asset Management \u2014 View (3\u20136 mo): expect volatility but see fixed income and active credit as more attractive near term; emphasize selectivity in tech/AI and balance between growth and international opportunities. (12\u2011mo): earnings growth should support equity returns and international earnings are expected to narrow the gap with the U.S.; emphasize rebalancing into underowned markets. Source: J.P. Morgan Asset Management \u2014 2026 Year\u2011Ahead Investment Outlook. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))\n\n- Morgan Stanley (MSIM / The BEAT) \u2014 View (3\u20136 mo): tailwinds from earlier rate cuts and fiscal support should carry into the near term; tactical opportunities in data\u2011center / AI infrastructure, select real estate and private markets. (12\u2011mo): constructive on AI\u2011linked cyclicals and infrastructure, but stress the need for selectivity \u2014 also highlight potential pockets of froth. Source: Morgan Stanley Investment Management \u2014 The BEAT: 2026 Outlook. ([morganstanley.com](https://www.morganstanley.com/im/publication/insights/flash-reports/flashreport_thebeatoutlook2026_en.pdf))\n\n- BlackRock Investment Institute \u2014 View (3\u20136 mo): tactical (six\u2011to\u201112 month) views are mixed \u2014 BlackRock is tactically overweight some EM and Japan pockets, prefers selected credit/EM bonds vs. long U.S. Treasuries; advocates selective exposure to AI/automation and real assets. (12\u2011mo): still constructive on structural AI/infra themes longer term, but warns of constraints on the AI build\u2011out and the need for diversification into real assets and private credit. Source: BlackRock Investment Institute \u2014 2026 Global Outlook (BII). ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf))\n\n2) Where my portfolio agrees or diverges (numbers from your upload)\n- Crypto\n  - Agree: You hold crypto = $64,602.71 (8.57% of portfolio) \u2014 inside your stated guardrail (roughly 10\u201315%) and consistent with institutional notes that crypto/digital assets are a structural new asset class to watch. (See BlackRock/JPM views on digital assets/alternative rails). ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf))\n  - Diverge: Institutions generally flag crypto as higher risk and emphasize position sizing; your total crypto is material vs. a typical conservative sleeve \u2014 keep monitoring price volatility and liquidity.\n\n- AI / Semiconductors / Compute\n  - Agree: Your calculated AI/semis exposure is large \u2014 summary_metrics AI/semis compute = $129,668.47 (17.21% of portfolio) and theme bucket shows AI/semis ~ $66,626 (8.84%) depending on look\u2011through assumptions \u2014 you are positioned ahead of many retail portfolios on AI exposure, which matches the Big Boys\u2019 conviction that AI is structural. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))\n  - Diverge: Firms caution selectivity and note capacity/physical constraints for the AI build\u2011out (BlackRock, JPM) \u2014 your sizing (17.2% by the summary metric) is meaningful; institutionals suggest active selection and some risk management / diversification.\n\n- Broad core (large mutual funds / core index)\n  - Agree: Your largest single original position is FLCNX (Contrafund) = $105,614.88 (14.02%); total \u201cfund_other_unmapped\u201d = ~$393,299 (52.19% of portfolio) \u2014 funds form a large core sleeve. This aligns with institutional advice to keep a diversified core. ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))\n  - Diverge: Your funds\u2011as\u2011core are concentrated in active Fidelity funds (Contrafund, small\u2011cap, EM, Intl). Institutions are broadly constructive on equities but also point to opportunities outside the US (Goldman/JPM); consider whether core allocations sufficiently capture cheap international/EM exposure they favor. ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))\n\n- International / Emerging Markets\n  - Agree: You have International Developed $67,174 (8.91%) and Emerging Markets $68,883 (9.14%) \u2014 you already own material international/EM sleeves. JPM/BlackRock see opportunities in select EM and non\u2011U.S. earnings improvement over 12 months. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))\n  - Diverge: BlackRock is tactically neutral on broad EM and highlights selectivity; Goldman is optimistic about cyclical international gains \u2014 consider trimming/adding at the margin based on geographic convictions.\n\n3) Action Table (position / theme | Action | One\u2011line reason)\n| Position / Theme | Action | One\u2011line reason |\n|---|---:|---|\n| FLCNX (FID CONTRAFD K6) \u2014 14.02% (largest original) | Hold | Core active large\u2011cap growth sleeve \u2014 keep as core unless thesis breaks; use new money to balance. |\n| FDSCX (FID STK SEL SMCP) \u2014 11.16% (fund_other top) / Small Cap theme 14.80% | Trim (modest) | Small cap sleeve ~14.8% \u2014 above typical tactical target; modest trims add diversification without selling winners. |\n| FPADX (FID E/MKT IDX IPRM) \u2014 11.02% / Emerging Markets 9.14% | Add (new $ only) | JP Morgan & Goldman see room for international/EM earnings \u2014 prefer new contributions to modestly increase EM exposure. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf)) |\n| FSPSX (FID INTL IDX) \u2014 10.07% (Intl developed) | Add (new $ only) | Aligns with institutional signal that international earnings should catch up over 12 months. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf)) |\n| FXAIX (FID 500 IDX) \u2014 4.90% / US Broad Market | Hold / Add | Keep as core index exposure for rebalancing; prioritize new contributions here to maintain core >70% fence. |\n| Crypto / Tokenization (total $64.6k | 8.57%) | Watch / Hold (no new buys > modest) | Crypto at 8.6% is inside your 10\u201315% guardrail \u2014 monitor volatility; prefer small new\u2011money cap if you want to top up, otherwise hold. ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf)) |\n| FETH (FIDELITY ETHEREUM FUND) \u2014 $30,980.84 | Hold | Significant single crypto fund exposure \u2014 within crypto sleeve; avoid large trims unless risk tolerance changes. |\n| AI / Semiconductors theme (summary metric 17.21%) \u2014 NVDA, MU, 2330.TW, ASML, AVGO | Watch / Trim (if > target) | Institutions are bullish on AI but warn on capacity/valuation \u2014 consider trimming into strength or slow new buys; prioritize diversification. ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf)) |\n| FSSNX / Small\u2011cap index / FLKSX (Low Priced) \u2014 part of small cap sleeve | Trim slightly | Small cap exposure is elevated; small trims to fund into international/core are consistent with your preference to use new money first. |\n| Rentberry / PureGreen / Private startups ($11,525 \u2014 1.53%) | Hold | Private startup exposure is within your 2\u20133% guardrail \u2014 keep as small optional upside. |\n| HTGC, ARCC (BDC / Income exposures) | Hold | Income / BDC positions provide yield and diversification; keep modest sizing. |\n| USERX (Gold & Precious Metals) \u2014 $28,055 (theme: Gold 2.45%) | Add (modest) | Institutional views favor real assets/commodities as diversifiers against geopolitical/monetary risk. ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks)) |\n| FSRNX (Real Estate Index) \u2014 $32,914 (REITs 2.29%) | Hold / Add small | REITs offer income and inflation protection; add modestly if rebalancing away from concentrated AI names. |\n\n(Notes: actions emphasize contributions-first rebalancing; trims are modest \u2014 not full exits \u2014 and follow your rule to avoid panic selling winners.)\n\n4) New\u2011money allocation (ranked by priority \u2014 next quarter)\n- Priority 1 \u2014 Core broad market (40% of new contributions): FXAIX / S&P 500 or a broad US total market fund \u2014 keep your core base healthy and move toward the \u201c>70% core\u201d preference. (Goldman/JPM supportive of equities near\u2011term). ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))\n- Priority 2 \u2014 International developed (20%): FSPSX or similar \u2014 capture narrowing international earnings gap per J.P. Morgan and Goldman. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))\n- Priority 3 \u2014 Emerging Markets (10\u201315%): FPADX or EM ETF \u2014 modestly increase select EM exposure as institutions see room in select EM pockets. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))\n- Priority 4 \u2014 Real assets / gold & REITs (10%): USERX and/or FSRNX \u2014 diversifier against geopolitical and valuation risks highlighted by the Big Boys. ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf))\n- Priority 5 \u2014 Crypto / Thematic (<=5% of new $): small, disciplined top\u2011ups to FETH/FBTC only if total crypto remains \u2264 10\u201315% of portfolio; otherwise pause crypto new money. ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf))\n\nHow aggressive/conservative: This is a measured, contribution\u2011first plan \u2014 ~60%+ of new money goes to broad core + international/EM; only small shares to thematic/crypto so you don\u2019t increase concentration.\n\n5) Plain\u2011English bottom line (this quarter)\n- You\u2019re already heavily invested in core Fidelity funds (FLCNX + other funds = ~52% of portfolio in the \u201cfund_other_unmapped\u201d bucket) and have material AI and crypto exposure (AI ~17.2% by summary metric; crypto ~8.6%). Use new contributions to broaden geographic exposure (intl + EM) and to nudge the overall core toward the >70% base you prefer. ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))\n- Institutions (Goldman, JPM, Morgan Stanley, BlackRock) are constructive on equities over the next 12 months but emphasize selectivity (AI opportunities + constraints) and the value of real assets / selective credit \u2014 mirror that by keeping AI positions but avoiding increasing concentration through large new buys. ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))\n- Keep crypto where it is (8.6%) unless you explicitly want to move toward the top of your guardrail (10\u201315%); prefer modest new\u2011money contributions to core, international, and real assets this quarter. ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf))\n\nSources cited (current institutional outlooks used)\n- Goldman Sachs \u2014 2026 Outlooks (Markets & Global Equity Strategy \u2014 \u201cTech Tonic\u201d, Markets Outlook). ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))  \n- J.P. Morgan Asset Management \u2014 2026 Year\u2011Ahead Investment Outlook (JPMAM). ([am.jpmorgan.com](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/2026%20Year-Ahead%20Investment%20Outlook.pdf))  \n- Morgan Stanley Investment Management \u2014 The BEAT: 2026 Outlook / 2026 Outlooks (MSIM). ([morganstanley.com](https://www.morganstanley.com/im/publication/insights/flash-reports/flashreport_thebeatoutlook2026_en.pdf))  \n- BlackRock Investment Institute \u2014 2026 Global Outlook (BII Global Outlook PDF). ([blackrock.com](https://www.blackrock.com/corporate/literature/whitepaper/bii-global-outlook-2026-middle-east.pdf))\n\nIf you want, I can:\n- Convert the Action Table into precise suggested trim sizes (percent of position and $) for the modest trims I recommended, or\n- Run a simple rebalancing plan that shows exactly how to route your next 3 months of payroll (with dollar amounts) to reach target weights without selling winners.",
+          "text": "1) What the Big Boys Are saying (3\u20136 month and 12\u2011month views)\n\n- Goldman Sachs \u2014 3\u20136 month: Stay overweight U.S. equities and \u201cstay invested\u201d; see U.S. outperformance and continued earnings strength near\u2011term. 12\u2011month: constructive on equities (broadening bull market), expects modest Fed cuts and favors U.S. resilience; maintains tactical tilts into U.S. and tech/AI beneficiaries. ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))\n\n- J.P. Morgan Asset Management \u2014 3\u20136 month: early\u20112026 shows solid earnings, resilient consumer demand and continued AI capex support; be disciplined and selective. 12\u2011month: expect a transition from \u201crisk\u2011on\u201d to more balanced allocations as fiscal tailwinds fade; emphasize active fixed\u2011income management, diversification and selectivity in equities. ([am.jpmorgan.com](https://am.jpmorgan.com/us/en/asset-management/adv/insights/market-insights/investment-outlook/))\n\n- Morgan Stanley \u2014 3\u20136 month: constructive, risk\u2011on tilt; favor U.S. equities into midyear as Fed policy eases and AI spending lifts earnings. 12\u2011month: overweight equities vs. core fixed income, prefer U.S. leadership; expect wider corporate issuance (AI capex) to affect credit markets. ([morganstanley.com](https://www.morganstanley.com/Themes/outlooks))\n\n- BlackRock (BII) \u2014 3\u20136 month: tactically overweight U.S. stocks and selective emerging markets; favor AI beneficiaries (semis, data centers, power) and short/underweight long U.S. Treasuries as a tactical stance. 12\u2011month: keep a tactical stance on AI beneficiaries and selected EM commodity/AI exporters; longer term they emphasize scenario\u2011based construction and private/alternative sources for idiosyncratic return. ([blackrock.com](https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/outlook?cid=synd%3ASA%3A2024MidyearGlobalOutlookWavesOfTransformation))\n\n2) Where my portfolio agrees or diverges (2\u20133 bullets per theme; numbers from your X\u2011ray)\n\nCrypto / Tokenization (total crypto = $63,011.91, 8.41% of portfolio)\n- Agree: Institutions (esp. BlackRock) note digital\u2011asset infrastructure themes; your 8.4% is inside your stated guardrail (roughly 10\u201315%) \u2014 aligned with a tactical, constructive view.  \n- Diverge: most institutions still treat crypto as a tactical/alternative exposure rather than a core allocation; they generally caution sizing and liquidity \u2014 your direct holdings (coins + ETFs) mean you have active coin exposure to monitor.\n\nAI / Semiconductors / Compute (AI look\u2011through \u2248 $107,626 \u2014 14.36%)\n- Agree: All four firms highlight AI capex as a dominant medium\u2011term driver; overweight to AI beneficiaries is consistent with institutional conviction.  \n- Diverge: BII and Morgan Stanley emphasize selective exposure via infrastructure/semis/data centers; your exposure includes single\u2011name speculative plays (direct small caps / micro\u2011caps) \u2014 higher idiosyncratic risk versus broad AI/semiconductor ETFs or diversified fund exposure.\n\nBroad core (mutual funds / core base \u2248 $436,332 \u2248 58.3% of portfolio)\n- Agree: Institutions favor a strong core of equities but many recommend active tilts; your large mutual\u2011fund sleeve is the portfolio anchor.  \n- Diverge: Your core (~58% in mutual funds) is below your stated preference \u201ckeep core > 70% if possible\u201d \u2014 institutions would generally favor keeping a broad, diversified core and using tactical sleeves around it.\n\nInternational / Emerging Markets (FSPSX \u2248 $64,043 = 8.55%; FPADX \u2248 $65,828 = 8.79%; total EM \u2248 7.57% theme)\n- Agree: BlackRock and J.P. Morgan call for selective EM exposure (commodity exporters, AI\u2011component manufacturers) \u2014 your FPADX / JEMWX look\u2011throughs give you targeted EM exposure.  \n- Diverge: Morgan Stanley and Goldman emphasize U.S. leadership \u2014 your international/EM weight is modest but not excessive; institutions stress selectivity rather than broad passive EM overweight.\n\n3) Action Table (one row per significant position / theme \u2014 Hold / Add / Trim / Watch plus one\u2011line reason)\n\n| Position / Theme | Action | One\u2011line reason |\n|---|---:|---|\n| FRSXX (FID INVT MMKT TRSY I) \u2014 Cash (~$97,976, 13.08%) | Hold | Cash buffer is sizeable; use it selectively to rebalance or fund new contributions rather than wholesale deployment. |\n| FDSCX (FID STK SEL SMCP) \u2014 Small Cap fund (~$84,062, 11.22% original; theme Small Cap 11.98%) | Watch | Small\u2011cap sleeve is material \u2014 keep but reduce new\u2011money into it until breadth/valuations improve; trim only if it exceeds your tolerance. |\n| FLCNX (FID CONTRAFD K6 \u2014 Contrafund, ~$68,334, 9.12%) | Add | Aligns with institutional U.S. large\u2011cap/active tilt and your growth bias \u2014 prioritize new contributions here to lift core. |\n| FPADX (FID E/MKT IDX IPRM \u2014 EM fund, ~$65,828, 8.79%) | Add (small) | BlackRock/JPM support selective EM exposure; add modestly with new money to diversify U.S centricity. |\n| FSPSX (FID INTL IDX \u2014 Intl Dev, ~$64,043, 8.55%) | Hold | Institutions are neutral/selective on developed international \u2014 keep exposure but prefer selectivity over large new buys. |\n| Crypto / Tokenization (theme total $63,011.91, 8.41%) | Hold | Within your 10\u201315% target; maintain size, limit new crypto contributions until you re\u2011test thesis or volatility. |\n| AI / Semiconductors / Compute (theme \u2248 $107,626, 14.36%) | Add (via funds) | Institutional tilt toward AI beneficiaries \u2014 prefer adding via diversified/ETF or fund slices rather than raising single\u2011stock concentration. |\n| Private / Startup Investments (theme $11,525, 1.54%) | Hold | Within your private allocation guardrail (2\u20133%) \u2014 no new primary commitments unless you want to actively increase private allocation. |\n| MU (Micron) \u2014 $12,852.56 (1.72%) | Watch | Position size is below your 2% speculative single\u2011stock watch guideline but track thesis/earnings and avoid letting it drift much larger. |\n| PLTR (Palantir) \u2014 $9,278.10 (1.24%) | Hold | Aligns with your AI/data infra theme; keep and prefer new\u2011money exposure via funds before adding more stock. |\n\n4) New\u2011Money Allocation (ranked priorities for the next quarter only \u2014 contribution\u2011first, measured)\n\n- 40% to core mutual\u2011fund/retirement base (prioritize FLCNX / FXAIX / FPADX/FSPSX mix) \u2014 goal: lift core from ~58% toward your 70% target over several quarters.  \n- 20% to diversified AI/semiconductor exposure (use funds/ETFs or the fund look\u2011throughs rather than more single concentrated names).  \n- 15% to international / selective EM (split FSPSX & FPADX) to capture institutionally\u2011favored selective EM pockets.  \n- 15% to real\u2011asset / income sleeve (e.g., FSRNX / REIT look\u2011through) to increase diversification and income.  \n- 10% to defensive/optional (cash buffer or very small additional crypto only if total crypto remains \u226415%); avoid pushing crypto above 10\u201315% total.\n\nNotes: this is a conservative, contribution\u2011first plan designed to (a) rebuild your core to your >70% preference over time, (b) keep AI exposure where institutions are positive but reduce idiosyncratic single\u2011name risk, and (c) limit incremental crypto and private injections.\n\n5) Plain\u2011English bottom line (3\u20135 sentences \u2014 what matters most this quarter)\n\nYou\u2019re already positioned in the institutional direction on AI and U.S. equities, and your crypto exposure (8.4%) sits inside your stated guardrail \u2014 so no urgent forced changes. The priority this quarter is contribution\u2011first rebalancing: direct new payroll/retirement contributions to core mutual funds (Contrafund / S&P\u2011index / international and EM funds) and a measured slice to diversified AI/semiconductor funds. Keep cash as your tactical buffer and avoid adding to individual speculative names \u2014 trim only if any single position meaningfully exceeds your stated size limits or the investment thesis breaks. Revisit next quarter if macro signs (Fed cuts, AI capex momentum, or an energy shock) materially change the institutional consensus.\n\nSources cited (institutional outlooks used above)\n- Goldman Sachs \u2014 2026 Outlooks (US Resilience / Markets & Allocation pages). ([goldmansachs.com](https://www.goldmansachs.com/insights/outlooks/2026-outlooks))  \n- J.P. Morgan Asset Management \u2014 2026 Year\u2011Ahead Investment Outlook / Market Outlook 2026. ([am.jpmorgan.com](https://am.jpmorgan.com/us/en/asset-management/adv/insights/market-insights/investment-outlook/))  \n- Morgan Stanley \u2014 2026 Midyear / Investment Outlooks (May 2026 midyear themes). ([morganstanley.com](https://www.morganstanley.com/Themes/outlooks))  \n- BlackRock Investment Institute \u2014 Q2/May 2026 Global Outlook (tactical tables, AI emphasis). ([blackrock.com](https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/outlook?cid=synd%3ASA%3A2024MidyearGlobalOutlookWavesOfTransformation))\n\nIf you want, I\u2019ll: (A) convert these Action Table rows into suggested dollar amounts for specific accounts, (B) produce a one\u2011page trade checklist for any small trims (conservative % targets and limit orders), or (C) run a scenario that shows how reaching a 70% core base over four quarters would change exposures. Which would you like next?",
           "type": "output_text",
           "logprobs": []
         }
@@ -370,7 +201,7 @@
   ],
   "top_p": 1.0,
   "background": false,
-  "completed_at": 1780425449.0,
+  "completed_at": 1780510587.0,
   "conversation": null,
   "max_output_tokens": null,
   "max_tool_calls": null,
@@ -396,15 +227,15 @@
   "top_logprobs": 0,
   "truncation": "disabled",
   "usage": {
-    "input_tokens": 62356,
+    "input_tokens": 53722,
     "input_tokens_details": {
       "cached_tokens": 0
     },
-    "output_tokens": 6931,
+    "output_tokens": 6295,
     "output_tokens_details": {
-      "reasoning_tokens": 3904
+      "reasoning_tokens": 3968
     },
-    "total_tokens": 69287
+    "total_tokens": 60017
   },
   "user": null,
   "billing": {

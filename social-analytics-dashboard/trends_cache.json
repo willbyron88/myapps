@@ -1,27 +1,27 @@
 {
   "results": {
     "Sleep": {
-      "score": 3,
+      "score": 2,
       "direction": "falling",
-      "peak": 15,
+      "peak": 18,
       "keyword": "sleep optimization"
     },
     "Muscle": {
       "score": 1,
-      "direction": "flat",
-      "peak": 8,
+      "direction": "\u2014",
+      "peak": 7,
       "keyword": "muscle after 50"
     },
     "Bone": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 4,
+      "peak": 5,
       "keyword": "bone density after 50"
     },
     "Cholesterol": {
-      "score": 3,
+      "score": 2,
       "direction": "falling",
-      "peak": 16,
+      "peak": 17,
       "keyword": "cholesterol management"
     },
     "Cortisol": {
@@ -32,14 +32,14 @@
     },
     "Hormones": {
       "score": 3,
-      "direction": "rising",
-      "peak": 38,
+      "direction": "falling",
+      "peak": 20,
       "keyword": "hormone optimization"
     },
     "Zone 2": {
       "score": 11,
       "direction": "falling",
-      "peak": 46,
+      "peak": 47,
       "keyword": "Zone 2 training"
     },
     "Mindset": {
@@ -51,17 +51,17 @@
     "Nutrition": {
       "score": 1,
       "direction": "flat",
-      "peak": 16,
+      "peak": 21,
       "keyword": "nutrition after 50"
     },
     "Recovery": {
-      "score": 33,
+      "score": 32,
       "direction": "falling",
       "peak": 100,
       "keyword": "workout recovery"
     },
     "Training": {
-      "score": 1,
+      "score": 0,
       "direction": "\u2014",
       "peak": 3,
       "keyword": "strength training over 50"
@@ -69,17 +69,17 @@
     "Bloodwork": {
       "score": 1,
       "direction": "falling",
-      "peak": 7,
+      "peak": 9,
       "keyword": "blood biomarkers"
     },
     "Cognition": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 0,
+      "peak": 4,
       "keyword": "brain health after 50"
     },
     "Joints": {
-      "score": 28,
+      "score": 26,
       "direction": "falling",
       "peak": 100,
       "keyword": "joint health"
@@ -115,5 +115,5 @@
       "keyword": "health system protocol"
     }
   },
-  "fetched_at": "2026-06-03T13:24:47.879484"
+  "fetched_at": "2026-06-04T14:09:39.204109"
 }
