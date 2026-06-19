@@ -23,8 +23,8 @@ NOTES ON FACEBOOK METRICS:
       2) Reel/video metrics — proven working on /{video_or_reel_id}/video_insights
     fb_fetch_insights() tries bulk first, then falls back one metric at a time
     so one unsupported metric can't zero out the entire dashboard.
-    blue_reels_play_count is the best top-line number for Reels.
-    post_video_views is used as fallback for older feed videos.
+    post_video_views is the top-line view count for Reels/videos (blue_reels_play_count deprecated 2026-06).
+    post_video_view_time and post_video_avg_time_watched are sourced via video_insights edge.
 
 DEPENDENCIES:
     pip install requests pandas python-dotenv
@@ -64,7 +64,6 @@ FACEBOOK_POST_FALLBACK_METRICS = [
     "post_reactions_by_type_total",
     "post_clicks",
     "post_clicks_by_type",
-    "post_impressions_unique",
     "post_video_views",
     "post_video_views_unique",
     "post_video_views_15s",
@@ -73,13 +72,14 @@ FACEBOOK_POST_FALLBACK_METRICS = [
     "post_total_media_view_unique",
     "post_video_complete_views_30s",
     "post_video_complete_views_30s_unique",
+    # post_impressions_unique removed — returns (#100) invalid metric as of 2026-06
 ]
 
 FACEBOOK_REEL_VIDEO_METRICS = [
     "blue_reels_play_count",
     "post_video_view_time",
     "post_video_avg_time_watched",
-    "post_impressions_unique",
+    # post_impressions_unique removed — returns (#100) invalid metric as of 2026-06
 ]
 
 
@@ -250,13 +250,7 @@ def fb_fetch_insights(
                 periods[name] = period
         return out
 
-    # Fast path: most tokens/objects support multi-metric calls.
-    data = fb_get_json(f"{object_id}/{edge}", {"metric": ",".join(metrics)}, token=token)
-    parsed = parse_payload(data)
-    if parsed:
-        return parsed
-
-    # Slow path: one metric at a time — safer for Reels.
+    # Meta bulk calls now reject comma-separated metrics on these endpoints — always go one at a time.
     out = {}
     for metric in metrics:
         data = fb_get_json(f"{object_id}/{edge}", {"metric": metric}, token=token)

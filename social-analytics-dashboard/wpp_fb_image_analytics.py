@@ -114,9 +114,9 @@ PAGES = [
 ]
 
 IMAGE_POST_METRICS = [
-    "post_impressions_unique",        # reach — confirmed 200 on v25.0 for these pages
-    "post_reactions_by_type_total",   # reactions dict — confirmed 200
     "post_clicks",                    # clicks — confirmed 200
+    # post_impressions_unique removed — returns (#100) invalid metric as of 2026-06
+    # post_reactions_by_type_total removed — returns (#100) invalid metric as of 2026-06
     # post_impressions excluded — returns (#100) invalid metric on these page tokens
 ]
 
@@ -287,17 +287,7 @@ def _fb_fetch_image_insights(post_id: str, token: str) -> dict:
                 out[name] = val
         return out
 
-    # Fast path: bulk request — no period param, let the API use its default.
-    data = _fb_get_json(
-        f"{post_id}/insights",
-        token,
-        {"metric": ",".join(IMAGE_POST_METRICS)},
-    )
-    parsed = _parse(data)
-    if parsed:
-        return parsed
-
-    # Slow path: one metric at a time so one bad metric can't block the rest.
+    # Meta bulk calls now reject comma-separated metrics — always go one at a time.
     out = {}
     for metric in IMAGE_POST_METRICS:
         data = _fb_get_json(

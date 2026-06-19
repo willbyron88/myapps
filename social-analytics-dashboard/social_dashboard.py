@@ -2594,7 +2594,9 @@ def build_ceo_v2_html(df, plan, gumroad_data, gumroad_posts, monday_plan_html,
     cur_kdp  = 0.0
     prev_kdp = 0.0
     past_months = []
+    total_ku_pages = 0
     for yr, mo, rev, ku in kdp_monthly:
+        total_ku_pages += int(ku or 0)
         if mo == cur_month_str:
             cur_kdp = _sf(rev)
         else:
@@ -2652,6 +2654,11 @@ def build_ceo_v2_html(df, plan, gumroad_data, gumroad_posts, monday_plan_html,
                 <div class="ceo-stat-label">Total Revenue</div>
                 <div class="ceo-stat-value" style="color:#5CFF7E">${combined_rev:.2f}</div>
                 <div class="ceo-stat-sub">all streams</div>
+            </div>
+            <div class="ceo-stat">
+                <div class="ceo-stat-label">KU Pages Read</div>
+                <div class="ceo-stat-value">{total_ku_pages:,}</div>
+                <div class="ceo-stat-sub">Kindle Unlimited</div>
             </div>
         </div>
         <div style="background:#1A2A3A;border-radius:6px;height:8px;overflow:hidden;margin-bottom:12px">
@@ -3197,6 +3204,8 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
         if enriched else pd.DataFrame()
     )
     if not unmatched_df.empty:
+        unmatched_count = len(unmatched_df)
+        unmatched_badge = f'<span style="background:#FF6B6B;color:white;border-radius:999px;font-size:11px;padding:1px 7px;margin-left:5px">{unmatched_count}</span>'
         unmatched_rows = ""
         for _, r in unmatched_df.sort_values(["platform", "published_at"]).iterrows():
             u_plat = safe_text(r.get("platform"))
@@ -3212,7 +3221,7 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             </tr>"""
         unmatched_section = f"""
         <div class="unmatched-report">
-            <h2>Action Required: {len(unmatched_df)} Posts Not in Database</h2>
+            <h2>Action Required: {unmatched_count} Posts Not in Database</h2>
             <p style="color:#AAB4C0;font-size:13px;margin-top:0">
             These posts have no matching URL in wpp.db. Add their URLs to the content table
             to unlock book and pillar tracking.
@@ -3232,7 +3241,8 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             </div>
         </div>"""
     else:
-        unmatched_section = ""
+        unmatched_badge = '<span style="background:#5CFF7E;color:#0A1628;border-radius:999px;font-size:11px;padding:1px 7px;margin-left:5px">All matched</span>'
+        unmatched_section = '<div style="padding:40px;text-align:center;color:#5CFF7E;font-size:18px">All posts are matched in the database.</div>'
 
     html = f"""
 <!DOCTYPE html>
@@ -3598,6 +3608,7 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             <button class="tab-btn active" data-tab="tab-ceo-v2" onclick="showTab('tab-ceo-v2')">CEO</button>
             <button class="tab-btn" data-tab="tab-ceo" onclick="showTab('tab-ceo')">Intelligence</button>
             <button class="tab-btn" data-tab="tab-analyst" onclick="showTab('tab-analyst')">Full Analytics</button>
+            <button class="tab-btn" data-tab="tab-unmatched" onclick="showTab('tab-unmatched')">Unmatched Posts {unmatched_badge}</button>
         </div>
 
         <div id="tab-ceo-v2" class="tab-pane active">
@@ -3687,8 +3698,6 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
 
         {kdp_revenue_html}
 
-        {unmatched_section}
-
         <h2>All Posts</h2>
         <div class="sort-bar">
             <label style="color:#AAB4C0;font-size:13px">Platform:
@@ -3734,6 +3743,11 @@ def build_html(df, monday_plan_html, scoreboard_html, x_performance_html="",
             Never commit .env, client_secret.json, or youtube_token.json to GitHub.
         </div>
         </div><!-- end tab-analyst -->
+
+        <div id="tab-unmatched" class="tab-pane">
+            {unmatched_section}
+        </div>
+
     </div>
 </body>
 </html>"""

@@ -4,7 +4,8 @@
       "Bash(set PYTHONIOENCODING=utf-8)",
       "Bash(python social_dashboard.py)",
       "Bash(python -c ' *)",
-      "Bash(python -c \"import sqlite3,json; conn=sqlite3.connect\\('wpp.db'\\); r=conn.execute\\(\\\\\"SELECT value FROM config WHERE key='gumroad_guides'\\\\\"\\).fetchone\\(\\); print\\(json.dumps\\(json.loads\\(r[0]\\), indent=2\\) if r else 'NOT FOUND'\\)\")"
+      "Bash(python -c \"import sqlite3,json; conn=sqlite3.connect\\('wpp.db'\\); r=conn.execute\\(\\\\\"SELECT value FROM config WHERE key='gumroad_guides'\\\\\"\\).fetchone\\(\\); print\\(json.dumps\\(json.loads\\(r[0]\\), indent=2\\) if r else 'NOT FOUND'\\)\")",
+      "Bash(\"C:\\\\Users\\\\willb\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python313\\\\python.exe\" social_dashboard.py)"
     ]
   }
 }

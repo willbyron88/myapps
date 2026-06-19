@@ -1,61 +1,61 @@
 {
   "results": {
     "Sleep": {
-      "score": 4,
+      "score": 3,
       "direction": "falling",
-      "peak": 18,
+      "peak": 23,
       "keyword": "sleep optimization"
     },
     "Muscle": {
       "score": 1,
       "direction": "flat",
-      "peak": 9,
+      "peak": 8,
       "keyword": "muscle after 50"
     },
     "Bone": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 4,
+      "peak": 0,
       "keyword": "bone density after 50"
     },
     "Cholesterol": {
       "score": 3,
       "direction": "falling",
-      "peak": 17,
+      "peak": 18,
       "keyword": "cholesterol management"
     },
     "Cortisol": {
-      "score": 57,
+      "score": 55,
       "direction": "flat",
       "peak": 100,
       "keyword": "cortisol levels"
     },
     "Hormones": {
       "score": 4,
-      "direction": "rising",
-      "peak": 25,
+      "direction": "flat",
+      "peak": 19,
       "keyword": "hormone optimization"
     },
     "Zone 2": {
-      "score": 13,
+      "score": 11,
       "direction": "falling",
-      "peak": 46,
+      "peak": 42,
       "keyword": "Zone 2 training"
     },
     "Mindset": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 12,
+      "peak": 0,
       "keyword": "mindset over 50"
     },
     "Nutrition": {
       "score": 1,
-      "direction": "flat",
-      "peak": 16,
+      "direction": "falling",
+      "peak": 18,
       "keyword": "nutrition after 50"
     },
     "Recovery": {
-      "score": 34,
+      "score": 32,
       "direction": "falling",
       "peak": 100,
       "keyword": "workout recovery"
@@ -69,17 +69,17 @@
     "Bloodwork": {
       "score": 1,
       "direction": "falling",
-      "peak": 9,
+      "peak": 8,
       "keyword": "blood biomarkers"
     },
     "Cognition": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 4,
+      "peak": 0,
       "keyword": "brain health after 50"
     },
     "Joints": {
-      "score": 29,
+      "score": 28,
       "direction": "falling",
       "peak": 100,
       "keyword": "joint health"
@@ -87,37 +87,33 @@
     "Fueling": {
       "score": 0,
       "direction": "\u2014",
-      "peak": 4,
+      "peak": 0,
       "keyword": "athletic fueling"
     },
     "Sweat Rate": {
       "score": 0,
-      "direction": "error",
-      "peak": 0,
-      "keyword": "sweat rate training",
-      "error": "The request failed: Google returned a response with code 429"
+      "direction": "\u2014",
+      "peak": 2,
+      "keyword": "sweat rate training"
     },
     "Heat": {
-      "score": 0,
-      "direction": "error",
-      "peak": 0,
-      "keyword": "heat training",
-      "error": "The request failed: Google returned a response with code 429"
+      "score": 5,
+      "direction": "falling",
+      "peak": 22,
+      "keyword": "heat training"
     },
     "Financial": {
-      "score": 0,
-      "direction": "error",
-      "peak": 0,
-      "keyword": "financial health",
-      "error": "The request failed: Google returned a response with code 429"
+      "score": 22,
+      "direction": "falling",
+      "peak": 100,
+      "keyword": "financial health"
     },
     "System": {
       "score": 0,
-      "direction": "error",
-      "peak": 0,
-      "keyword": "health system protocol",
-      "error": "The request failed: Google returned a response with code 429"
+      "direction": "\u2014",
+      "peak": 2,
+      "keyword": "health system protocol"
     }
   },
-  "fetched_at": "2026-06-11T12:15:08.381572"
+  "fetched_at": "2026-06-19T15:38:47.439665"
 }
